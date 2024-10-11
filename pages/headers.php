@@ -9,3 +9,5 @@
  <script src="../assets/js/all.js"></script>
  <script src="../assets/js/jquery-3.6.0.js"></script>
  <script src="../assets/js/toastr.min.js"></script>
+
+<!-- bua na si janz-->
