@@ -1,3 +1,7 @@
+<?php
+require_once "toaster_handler.php";
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -191,6 +195,13 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php
+            if (!empty($toastrScript)) {
+                echo $toastrScript;
+            }
+            ?>
+        });
         document.getElementById('showSignup').addEventListener('click', function() {
             document.querySelector('.flip-container').classList.add('flipped');
         });

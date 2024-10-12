@@ -1,16 +1,14 @@
 <?php
-// Database credentials
 $host = 'localhost';
-$user = 'root';
-$password = '';
 $dbname = 'north';
+$user = 'root';
+$pass = '';
 
-// Create connection
-$conn = mysqli_connect($host, $user, $password, $dbname);
+$conn = new mysqli($host, $user, $pass, $dbname);
 
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
-mysqli_close($conn);
+
+$conn->set_charset("utf8");
 ?>

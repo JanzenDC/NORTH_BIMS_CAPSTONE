@@ -1,26 +1,23 @@
 <?php
-require('db_connect.php');
+session_start();
+require('../pages/db_connect.php');
 
-$conn = db_connect();
-
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    // Query to check if the user exists
-    $query = "SELECT * FROM users WHERE username = '$username'";
+    $query = "SELECT * FROM tblregistered_account WHERE username = '$username'";
     $result = mysqli_query($conn, $query);
+
+    if (!$result) {
+        die('Query Failed: ' . mysqli_error($conn));
+    }
 
     if ($result && mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
-        
-        // Verify password (assuming you are using hashed passwords)
-        if (password_verify($password, $user['password'])) {
-            // Start session
-            session_start();
+        $hashed_password = $user['password']; // Correctly fetched
 
-            // Store user information in session array
+        if (password_verify($password, $hashed_password)) { // Removed strtolower
             $_SESSION['user'] = [
                 'id' => $user['id'],
                 'fname' => $user['fname'],
@@ -44,15 +41,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'gender' => $user['gender'],
             ];
             header("Location: nx_pages/dashboard.php");
-            exit();
+            exit;
         } else {
-            echo "Invalid username or password.";
+            $_SESSION['toastr_message'] = 'Invalid username or password.';
+            $_SESSION['toastr_type'] = 'error';
         }
     } else {
-        echo "Invalid username or password.";
+        $_SESSION['toastr_message'] = 'Invalid username or password.';
+        $_SESSION['toastr_type'] = 'error';
     }
+
+    header("Location: login.php");
+    exit;
 }
 
-// Close the connection
 mysqli_close($conn);
 ?>
