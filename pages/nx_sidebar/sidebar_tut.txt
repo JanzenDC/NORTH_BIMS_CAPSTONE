@@ -1,0 +1,4 @@
+Pag mag seset sa nx_pages for redirection
+
+sample routes:
+    <a href="../nx_pages/dashboard.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Dashboard</a>

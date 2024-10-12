@@ -5,7 +5,7 @@
     <nav class="mt-6">
         <ul>
             <li>
-                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Dashboard</a>
+                <a href="../nx_pages/dashboard.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Dashboard</a>
             </li>
             <li>
                 <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
