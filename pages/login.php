@@ -49,14 +49,18 @@
                                 <img src="../assets/images/north.png" class="w-28" alt="Logo"/>
                             </div>
                             <p class="text-4xl text-center">LOGIN</p>
-                            <form class="w-full mb-4">
+                            <form class="w-full mb-4" method="POST" action="login_query.php">
                                 <p>Username</p>
-                                <input type="text" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Input Username..." >
+                                <input type="text" name="username" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Input Username..." required>
+                                
                                 <p>Password:</p>
-                                <input type="password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Input Password..." >
-                                <button type="button" class="bg-green-500 w-full text-center p-2 text-white font-bold">Submit</button>
+                                <input type="password" name="password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Input Password..." required>
+                                
+                                <button type="submit" class="bg-green-500 w-full text-center p-2 text-white font-bold">Submit</button>
+                                
                                 <p class="text-center mt-3">Don't have an account? <span class="font-bold cursor-pointer" id="showSignup">Sign Up</span></p>
                             </form>
+
                             <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d480.6884926350885!2d121.3329908!3d15.4570868!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x339749f585e13ddf%3A0x452246bfd6837f2f!2sBarangay%20hall!5e0!3m2!1sen!2sph!4v1728649501242!5m2!1sen!2sph" class="w-full" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
@@ -168,7 +172,6 @@
 
                                     <div class="flex justify-between mb-3">
                                         <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(2)">Previous</button>
-                                        <!-- <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(2)">Next</button> -->
                                     </div>
                                     <button type="submit" class="bg-green-500 w-full text-center p-2 text-white font-bold">Register</button>
                                 </div>
