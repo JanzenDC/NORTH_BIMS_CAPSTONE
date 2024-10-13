@@ -1,6 +1,9 @@
 <nav class="text-white w-full bg-green-600 p-4 justify-between flex relative">
-    <div>
+    <div class="hidden md:block">
         Barangay Information and Management System 
+    </div>
+    <div class="text-white font-bold md:hidden text-3xl cursor-pointer flex items-center" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
     </div>
     <div class="flex gap-3 items-center relative">
         <img class="w-10 rounded-full cursor-pointer" src="../../assets/images/pfp/<?= $user['image'] ?>" alt="Profile.png" onclick="toggleProfileCard()">
@@ -19,20 +22,3 @@
         </div>
     </div>
 </nav>
-
-<script>
-    function toggleProfileCard() {
-        const profileCard = document.getElementById('profile-card');
-        profileCard.classList.toggle('hidden');
-    }
-
-    // Optional: Close profile card if clicked outside
-    window.onclick = function(event) {
-        const profileCard = document.getElementById('profile-card');
-        if (!event.target.matches('.cursor-pointer')) {
-            if (!profileCard.classList.contains('hidden')) {
-                profileCard.classList.add('hidden');
-            }
-        }
-    };
-</script>
