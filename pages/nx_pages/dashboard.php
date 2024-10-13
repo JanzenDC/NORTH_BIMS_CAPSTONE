@@ -3,7 +3,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user'])) {
-    header("Location: login.php"); // Redirect to login if not logged in
+    header("Location: ../login.php"); 
     exit();
 }
 $user = $_SESSION['user'];
@@ -47,6 +47,8 @@ $user = $_SESSION['user'];
                     <p class="text-gray-600">Some information about this card.</p>
                 </div>
             </div>
+
+            
         </main>
     </div>
 
