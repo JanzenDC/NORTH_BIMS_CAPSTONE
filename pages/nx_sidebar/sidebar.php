@@ -1,4 +1,4 @@
-<aside class="w-48 md:block hidden bg-white shadow-lg h-full overflow-y-auto">
+<aside class="w-[300px] md:block hidden bg-white shadow-lg h-full overflow-y-auto">
     <div class="flex justify-center items-center">
         <img src="../../assets/images/north.png" class="w-[100px] h-[100px]">
     </div>
