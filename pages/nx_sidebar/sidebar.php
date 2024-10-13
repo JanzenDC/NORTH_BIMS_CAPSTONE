@@ -1,4 +1,8 @@
+
 <aside class="w-[300px] md:block hidden bg-white shadow-lg h-full overflow-y-auto">
+
+<aside id="sidebar" class="w-60 md:block hidden bg-white shadow-lg h-full overflow-y-auto">
+
     <div class="flex justify-center items-center">
         <img src="../../assets/images/north.png" class="w-[100px] h-[100px]">
     </div>
@@ -8,7 +12,7 @@
                 <a href="../nx_pages/dashboard.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Dashboard</a>
             </li>
             <li>
-                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
+                <a href="../nx_pages/user_profile.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
             </li>
             <li>
                 <button onclick="toggleSettings('officials-menu', 'officials-icon')" class="flex justify-between w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-200">
@@ -76,14 +80,31 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="logout.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
-            </li>
         </ul>
     </nav>
 </aside>
 
 <script>
+    function toggleProfileCard() {
+        const profileCard = document.getElementById('profile-card');
+        profileCard.classList.toggle('hidden');
+    }
+
+    // Optional: Close profile card if clicked outside
+    window.onclick = function(event) {
+        const profileCard = document.getElementById('profile-card');
+        if (!event.target.matches('.cursor-pointer')) {
+            if (!profileCard.classList.contains('hidden')) {
+                profileCard.classList.add('hidden');
+            }
+        }
+    };
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('hidden');
+    }
+
     function toggleSettings(menuId, iconId) {
         const settingsMenu = document.getElementById(menuId);
         const icon = document.getElementById(iconId);

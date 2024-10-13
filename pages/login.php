@@ -75,95 +75,94 @@ require_once "toaster_handler.php";
                             </div>
                             <p class="text-4xl text-center">SIGN UP</p>
                             <form id="multiStepForm" class="w-full mb-4 mt-3">
-                                <!-- Step 1 -->
-                                <div class="step active" id="step1">
-                                    <select name="id_type" id="id_type" onchange="toggleFileInput()" class="w-full p-2 border border-b-2 border-black rounded">
-                                        <option value="" disabled selected>Select ID type</option>
-                                        <option value="Driver's License">Driver's License</option>
-                                        <option value="UMID">UMID</option>
-                                        <option value="School ID">School ID</option>
-                                        <option value="National ID">National ID</option>
-                                        <option value="Philhealth">Philhealth ID</option>
-                                    </select>
-                                    <div class="input-field">
-                                        <p>ID:</p>
-                                        <div class="user-upload">
+                            <div class="step active" id="step1">
+                                <select name="id_type" id="id_type" onchange="toggleFileInput()" class="w-full p-2 border border-b-2 border-black rounded">
+                                    <option value="" disabled selected>Select ID type</option>
+                                    <option value="Driver's License">Driver's License</option>
+                                    <option value="UMID">UMID</option>
+                                    <option value="School ID">School ID</option>
+                                    <option value="National ID">National ID</option>
+                                    <option value="Philhealth">Philhealth ID</option>
+                                </select>
+                                <div class="input-field">
+                                    <p>ID:</p>
+                                    <div class="user-upload">
                                         <input type="file" id="id_file" name="id_file" accept="image/*" disabled onchange="handleFileChange()" class="border-b-2 border-black w-full border p-2 rounded"/>
                                         <input type="file" id="hidden_id_file" name="hidden_id_file" style="display: none;"/>
-                                        </div>
                                     </div>
-                                    <div class="checkbox-container">
-                                        <input type="checkbox" id="privacyCheckbox" required onchange="toggleNextButton()" />
-                                        <label for="privacyCheckbox">
+                                </div>
+                                <div class="checkbox-container">
+                                    <input type="checkbox" id="privacyCheckbox" name="privacyCheckbox" required onchange="toggleNextButton()" />
+                                    <label for="privacyCheckbox">
                                         Your privacy is important to us at Barangay Information Management System (BIMS). 
                                         We collect and use your personal information solely to provide and enhance our services, and 
                                         we safeguard it from unauthorized access. By using BIMS, you agree to our privacy policy.
-                                        </label>
-                                    </div>
-                                    <div class="flex justify-between mb-3">
-                                        <div></div>
-                                        <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(1)">Next</button>
-                                    </div>
+                                    </label>
                                 </div>
-
-                                <!-- Step 2 -->
-                                <div class="step" id="step2">
-                                    <p>Username</p>
-                                    <input type="text" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Create Username..." >
-                                    <p>Email</p>
-                                    <input type="email" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Enter Email..." >
-                                    <p>Password:</p>
-                                    <input type="password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Create Password..." >
-                                    <p>Confirm Password:</p>
-                                    <input type="password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Confirm Password..." >
-                                    <div class="flex justify-between mb-3">
-                                        <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(1)">Previous</button>
-                                        <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(2)">Next</button>
-                                    </div>
+                                <div class="flex justify-between mb-3">
+                                    <div></div>
+                                    <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(1)">Next</button>
                                 </div>
+                            </div>
 
-                                <!-- Step 3 -->
-                                <div class="step" id="step2">
-                                    <p>Phone Number:</p>
-                                    <input type="tel" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Enter Phone Number..." >
-                                    <p>Date of Birth:</p>
-                                    <input type="date" class="w-full mb-4 p-2 border border-b-2 border-black rounded" >
-                                    <p>Age:</p>
-                                    <input type="number" class="w-full mb-4 p-2 border border-b-2 border-black rounded" disabled>
-                                    <div class="flex justify-between mb-3">
-                                        <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(1)">Previous</button>
-                                        <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(2)">Next</button>
-                                    </div>
+                            <!-- Step 2 -->
+                            <div class="step" id="step2">
+                                <p>Username</p>
+                                <input type="text" name="username" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Create Username..." >
+                                <p>Email</p>
+                                <input type="email" name="email" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Enter Email..." >
+                                <p>Password:</p>
+                                <input type="password" name="password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Create Password..." >
+                                <p>Confirm Password:</p>
+                                <input type="password" name="confirm_password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Confirm Password..." >
+                                <div class="flex justify-between mb-3">
+                                    <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(1)">Previous</button>
+                                    <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(2)">Next</button>
                                 </div>
-                                <!-- STEP 4 -->
-                                <div class="step" id="step2">
+                            </div>
 
+                            <!-- Step 3 -->
+                            <div class="step" id="step3">
+                                <p>Phone Number:</p>
+                                <input type="tel" name="phone_number" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Enter Phone Number..." >
+                                <p>Date of Birth:</p>
+                                <input type="date" name="date_of_birth" class="w-full mb-4 p-2 border border-b-2 border-black rounded" >
+                                <p>Age:</p>
+                                <input type="number" name="age" class="w-full mb-4 p-2 border border-b-2 border-black rounded" disabled>
+                                <div class="flex justify-between mb-3">
+                                    <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(2)">Previous</button>
+                                    <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(3)">Next</button>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="step" id="step4">
                                 <div class="flex gap-2">
                                     <i class="fas fa-phone"></i>
                                     <input type="text" placeholder="Contact Number" name="contact" oninput="formatContactNumber(this)" maxlength="11" required class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
                                 </div>
                                 <div class="flex gap-2">
                                     <i class="fas fa-home"></i>
-                                    <input type="text" placeholder="House Number" name="houseNo" maxlength="4" class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
+                                    <input type="text" placeholder="House Number" name="house_no" maxlength="4" class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
                                 </div>
                                 <div class="flex gap-2">
                                     <i class="fas fa-street-view"></i>
                                     <div class="custom-select">
-                                    <select id="street" name="street" required class="w-full mb-4 p-2 border border-b-2 border-black rounded">
-                                        <option value="" disabled selected>Select Street</option>
-                                        <option value="Banaba">Banaba</option>
-                                        <option value="Narra">Narra</option>
-                                        <option value="Mulawin">Mulawin</option>
-                                        <option value="Kamagong">Kamagong</option>
-                                        <option value="Mabolo">Mabolo</option>
-                                        <option value="Calumpit">Calumpit</option>
-                                        <option value="Acasia">Acasia</option>
-                                    </select>
+                                        <select id="street" name="street" required class="w-full mb-4 p-2 border border-b-2 border-black rounded">
+                                            <option value="" disabled selected>Select Street</option>
+                                            <option value="Banaba">Banaba</option>
+                                            <option value="Narra">Narra</option>
+                                            <option value="Mulawin">Mulawin</option>
+                                            <option value="Kamagong">Kamagong</option>
+                                            <option value="Mabolo">Mabolo</option>
+                                            <option value="Calumpit">Calumpit</option>
+                                            <option value="Acasia">Acasia</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="flex gap-2">
                                     <i class="fas fa-home"></i>
-                                    <input type="text" placeholder="Barangay" name="brgy" value="North Poblacion" readonly class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
+                                    <input type="text" placeholder="Barangay" name="barangay" value="North Poblacion" readonly class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
                                 </div>
                                 <div class="flex gap-2">
                                     <i class="fas fa-home"></i>
@@ -174,15 +173,15 @@ require_once "toaster_handler.php";
                                     <input type="text" placeholder="Province" name="province" value="Nueva Ecija" readonly class="w-full mb-4 p-2 border border-b-2 border-black rounded" />
                                 </div>
 
-                                    <div class="flex justify-between mb-3">
-                                        <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(2)">Previous</button>
-                                    </div>
-                                    <button type="submit" class="bg-green-500 w-full text-center p-2 text-white font-bold">Register</button>
+                                <div class="flex justify-between mb-3">
+                                    <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(3)">Previous</button>
                                 </div>
+                                <button type="submit" class="bg-green-500 w-full text-center p-2 text-white font-bold">Register</button>
+                            </div>
 
+                            <p class="text-center mt-3">Already have an account? <span class="font-bold cursor-pointer" id="showLogin">Login</span></p>
+                        </form>
 
-                                <p class="text-center mt-3">Already have an account? <span class="font-bold cursor-pointer" id="showLogin">Login</span></p>
-                            </form>
                         </div>
                     </div>
                 </div>

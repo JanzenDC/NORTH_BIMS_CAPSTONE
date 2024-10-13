@@ -3,7 +3,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user'])) {
-    header("Location: login.php"); // Redirect to login if not logged in
+    header("Location: ../login.php"); 
     exit();
 }
 $user = $_SESSION['user'];
@@ -162,6 +162,7 @@ $user = $_SESSION['user'];
                 </div>
               </div>
             </div>
+
           </div>
 
           <!--Upcomming Events-->
@@ -371,7 +372,12 @@ $user = $_SESSION['user'];
 
 
             </div>
+
+
             
+        </main>
+    </div>
+
 
             
             
