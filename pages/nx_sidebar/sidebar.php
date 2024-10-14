@@ -1,79 +1,78 @@
-<aside id="sidebar" class="w-[300px] md:block hidden bg-white shadow-lg h-full overflow-y-auto">
-
+<aside id="sidebar" class="w-[300px] md:block hidden bg-green-950 text-white shadow-lg h-full overflow-y-auto ">
     <div class="flex justify-center items-center">
         <img src="../../assets/images/north.png" class="w-[100px] h-[100px]">
     </div>
     <nav class="mt-6">
         <ul>
             <li>
-                <a href="../nx_pages/dashboard.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Dashboard</a>
+                <a href="../nx_pages/dashboard.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'dashboard' ? 'active:bg-gray-400' : ''; ?>">Dashboard</a>
             </li>
             <li>
-                <a href="../nx_pages/user_profile.php" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Profile</a>
+                <a href="../nx_pages/user_profile.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'user_profile' ? 'active:bg-gray-400' : ''; ?>">Profile</a>
             </li>
             <li>
-                <button onclick="toggleSettings('officials-menu', 'officials-icon')" class="flex justify-between w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-200">
+                <button onclick="toggleSettings('officials-menu', 'officials-icon')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'barangay_officials' ? 'active:bg-gray-400' : ''; ?>">
                     Barangay Officials
                     <span id="officials-icon"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
                 <ul id="officials-menu" class="hidden ml-4 mt-2">
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Barangay Official</a>
+                        <a href="../nx_pages/BarangayOfiicialPage.php?page=barangay_official" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'barangay_official' ? 'active:bg-green-400 text-white' : ''; ?>">Barangay Official</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Sanguniang Kabataan</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'sanguniang_kabataan' ? 'active:bg-green-400 text-white' : ''; ?>">Sanguniang Kabataan</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Purok Leader</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'purok_leader' ? 'active:bg-green-400 text-white' : ''; ?>">Purok Leader</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Barangay Police</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'barangay_police' ? 'active:bg-green-400 text-white' : ''; ?>">Barangay Police</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">BHW</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'bhw' ? 'active:bg-green-400 text-white' : ''; ?>">BHW</a>
                     </li>
                 </ul>
             </li>
             <li>
-                <button onclick="toggleSettings('settings-menu-1', 'settings-icon-1')" class="flex justify-between w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-200">
+                <button onclick="toggleSettings('settings-menu-1', 'settings-icon-1')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black">
                     Residents
                     <span id="settings-icon-1"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
                 <ul id="settings-menu-1" class="hidden ml-4 mt-2">
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Residents</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Residents</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Head of the Family</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Head of the Family</a>
                     </li>
                 </ul>
             </li>
             <li>
-                <button onclick="toggleSettings('settings-menu-2', 'settings-icon-2')" class="flex justify-between w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-200">
+                <button onclick="toggleSettings('settings-menu-2', 'settings-icon-2')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black">
                     Barangay Certificates
                     <span id="settings-icon-2"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
                 <ul id="settings-menu-2" class="hidden ml-4 mt-2">
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Clearance </a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Clearance</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Indigency</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Indigency</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Residency</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Residency</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Business Permit</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Business Permit</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Livestock Sale</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Livestock Sale</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Deed of Sale for Land</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Deed of Sale for Land</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 text-gray-600 hover:bg-gray-300">Vehicle Deed of Sale </a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">Vehicle Deed of Sale</a>
                     </li>
                 </ul>
             </li>
@@ -81,37 +80,46 @@
     </nav>
 </aside>
 
-<script>
-    function toggleProfileCard() {
-        const profileCard = document.getElementById('profile-card');
-        profileCard.classList.toggle('hidden');
+<style>
+    .active\:bg-gray-400 {
+        background-color: #4B5563; /* Adjust this color as needed */
     }
+    .active\:bg-green-400 {
+        background-color: #38a169; /* Adjust this color for active items */
+    }
+</style>
 
-    // Optional: Close profile card if clicked outside
-    window.onclick = function(event) {
-        const profileCard = document.getElementById('profile-card');
-        if (!event.target.matches('.cursor-pointer')) {
-            if (!profileCard.classList.contains('hidden')) {
-                profileCard.classList.add('hidden');
+
+    <script>
+        function toggleProfileCard() {
+            const profileCard = document.getElementById('profile-card');
+            profileCard.classList.toggle('hidden');
+        }
+
+        window.onclick = function(event) {
+            const profileCard = document.getElementById('profile-card');
+            if (!event.target.matches('.cursor-pointer')) {
+                if (!profileCard.classList.contains('hidden')) {
+                    profileCard.classList.add('hidden');
+                }
+            }
+        };
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+
+        function toggleSettings(menuId, iconId) {
+            const settingsMenu = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
+
+            if (settingsMenu.classList.contains('hidden')) {
+                settingsMenu.classList.remove('hidden');
+                icon.innerHTML = '<i class="fa-solid fa-caret-down"></i>'; // Change to down icon
+            } else {
+                settingsMenu.classList.add('hidden');
+                icon.innerHTML = '<i class="fa-solid fa-caret-left"></i>'; // Change back to left icon
             }
         }
-    };
-
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('hidden');
-    }
-
-    function toggleSettings(menuId, iconId) {
-        const settingsMenu = document.getElementById(menuId);
-        const icon = document.getElementById(iconId);
-
-        if (settingsMenu.classList.contains('hidden')) {
-            settingsMenu.classList.remove('hidden');
-            icon.innerHTML = '<i class="fa-solid fa-caret-down"></i>'; // Change to down icon
-        } else {
-            settingsMenu.classList.add('hidden');
-            icon.innerHTML = '<i class="fa-solid fa-caret-left"></i>'; // Change back to left icon
-        }
-    }
-</script>
+    </script>
