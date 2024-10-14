@@ -1,6 +1,8 @@
 <?php
 session_start();
 require '../db_connect.php';
+$currentPage = 'dashboard'; // Change this value based on the current page
+
 // Check if the user is logged in
 if (!isset($_SESSION['user'])) {
     header("Location: ../login.php"); 

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require '../db_connect.php';
-// Check if the user is logged in
+$currentPage = 'user_profile'; 
 if (!isset($_SESSION['user'])) {
     header("Location: ../login.php"); // Redirect to login if not logged in
     exit();
