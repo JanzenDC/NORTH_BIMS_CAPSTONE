@@ -1,3 +1,11 @@
+<?php // DO NOT REMOVE THIS LINE BECAUSE THIS IS THE MAIN DYNAMIC SIDEBAR SO IT WILL REDIRECT TO LOGIN IF THE USER IS NOT APPROVE
+if ($_SESSION['user']['isApproved'] == 0) {
+    $_SESSION['toastr_message'] = 'Your account need approval from admin.';
+    $_SESSION['toastr_type'] = 'error';
+    header("Location: ../login.php"); // Redirect if not approved
+    exit();
+}
+?>
 <aside id="sidebar" class="w-[300px] md:block hidden bg-green-950 text-white shadow-lg h-full overflow-y-auto ">
     <div class="flex justify-center items-center">
         <img src="../../assets/images/north.png" class="w-[100px] h-[100px]">
@@ -48,13 +56,13 @@
                 </ul>
             </li>
             <li>
-                <button onclick="toggleSettings('settings-menu-1', 'settings-icon-1')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black">
+                <button onclick="toggleSettings('settings-menu-1', 'settings-icon-1')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'residents' ? 'active:bg-gray-400' : ''; ?>"">
                     <i class="fa-solid fa-users"></i> Residents
                     <span id="settings-icon-1"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
                 <ul id="settings-menu-1" class="hidden ml-4 mt-2">
                     <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
+                        <a href="../nx_pages/ResidentPage.php?page=residents" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
                             <i class="fa-solid fa-user-friends"></i> Residents
                         </a>
                     </li>
