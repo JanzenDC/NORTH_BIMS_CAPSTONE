@@ -1,99 +1,107 @@
 <?php
-require "../../db_connect.php";
-header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
+header("Access-Control-Allow-Headers: Content-Type");
+header('Content-Type: application/json');
 
-// Determine the action based on POST data
-$action = $_POST['action'] ?? '';
+require "../../db_connect.php"; // Ensure this file establishes a MySQLi connection
 
-if ($action === 'add') {
-    // Adding an official
-    $fname = $_POST['first_name'];
-    $mname = $_POST['middle_name'];
-    $lname = $_POST['last_name'];
-    $position = $_POST['position'];
-    $contact = $_POST['contact'];
-    $bday = $_POST['bday'];
-    
-    // Handle image upload
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
-        $image = $_FILES['image'];
-        $imageName = uniqid() . '-' . basename($image['name']);
-        $targetPath = "../../assets/images/pfp/" . $imageName;
+$response = [
+    'success' => false,
+    'message' => '',
+    'data' => null,
+];
 
-        // Move the uploaded file to the target directory
-        if (move_uploaded_file($image['tmp_name'], $targetPath)) {
-            $sql = "INSERT INTO tblofficial (fname, mname, lname, position, contact, bday, image) VALUES ('$fname', '$mname', '$lname', '$position', '$contact', '$bday', '$imageName')";
-        } else {
-            echo json_encode(["status" => "error", "message" => "Failed to upload image."]);
-            exit;
-        }
-    } else {
-        // No image uploaded, set default image
-        $imageName = 'default.png';
-        $sql = "INSERT INTO tblofficial (fname, mname, lname, position, contact, bday, image) VALUES ('$fname', '$mname', '$lname', '$position', '$contact', '$bday', '$imageName')";
-    }
-    
-    // Execute the insert query
-    if (mysqli_query($conn, $sql)) {
-        echo json_encode(["status" => "success", "message" => "Official added successfully!"]);
-    } else {
-        echo json_encode(["status" => "error", "message" => "Failed to add official."]);
-    }
+$action = $_GET['action'] ?? '';
 
-} elseif ($action === 'update') {
-    // Updating an official
-    $id = $_POST['id'];
-    $fname = $_POST['first_name'];
-    $mname = $_POST['middle_name'];
-    $lname = $_POST['last_name'];
-    $position = $_POST['position'];
-    $contact = $_POST['contact'];
-    $bday = $_POST['bday'];
-    
-    // Check if a new image is uploaded
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
-        $image = $_FILES['image'];
-        $imageName = uniqid() . '-' . basename($image['name']);
-        $targetPath = "../../assets/images/pfp/" . $imageName;
+switch ($action) {
+    case 'create':
+        // Create
+        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
+        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
+        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
+        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
+        $position = mysqli_real_escape_string($conn, $_POST['position']);
+        $contact = mysqli_real_escape_string($conn, $_POST['contact']);
+        $bday = mysqli_real_escape_string($conn, $_POST['bday']);
+        $image = $_FILES['image']['name'];
 
-        // Move the uploaded file to the target directory
-        if (move_uploaded_file($image['tmp_name'], $targetPath)) {
-            $sql = "UPDATE tblofficial SET fname='$fname', mname='$mname', lname='$lname', position='$position', contact='$contact', bday='$bday', image='$imageName' WHERE id='$id'";
-            
-            if (mysqli_query($conn, $sql)) {
-                echo json_encode(["status" => "success", "message" => "Official updated successfully!"]);
+        if (move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image")) {
+            $query = "INSERT INTO tblofficial (fname, mname, lname, suffix, position, contact, bday, image) 
+                      VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
+            if (mysqli_query($conn, $query)) {
+                $response['success'] = true;
+                $response['message'] = "Official created successfully.";
             } else {
-                echo json_encode(["status" => "error", "message" => "Failed to update official."]);
+                $response['message'] = "Error creating official: " . mysqli_error($conn);
             }
         } else {
-            echo json_encode(["status" => "error", "message" => "Failed to upload image."]);
+            $response['message'] = "Error uploading image.";
         }
-    } else {
-        // No new image uploaded, update other fields
-        $sql = "UPDATE tblofficial SET fname='$fname', mname='$mname', lname='$lname', position='$position', contact='$contact', bday='$bday' WHERE id='$id'";
-        
-        if (mysqli_query($conn, $sql)) {
-            echo json_encode(["status" => "success", "message" => "Official updated successfully!"]);
+        break;
+
+    case 'get':
+        // Read
+        $id = (int)$_GET['id'];
+        $query = "SELECT * FROM tblofficial WHERE id = $id";
+        $result = mysqli_query($conn, $query);
+        $official = mysqli_fetch_assoc($result);
+        if ($official) {
+            $response['success'] = true;
+            $response['data'] = $official;
         } else {
-            echo json_encode(["status" => "error", "message" => "Failed to update official."]);
+            $response['message'] = "Official not found.";
         }
-    }
+        break;
 
-} elseif ($action === 'delete') {
-    // Deleting an official
-    $id = $_POST['id'];
+    case 'update':
+        // Update
+        $id = (int)$_POST['id'];
+        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
+        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
+        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
+        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
+        $position = mysqli_real_escape_string($conn, $_POST['position']);
+        $contact = mysqli_real_escape_string($conn, $_POST['contact']);
+        $bday = mysqli_real_escape_string($conn, $_POST['bday']);
+        $image = $_FILES['image']['name'] ? $_FILES['image']['name'] : '';
 
-    $sql = "DELETE FROM tblofficial WHERE id='$id'";
+        if ($image) {
+            move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image");
+            $query = "UPDATE tblofficial SET fname='$fname', mname='$mname', lname='$lname', suffix='$suffix', 
+                      position='$position', contact='$contact', bday='$bday', image='$image' WHERE id=$id";
+        } else {
+            $query = "UPDATE tblofficial SET fname='$fname', mname='$mname', lname='$lname', suffix='$suffix', 
+                      position='$position', contact='$contact', bday='$bday' WHERE id=$id";
+        }
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Official updated successfully.";
+        } else {
+            $response['success'] = false;
+            $response['message'] = "Error updating official: " . mysqli_error($conn);
+            // error_log("SQL Error: " . mysqli_error($conn));
+        }
+        break;
 
-    if (mysqli_query($conn, $sql)) {
-        echo json_encode(["status" => "success", "message" => "Official deleted successfully!"]);
-    } else {
-        echo json_encode(["status" => "error", "message" => "Failed to delete official."]);
-    }
+    case 'delete':
+        // Delete
+        $id = (int)$_GET['id'];
+        $query = "DELETE FROM tblofficial WHERE id = $id";
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Official deleted successfully.";
+        } else {
+            $response['message'] = "Error deleting official: " . mysqli_error($conn);
+        }
+        break;
 
-} else {
-    echo json_encode(["status" => "error", "message" => "Invalid action."]);
+    default:
+        $response['message'] = "Invalid action.";
 }
 
+// Return JSON response
+echo json_encode($response);
 mysqli_close($conn);
 ?>
