@@ -14,6 +14,22 @@ $result = $conn->query($sql);
 
 $sqlActivities = "SELECT * FROM tblactivity ORDER BY dateofactivity ASC LIMIT 5";
 $resultActivities = $conn->query($sqlActivities);
+$query = "SELECT COUNT(*) as count FROM tblregistered_account WHERE isApproved = 0";
+$results = $conn->query($query);
+$row = $results->fetch_assoc();
+$error = '';
+if ($row['count'] > 0) {
+    $count = $row['count'];
+    $error = '
+    <div class="bg-red-300 w-full flex justify-between text-red-800 p-4 border border-red-800 rounded-lg">
+        <div>
+            There ' . ($count === 1 ? 'is' : 'are') . " $count account" . ($count === 1 ? '' : 's') . " that need approval. Click <a class='font-bold cursor-pointer' href='ResidentPage.php?page=residents'>here</a> to view.
+        </div>
+        <div>
+            <i class='fa-solid fa-x'></i>
+        </div>
+    </div>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +52,12 @@ $resultActivities = $conn->query($sqlActivities);
             include_once("../nx_sidebar/sidebar.php");
         ?>
       <!-- Main Content -->
-      <main class="flex-1 p-6 pb- overflow-y-auto mb-6">
+
+ 
+
+      <main class="flex-1 p-6 overflow-y-auto mb-6">
+        <?= $error ?>
+
         <h1 class="text-2xl card-label font-bold">
           Welcome,
           <?php echo htmlspecialchars($_SESSION['user']['fname']); ?>!

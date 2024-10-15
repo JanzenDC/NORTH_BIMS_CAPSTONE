@@ -1,14 +1,13 @@
 <?php
-$treeView = 'barangay_official'; // Change this value based on the current page
+$treeView = 'residents'; // Change this value based on the current page
 $sqls = "SELECT 
-            id, 
-            CONCAT_WS(' ', fname, mname, lname, suffix) AS full_name, 
-            position, 
-            contact, 
-            bday, 
+            *,
+            CONCAT_WS(' ', fname, mname, lname, suffix) AS full_name,
             image 
         FROM 
-            tblofficial";
+            tblregistered_account
+        ORDER BY 
+            isApproved DESC";
 
 $resuktSqks = $conn->query($sqls);
 
@@ -27,40 +26,49 @@ $conn->close();
 ?>
 
 <div class="p-3 w-full bg-white">
-    <h1 class="text-3xl font-bold">Barangay Officials</h1>
-    <hr>
-    <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Official</button>
+    <h1 class="text-3xl font-bold">Residents</h1>
+    <hr class="mt-3 mb-5">
+    <!-- <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Official</button> -->
 
 
-    <table id="officials-table" class="display w-full">
+    <table id="officials-table" style="width: 100%;" class="cell-border hover ,t-">
         <thead>
             <tr>
                 <th>Image</th>
                 <th>Full Name</th>
-                <th>Position</th>
+                <th>Email</th>
                 <th>Contact</th>
                 <th>Birthday</th>
+                <th>Approved</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($data as $official): ?>
-                <tr data-id="<?= $official['id'] ?>">
-                    <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
-                    <td><?= htmlspecialchars($official['full_name']) ?></td>
-                    <td><?= htmlspecialchars($official['position']) ?></td>
-                    <td><?= htmlspecialchars($official['contact']) ?></td>
-                    <td><?= htmlspecialchars($official['bday']) ?></td>
-                    <td>
-                        <button class="text-yellow-500" title="Edit" onclick="editRecord(<?= $official['id'] ?>)">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="text-red-500" title="Delete" onclick="deleteRecord(<?= $official['id'] ?>)">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
+        <?php foreach ($data as $official): ?> 
+            <tr data-id="<?= $official['id'] ?>">
+                <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
+                <td><?= htmlspecialchars($official['full_name']) ?></td>
+                <td><?= htmlspecialchars($official['email']) ?></td>
+                <td><?= htmlspecialchars($official['contact']) ?></td>
+                <td><?= htmlspecialchars($official['bday']) ?></td>
+                <td>
+                    <input type="checkbox" class="peer sr-only opacity-0" id="toggle-<?= $official['id'] ?>" <?= $official['isApproved'] ? 'checked' : '' ?> onclick="event.preventDefault(); toggleApproval(<?= $official['id'] ?>, !this.checked)" />
+                    <label for="toggle-<?= $official['id'] ?>" class="relative flex h-6 w-11 cursor-pointer items-center rounded-full bg-gray-400 transition-colors duration-300 peer-checked:bg-green-500" onclick="event.preventDefault(); event.stopPropagation(); toggleApproval(<?= $official['id'] ?>, !this.previousElementSibling.checked)">
+                        <span class="absolute h-5 w-5 rounded-full bg-white shadow transition-transform duration-300 <?= $official['isApproved'] ? 'translate-x-5' : 'translate-x-0' ?>"></span>
+                        <span class="sr-only">Enable</span>
+                    </label>
+                </td>
+                <td>
+                    <!-- <button class="text-yellow-500" title="Edit" onclick="editRecord(<?= $official['id'] ?>)">
+                        <i class="fas fa-edit"></i>
+                    </button> -->
+                    <button class="text-red-500" title="Delete" onclick="deleteRecord(<?= $official['id'] ?>)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+
         </tbody>
     </table>
 </div>
@@ -127,7 +135,8 @@ $conn->close();
 $(document).ready(function() {
     const table = $('#officials-table').DataTable({
         pageLength: 4,
-        lengthMenu: [4, 10, 25, 50]
+        lengthMenu: [4, 10, 25, 50],
+        scrollX: true
     });
 });
 function openModal(modalId) {
@@ -159,37 +168,37 @@ function closeModal(modalId) {
     // Initialize to show the first tab
     showTab('personalInfo');
 // CRUD
-function editRecord(id) {
+// function editRecord(id) {
     
-    $.get('nx_query/manage_officials.php?action=get&id=' + id, function(response) {
-        if (response.success) {
-            const official = response.data;
-            document.getElementById('editId').value = official.id;
-            document.getElementById('editFname').value = official.fname;
-            document.getElementById('editMname').value = official.mname;
-            document.getElementById('editLname').value = official.lname;
-            document.getElementById('editSuffix').value = official.suffix;
-            document.getElementById('editPosition').value = official.position;
-            document.getElementById('editContact').value = official.contact;
-            document.getElementById('editBday').value = official.bday;
+//     $.get('nx_query/manage_officials.php?action=get&id=' + id, function(response) {
+//         if (response.success) {
+//             const official = response.data;
+//             document.getElementById('editId').value = official.id;
+//             document.getElementById('editFname').value = official.fname;
+//             document.getElementById('editMname').value = official.mname;
+//             document.getElementById('editLname').value = official.lname;
+//             document.getElementById('editSuffix').value = official.suffix;
+//             document.getElementById('editPosition').value = official.position;
+//             document.getElementById('editContact').value = official.contact;
+//             document.getElementById('editBday').value = official.bday;
 
-            // Set up the image preview
-            const imagePreview = document.getElementById('editImagePreview');
-            imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
-            imagePreview.style.display = 'block'; // Show the image preview
+//             // Set up the image preview
+//             const imagePreview = document.getElementById('editImagePreview');
+//             imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
+//             imagePreview.style.display = 'block'; // Show the image preview
 
-            openModal('editModal');
-        } else {
-            swal("Error: " + response.message, {
-                icon: "error",
-            });
-        }
-    }).fail(function() {
-        swal("Error retrieving record.", {
-            icon: "error",
-        });
-    });
-}
+//             openModal('editModal');
+//         } else {
+//             swal("Error: " + response.message, {
+//                 icon: "error",
+//             });
+//         }
+//     }).fail(function() {
+//         swal("Error retrieving record.", {
+//             icon: "error",
+//         });
+//     });
+// }
 
 function deleteRecord(id) {
     swal({
@@ -201,7 +210,7 @@ function deleteRecord(id) {
     }).then((willDelete) => {
         if (willDelete) {
             $.ajax({
-                url: 'nx_query/manage_officials.php?action=delete&id=' + id,
+                url: 'nx_query/manage_residents.php?action=delete&id=' + id,
                 type: 'DELETE',
                 success: function(response) {
                     if (response.success) {
@@ -226,106 +235,58 @@ function deleteRecord(id) {
         }
     });
 }
-function updateRecord() {
-    const id = document.getElementById('editId').value;
-    const fname = document.getElementById('editFname').value;
-    const mname = document.getElementById('editMname').value;
-    const lname = document.getElementById('editLname').value;
-    const suffix = document.getElementById('editSuffix').value;
-    const position = document.getElementById('editPosition').value;
-    const contact = document.getElementById('editContact').value;
-    const bday = document.getElementById('editBday').value;
 
-    // Create FormData object for file uploads if needed
-    const formData = new FormData();
-    formData.append('id', id);
-    formData.append('fname', fname);
-    formData.append('mname', mname);
-    formData.append('lname', lname);
-    formData.append('suffix', suffix);
-    formData.append('position', position);
-    formData.append('contact', contact);
-    formData.append('bday', bday);
-    
-    // If you have an image to upload
-    const imageInput = document.getElementById('editImage'); // Assuming you have an input for the image
-    if (imageInput.files.length > 0) {
-        formData.append('image', imageInput.files[0]);
+
+function toggleApproval(id, isApproved) {
+  // Prevent the default checkbox behavior
+  event.preventDefault();
+  
+  const checkbox = document.getElementById(`toggle-${id}`);
+  const label = checkbox.nextElementSibling;
+
+  swal({
+    title: "Are you sure?",
+    text: isApproved
+      ? "You will approve this user!"
+      : "You will disapprove this user!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then((willProceed) => {
+    if (willProceed) {
+      $.ajax({
+        url: "nx_query/manage_residents.php?action=update&id=" + id,
+        type: "POST",
+        contentType: "application/json", // Set content type to JSON
+        data: JSON.stringify({ isApproved: isApproved }), // Send data as JSON
+        success: function (response) {
+          if (response.success) {
+            // Update the visual state only after successful server response
+            checkbox.checked = isApproved;
+            label.classList.toggle('peer-checked:bg-green-500', isApproved);
+            label.querySelector('span').classList.toggle('translate-x-5', isApproved);
+            label.querySelector('span').classList.toggle('translate-x-0', !isApproved);
+            
+            swal("Status updated successfully!", {
+              icon: "success",
+            });
+          } else {
+            swal("Error: " + response.message, {
+              icon: "error",
+            });
+          }
+        },
+        error: function () {
+          swal("Error updating record.", {
+            icon: "error",
+          });
+        },
+      });
+    } else {
+      // Reset the checkbox state if the user cancels the action
+      checkbox.checked = !isApproved;
     }
-    console.log('FormData:', Object.fromEntries(formData));
-
-
-    $.ajax({
-        url: 'nx_query/manage_officials.php?action=update',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            if (response.success) {
-                swal("Record updated successfully!", {
-                    icon: "success",
-                }).then(() => {
-                    
-                    closeModal('editModal');
-                });
-                location.reload();
-            } else {
-                swal("Error: " + response.message, {
-                    icon: "error",
-                });
-                location.reload();
-            }
-        },
-        error: function() {
-            swal("Error updating record.", {
-                icon: "error",
-            });
-        }
-    });
-}
-function addRecord() {
-    const formData = new FormData(document.getElementById('createForm'));
-
-    $.ajax({
-        url: 'nx_query/manage_officials.php?action=create',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            console.log('Full server response:', response);
-            try {
-                const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                if (jsonResponse.success) {
-                    swal("Official added successfully!", {
-                        icon: "success",
-                    }).then(() => {
-                        location.reload();
-                        closeModal('createModal');
-                    });
-                } else {
-                    swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                        icon: "error",
-                    });
-                }
-            } catch (e) {
-                console.error('Error parsing server response:', e);
-                console.log('Raw server response:', response);
-                swal("Server Error", "The server encountered an error. Please check the server logs.", {
-                    icon: "error",
-                });
-                
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX error:', status, error);
-            console.log('Response Text:', xhr.responseText);
-            swal("Error adding record", "Please check the console for more details.", {
-                icon: "error",
-            });
-        }
-    });
+  });
 }
 
 </script>
