@@ -36,3 +36,7 @@
  
 <!-- ICONS -->
 <link rel="icon" href="../assets/images/north.ico" type="image/x-icon">
+
+<!--CHART.JS-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+

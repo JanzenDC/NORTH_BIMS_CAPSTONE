@@ -36,7 +36,7 @@ $resultActivities = $conn->query($sqlActivities);
             include_once("../nx_sidebar/sidebar.php");
         ?>
       <!-- Main Content -->
-      <main class="flex-1 p-6 overflow-y-auto">
+      <main class="flex-1 p-6 pb- overflow-y-auto mb-6">
         <h1 class="text-2xl card-label font-bold">
           Welcome,
           <?php echo htmlspecialchars($_SESSION['user']['fname']); ?>!
@@ -54,7 +54,7 @@ $resultActivities = $conn->query($sqlActivities);
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 mb-[80px]">
           <!-- Barangay Officials Card -->
             <div class="bg-white p-4 shadow rounded-lg shadow-md">
                 <h2 class="font-bold text-2xl card-label">Barangay Officials</h2>
@@ -142,30 +142,43 @@ $resultActivities = $conn->query($sqlActivities);
                 </div>
             </div>
 
+        <!--Total Residents in Barangay Chart-->
+            <div class="bg-white p-4 shadow rounded-lg shadow-md">
+              <h2 class="font-bold text-2xl card-label">
+                Total Residents in Barangay
+              </h2>
+              <div class="border-t-2 line-border h-1 my-1"></div>
+
+              <div
+                class="text-center mt-4 scroll-bar"
+                style="max-height: 290px; overflow-y: auto"
+              >
+                <div>
+                  <canvas id="barangayChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+              <!--Total Blotter Reports per Month-->
+            <div class="bg-white p-4 shadow rounded-lg shadow-md">
+              <h2 class="font-bold text-2xl card-label">
+                Total Blotter Reports per Month
+              </h2>
+              <div class="border-t-2 line-border h-1 my-1"></div>
+
+              <div
+                class="text-center mt-4 scroll-bar"
+                style="max-height: 290px; overflow-y: auto"
+              >
+                <div>
+                  <canvas id="blotterChart"></canvas>
+                </div>
+              </div>
+            </div>
+
         </main>
     </div>
 
-
-            
-            
-            
-          </div>
-
-          <!--Total Residents in Barangay Chart-->
-          <div class="bg-white p-4 shadow rounded-lg shadow-md">
-            <h2 class="font-bold text-2xl card-label">
-              Total Residents in Barangay
-            </h2>
-            <div class="border-t-2 line-border h-1 my-1"></div>
-
-            <div
-              class="text-center mt-4 scroll-bar"
-              style="max-height: 290px; overflow-y: auto"
-            ></div>
-          </div>
-        </div>
-      </main>
-    </div>
   </body>
 </html>
 
@@ -234,4 +247,120 @@ color:#30c758;
         updateDate();
         // Set an interval to update the date every second
         setInterval(updateDate, 1000);
+
+// ============Chart Js=============
+
+    // Utility object and functions
+    const Utils = {
+      numbers: ({ count, min, max }) => Array.from({ length: count }, () => Math.floor(Math.random() * (max - min + 1)) + min),
+      CHART_COLORS: {
+        blue: 'rgb(54, 162, 235)',  // Blue color for the residents chart
+        red: 'rgb(255, 99, 132)'    // Red color for the blotter reports chart
+      },
+      transparentize: (color, opacity) => color.replace('rgb', 'rgba').replace(')', `, ${opacity})`)
+    };
+
+    // Chart Js for total resident of the barangay
+    const residentData = {
+      labels: ['2018', '2019', '2020', '2021', '2022', '2023'],  // Years as labels
+      datasets: [
+        {
+          label: 'Total Residents',
+          data: Utils.numbers({ count: 6, min: 2000, max: 5000 }), // Resident count per year
+          borderColor: Utils.CHART_COLORS.blue,  // Blue line color
+          backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),  // Transparent blue fill
+          pointStyle: 'circle',
+          pointRadius: 10,
+          pointHoverRadius: 15,
+          fill: 'start'  // Fill the area under the line
+        }
+      ]
+    };
+
+    const residentConfig = {
+      type: 'line',
+      data: residentData,
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Total Residents in Barangay (2018-2023)'
+          }
+        },
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'Number of Residents'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Year'
+            }
+          }
+        }
+      }
+    };
+
+    // Create the residents chart
+    const barangayChart = new Chart(
+      document.getElementById('barangayChart'),
+      residentConfig
+    );
+
+    // Chart Js for total blotter reports per month
+    const blotterData = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],  // Months as labels
+      datasets: [
+        {
+          label: 'Blotter Reports',
+          data: Utils.numbers({ count: 12, min: 10, max: 100 }),  // Random blotter report numbers per month
+          backgroundColor: Utils.CHART_COLORS.red,  // Red color for the bars
+          borderColor: Utils.CHART_COLORS.red,  // Red border for the bars
+          borderWidth: 1
+        }
+      ]
+    };
+
+    const blotterConfig = {
+      type: 'bar',  // Bar chart type
+      data: blotterData,
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Total Blotter Reports per Month'
+          },
+          legend: {
+            display: false  // Disable the legend if not needed
+          }
+        },
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'Number of Reports'
+            },
+            beginAtZero: true
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Month'
+            }
+          }
+        }
+      }
+    };
+
+    // Create the blotter chart
+    const blotterChart = new Chart(
+      document.getElementById('blotterChart'),
+      blotterConfig
+    );
+
 </script>
