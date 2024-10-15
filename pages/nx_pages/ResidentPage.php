@@ -44,7 +44,7 @@ if (!in_array($page, $valid_pages)) {
         ?>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6 h-dvh overflow-auto">
+        <main class="flex-1 p-6 overflow-y-auto mb-16">
              <?php 
             // Include the corresponding page content
             include_once("../nx_pages/nx_residents/{$page}.php"); 

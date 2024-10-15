@@ -10,7 +10,7 @@ if ($_SESSION['user']['isApproved'] == 0) {
     <div class="flex justify-center items-center">
         <img src="../../assets/images/north.png" class="w-[100px] h-[100px]">
     </div>
-    <nav class="mt-6">
+    <nav class="mt-6 mb-24">
         <ul>
             <li>
                 <a href="../nx_pages/dashboard.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'dashboard' ? 'active:bg-gray-400' : ''; ?>">
@@ -27,29 +27,29 @@ if ($_SESSION['user']['isApproved'] == 0) {
                     <i class="fa-solid fa-users"></i> Barangay Officials
                     <span id="officials-icon"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
-                <ul id="officials-menu" class="hidden ml-4 mt-2">
+                <ul id="officials-menu" class="hidden">
                     <li>
-                        <a href="../nx_pages/BarangayOfiicialPage.php?page=barangay_official" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'barangay_official' ? 'active:bg-green-400 text-white' : ''; ?>">
+                        <a href="../nx_pages/BarangayOfiicialPage.php?page=barangay_official" class="block px-4 py-2 hover:bg-gray-300 ps-16 hover:text-black <?php echo $treeView == 'barangay_official' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-user-tie"></i> Barangay Official
                         </a>
                     </li>
                     <li>
-                        <a href="../nx_pages/BarangayOfiicialPage.php?page=sk" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'sanguniang_kabataan' ? 'active:bg-green-400 text-white' : ''; ?>">
+                        <a href="../nx_pages/BarangayOfiicialPage.php?page=sk" class="block px-4 py-2 hover:bg-gray-300 ps-16 hover:text-black <?php echo $treeView == 'sk' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-child"></i> Sanguniang Kabataan
                         </a>
                     </li>
                     <li>
-                        <a href="../nx_pages/BarangayOfiicialPage.php?page=purok_leader" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'purok_leader' ? 'active:bg-green-400 text-white' : ''; ?>">
+                        <a href="../nx_pages/BarangayOfiicialPage.php?page=purok_leader" class="block px-4 py-2 hover:bg-gray-300 ps-16 hover:text-black <?php echo $treeView == 'purok_leader' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-user-ninja"></i> Purok Leader
                         </a>
                     </li>
                     <li>
-                        <a href="../nx_pages/BarangayOfiicialPage.php?page=barangay_police" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'barangay_police' ? 'active:bg-green-400 text-white' : ''; ?>">
+                        <a href="../nx_pages/BarangayOfiicialPage.php?page=barangay_police" class="block px-4 py-2 hover:bg-gray-300 ps-16 hover:text-black <?php echo $treeView == 'barangay_police' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-shield-alt"></i> Barangay Police
                         </a>
                     </li>
                     <li>
-                        <a href="../nx_pages/BarangayOfiicialPage.php?page=BHW" class="block px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'bhw' ? 'active:bg-green-400 text-white' : ''; ?>">
+                        <a href="../nx_pages/BarangayOfiicialPage.php?page=BHW" class="block px-4 py-2 hover:bg-gray-300 ps-16 hover:text-black <?php echo $treeView == 'BHW' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-heart"></i> BHW
                         </a>
                     </li>
@@ -62,7 +62,7 @@ if ($_SESSION['user']['isApproved'] == 0) {
                 </button>
                 <ul id="settings-menu-1" class="hidden ml-4 mt-2">
                     <li>
-                        <a href="../nx_pages/ResidentPage.php?page=residents" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
                             <i class="fa-solid fa-user-friends"></i> Residents
                         </a>
                     </li>
@@ -115,6 +115,12 @@ if ($_SESSION['user']['isApproved'] == 0) {
                         </a>
                     </li>
                 </ul>
+            </li>
+
+            <li>
+                <a href="UserAccounts.php?page=useraccounts" class="block px-4 py-2 hover:bg-gray-300 hover:text-black" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'user_profile' ? 'active:bg-gray-400' : ''; ?>">
+                    <i class="fa-solid fa-user"></i> User Accounts
+                </a>
             </li>
         </ul>
     </nav>
