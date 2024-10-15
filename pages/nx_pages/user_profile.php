@@ -307,7 +307,7 @@ document.getElementById('editProfileForm').onsubmit = function(event) {
     // Initial call to show the personal information tab by default
     showTab('personal');
 
-    function handleImageUpload(event) {
+function handleImageUpload(event) {
     const file = event.target.files[0];
     if (file) {
         swal({
@@ -319,26 +319,29 @@ document.getElementById('editProfileForm').onsubmit = function(event) {
         })
         .then((willUpload) => {
             if (willUpload) {
-                // Code to upload the image goes here
-                // For example, you can use FormData to send it via AJAX
                 const formData = new FormData();
                 formData.append('image', file);
 
-                // Example AJAX request (you'll need to implement the server-side logic)
+                // Send the image data to the server
                 fetch('nx_query/profile_page/update_profilepic.php', {
                     method: 'POST',
                     body: formData,
                 })
                 .then(response => {
-                    if (response.ok) {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok.");
+                    }
+                    return response.json(); // Parse JSON response
+                })
+                .then(data => {
+                    // Handle the data returned from the server
+                    if (data.status === "success") {
                         swal("Image uploaded successfully!", {
                             icon: "success",
                         });
                         location.reload(); // Reload the page after success
                     } else {
-                        swal("Image upload failed. Please try again.", {
-                            icon: "error",
-                        });
+                        throw new Error(data.message || "Image upload failed.");
                     }
                 })
                 .catch(error => {
@@ -353,7 +356,6 @@ document.getElementById('editProfileForm').onsubmit = function(event) {
         });
     }
 }
-
 </script>
 </body>
 </html>
