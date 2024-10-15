@@ -14,7 +14,7 @@ $user = $_SESSION['user'];
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 // Ensure the page is valid to prevent security issues
-$valid_pages = ['barangay_official', 'profile', 'settings']; // Add other valid pages here
+$valid_pages = ['barangay_official', 'barangay_police', 'BHW', 'purok_leader', 'sk']; // Add other valid pages here
 
 if (!in_array($page, $valid_pages)) {
     $page = 'barangay_official'; // Fallback to 'home' if the page is invalid
