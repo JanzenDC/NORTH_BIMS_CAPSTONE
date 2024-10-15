@@ -39,6 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'account_type' => $user['account_type'],
                 'image' => $user['image'],
                 'gender' => $user['gender'],
+                'isAdmin' => $user['isAdmin'],
+                'isApproved' => $user['isApproved'],
             ];
             header("Location: nx_pages/dashboard.php");
             exit;
