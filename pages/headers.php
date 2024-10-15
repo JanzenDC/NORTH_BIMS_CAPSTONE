@@ -10,7 +10,7 @@
  <script src="../../assets/js/toastr.min.js"></script>
  <scri[t src="../../assets/js/datatables.js"></script>
 <!-- ICONS -->
-<link rel="icon" href="../../assets/images/north.ico" type="image/x-icon">
+<link rel="icon" href="../assets/images/north.ico" type="image/x-icon">
 
 
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

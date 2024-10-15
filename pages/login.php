@@ -189,7 +189,6 @@ require_once "toaster_handler.php";
         </div>
         <div class="md:w-1/2 bg-cover bg-center relative hidden md:block" style="background-image: url('../assets/images/background_BIMS.jpg')">
             <div class="absolute inset-0 bg-gradient-to-t from-green-500 to-transparent"></div>
-            <div class="relative z-10 text-white">Test</div>
         </div>
     </div>
 
