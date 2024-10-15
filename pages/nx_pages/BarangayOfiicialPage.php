@@ -31,7 +31,7 @@ if (!in_array($page, $valid_pages)) {
         include_once "../headers.php"
     ?>
 </head>
-<body class="bg-gray-100 overflow-hidden">
+<body class="bg-gray-100 overflow-y-hidden">
     <?php
         include_once("../navbar.php")
     ?>
@@ -42,7 +42,7 @@ if (!in_array($page, $valid_pages)) {
         ?>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6 ">
+        <main class="flex-1 p-6 h-dvh overflow-auto">
              <?php 
             // Include the corresponding page content
             include_once("../nx_pages/nx_barangay_officials/{$page}.php"); 
