@@ -60,14 +60,14 @@ if ($_SESSION['user']['isApproved'] == 0) {
                     <i class="fa-solid fa-users"></i> Residents
                     <span id="settings-icon-1"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
-                <ul id="settings-menu-1" class="hidden ml-4 mt-2">
+                <ul id="settings-menu-1" class="hidden">
                     <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
+                        <a href="../nx_pages/ResidentPage.php?page=residents" class="block px-4 py-2 ps-16 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'residents' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-user-friends"></i> Residents
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
+                        <a href="#" class="block ps-16 px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'headofthefamily' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-user-circle"></i> Head of the Family
                         </a>
                     </li>

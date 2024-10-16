@@ -2,12 +2,11 @@
 $treeView = 'residents'; // Change this value based on the current page
 $sqls = "SELECT 
             *,
-            CONCAT_WS(' ', fname, mname, lname, suffix) AS full_name,
-            image 
+            CONCAT_WS(' ', fname, mname, lname, suffix) AS full_name
         FROM 
-            tblregistered_account
+            tblresident
         ORDER BY 
-            isApproved DESC";
+            fname DESC";
 
 $resuktSqks = $conn->query($sqls);
 
@@ -24,32 +23,45 @@ if ($resuktSqks->num_rows > 0) {
 // Close the database connection
 $conn->close();
 ?>
-
+<style>
+    .tab-button {
+        padding: 0.5rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-bottom: none;
+        background-color: #f8fafc;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .tab-button:hover {
+        background-color: #edf2f7;
+    }
+    .tab-button.active {
+        background-color: #ffffff;
+        border-bottom: 2px solid #4299e1;
+        font-weight: bold;
+        color: #2b6cb0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .tab-content {
+        border: 1px solid #e2e8f0;
+        padding: 1rem;
+        background-color: #ffffff;
+    }
+</style>
 <div class="p-3 w-full bg-white">
     <h1 class="text-3xl font-bold">Residents</h1>
     <hr class="mt-3 mb-5">
-    <!-- <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Official</button> -->
-
-    <div class="filter-container mb-4">
-        <label for="account_type_filter" class="mr-2">Account Type:</label>
-        <select id="account_type_filter">
-            <option value="">All</option>
-            <option value="0">Non Resident</option>
-            <option value="1">Resident</option>
-        </select>
-    </div>
+    <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Residents</button>
 
     <table id="officials-table" style="width: 100%;" class="cell-border hover">
         <thead>
             <tr>
                 <th>Image</th>
                 <th>Full Name</th>
-                <th>Email</th>
-                <th>Contact</th>
-                <th>Birthday</th>
-                <th>Account Type</th>
-                <th>Approved</th>
-                
+                <th>Voter</th>
+                <th>Occupation</th>
+                <th>Gender</th>
+                <th>Year Stayed</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -59,23 +71,16 @@ $conn->close();
                 <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
                 <td><?= htmlspecialchars($official['full_name']) ?>
             </td>
-                <td><?= htmlspecialchars($official['email']) ?></td>
-                <td><?= htmlspecialchars($official['contact']) ?></td>
-                <td><?= htmlspecialchars($official['bday']) ?></td>
-                <td><?= htmlspecialchars($official['account_type'] == 0 ? 'Non-resident' : 'Resident') ?>
-                <span class="hidden">
-                    <?= htmlspecialchars($official['account_type'] == 0 ? '0' : '1') ?>
-                </span>
+                <td><?= htmlspecialchars($official['voter']) ?></td>
+                <td><?= htmlspecialchars($official['occupation']) ?></td>
+                <td><?= htmlspecialchars($official['gender']) ?></td>
+                <td><?= htmlspecialchars($official['year_stayed']) ?>
                 </td> <!-- Ensure this is visible -->
                 <td>
-                    <input type="checkbox" class="peer sr-only opacity-0" id="toggle-<?= $official['id'] ?>" <?= $official['isApproved'] ? 'checked' : '' ?> onclick="event.preventDefault(); toggleApproval(<?= $official['id'] ?>, !this.checked)" />
-                    <label for="toggle-<?= $official['id'] ?>" class="relative flex h-6 w-11 cursor-pointer items-center rounded-full bg-gray-400 transition-colors duration-300 peer-checked:bg-green-500" onclick="event.preventDefault(); event.stopPropagation(); toggleApproval(<?= $official['id'] ?>, !this.previousElementSibling.checked)">
-                        <span class="absolute h-5 w-5 rounded-full bg-white shadow transition-transform duration-300 <?= $official['isApproved'] ? 'translate-x-5' : 'translate-x-0' ?>"></span>
-                        <span class="sr-only">Enable</span>
-                    </label>
-                </td>
-                <td>
-                    <button class="text-red-500" title="Delete" onclick="deleteRecord(<?= $official['id'] ?>)">
+                    <button class="text-yellow-500" title="Edit" onclick="editRecord(<?= $official['resident_id'] ?>)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="text-red-500" title="Delete" onclick="deleteRecord(<?= $official['resident_id'] ?>)">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -86,21 +91,71 @@ $conn->close();
     </table>
 </div>
 
-<!-- MODALS SECTION -->
 <!-- Create Official Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-1/2">
         <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
-        <h2 class="text-lg font-semibold mb-4">Create Official</h2>
+        <h2 class="text-lg font-semibold mb-4">Create Resident</h2>
+        
+        <!-- Tab Navigation -->
+        <div class="flex mb-4">
+            <button onclick="showTab('createPersonalInfo')" class="tab-button active">Personal Info</button>
+            <button onclick="showTab('createAddressInfo')" class="tab-button">Address Info</button>
+            <button onclick="showTab('createOtherInfo')" class="tab-button">Other Info</button>
+        </div>
+        
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
-            <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
-            <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
-            <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" required>
+            <!-- Personal Info Tab -->
+            <div id="createPersonalInfo" class="tab-content">
+                <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
+                <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" >
+                <input type="number" name="age" id="addAge" placeholder="Age" class="block w-full mb-2 p-2 border rounded" >
+                <select name="gender" id="addGender" class="block w-full mb-2 p-2 border rounded" >
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="text" name="birthplace" id="addBirthplace" placeholder="Birthplace" class="block w-full mb-2 p-2 border rounded" >
+            </div>
+
+            <!-- Address Info Tab -->
+            <div id="createAddressInfo" class="tab-content hidden">
+                <input type="number" name="houseNo" id="addHouseNo" placeholder="House Number" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="purok" id="addPurok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="brgy" id="addBrgy" placeholder="Barangay" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="municipality" id="addMunicipality" placeholder="Municipality" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="province" id="addProvince" placeholder="Province" class="block w-full mb-2 p-2 border rounded" >
+            </div>
+
+            <!-- Other Info Tab -->
+            <div id="createOtherInfo" class="tab-content hidden">
+                <select name="civil_status" id="addCivilStatus" class="block w-full mb-2 p-2 border rounded" >
+                    <option value="" disabled selected>Civil Status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Divorced">Divorced</option>
+                </select>
+                <input type="text" name="year_stayed" id="addYearStayed" placeholder="Years Stayed" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="education" id="addEducation" placeholder="Education" class="block w-full mb-2 p-2 border rounded" >
+                <select name="head_fam" id="addHeadFam" class="block w-full mb-2 p-2 border rounded" >
+                    <option value="" disabled selected>Head of Family?</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <input type="text" name="occupation" id="addOccupation" placeholder="Occupation" class="block w-full mb-2 p-2 border rounded" >
+                <select name="voter" id="addVoter" class="block w-full mb-2 p-2 border rounded" >
+                    <option value="" disabled selected>Voter?</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" >
+            </div>
+
             <button type="submit" class="bg-blue-500 text-white p-2 rounded">Create</button>
         </form>
     </div>
@@ -108,34 +163,78 @@ $conn->close();
 
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-1/2">
         <span class="cursor-pointer float-right" onclick="closeModal('editModal')">&times;</span>
-        <h2 class="text-lg font-semibold mb-4">Edit Official</h2>
+        <h2 class="text-lg font-semibold mb-4">Edit Resident</h2>
+
+        <!-- Tab Navigation -->
+        <div class="flex mb-4">
+            <button onclick="showTab('editPersonalInfo')" class="tab-button active">Personal Info</button>
+            <button onclick="showTab('editAddressInfo')" class="tab-button">Address Info</button>
+            <button onclick="showTab('editOtherInfo')" class="tab-button">Other Info</button>
+        </div>
+
         <form id="editForm" enctype="multipart/form-data">
-            <input type="hidden" id="editId" name="id">
+            <!-- <input type="hidden" id="editId" name="id"> -->
 
-            <!-- Name Fields -->
-            <div class="flex mb-4">
-                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mr-2 p-2 border rounded" required>
-                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mr-2 p-2 border rounded">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required>
+            <!-- Personal Info Tab -->
+            <div id="editPersonalInfo" class="tab-content">
+                <input type="hidden" id="editId" name="resident_id" value="">
+
+                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
+                <input type="date" id="editBday" name="bday" class="block w-full mb-2 p-2 border rounded" >
+                <input type="number" id="editAge" name="age" placeholder="Age" class="block w-full mb-2 p-2 border rounded" >
+                <select id="editGender" name="gender" class="block w-full mb-2 p-2 border rounded" >
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="text" id="editBirthplace" name="birthplace" placeholder="Birthplace" class="block w-full mb-2 p-2 border rounded" >
             </div>
 
-            <!-- Other Fields in Two Columns -->
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded">
-                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required>
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required>
-                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+            <!-- Address Info Tab -->
+            <div id="editAddressInfo" class="tab-content hidden">
+                <input type="number" id="editHouseNo" name="houseNo" placeholder="House No." class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editPurok" name="purok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editBrgy" name="brgy" placeholder="Barangay" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editMunicipality" name="municipality" placeholder="Municipality" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editProvince" name="province" placeholder="Province" class="block w-full mb-2 p-2 border rounded" >
             </div>
 
-            <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
-            <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded" onclick="updateRecord()">Update</button>
+            <!-- Other Info Tab -->
+            <div id="editOtherInfo" class="tab-content hidden">
+                <select id="editCivilStatus" name="civil_status" class="block w-full mb-2 p-2 border rounded" >
+                    <option value="" disabled selected>Civil Status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Divorced">Divorced</option>
+                </select>
+                <input type="text" id="editYearStayed" name="year_stayed" placeholder="Years Stayed" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editEducation" name="education" placeholder="Education" class="block w-full mb-2 p-2 border rounded" >
+                <select id="editHeadFam" name="head_fam" class="block w-full mb-2 p-2 border rounded" >
+                    <option value="" disabled selected>Head of Family?</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <input type="text" id="editOccupation" name="occupation" placeholder="Occupation" class="block w-full mb-2 p-2 border rounded" >
+                <select id="editVoter" name="voter" class="block w-full mb-2 p-2 border rounded" >
+                    <option value="" disabled selected>Voter?</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
+                <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
+            </div>
+
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Update</button>
         </form>
     </div>
 </div>
-
 
 
 <!-- Include DataTables CSS -->
@@ -156,69 +255,92 @@ $(document).ready(function() {
         const accountType = this.value;
         table.column(5).search(accountType).draw(); // Assuming 'account_type' is in the 6th column (index 5)
     });
+    showTab('createPersonalInfo');
+    showTab('editPersonalInfo');
 });
 
 
 function openModal(modalId) {
+    console.log(modalId)
+    if(modalId === 'createModal'){
+        showTab('createPersonalInfo');
+    }
     document.getElementById(modalId).classList.remove("hidden");
 }
 
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add("hidden");
 }
-    function showTab(tabId) {
-        const tabs = document.querySelectorAll('.tab-content');
-        const buttons = document.querySelectorAll('.tab-button');
+function showTab(tabId) {
+    const tabs = document.querySelectorAll('.tab-content');
+    const buttons = document.querySelectorAll('.tab-button');
 
-        tabs.forEach(tab => {
-            tab.classList.add('hidden');
-            if (tab.id === tabId) {
-                tab.classList.remove('hidden');
-            }
-        });
+    tabs.forEach(tab => {
+        tab.classList.add('hidden');
+        if (tab.id === tabId) {
+            tab.classList.remove('hidden');
+        }
+    });
 
-        buttons.forEach(button => {
-            button.classList.remove('active');
-            if (button.textContent === tabId.charAt(0).toUpperCase() + tabId.slice(1).replace('Info', ' Info')) {
-                button.classList.add('active');
-            }
-        });
-    }
+    buttons.forEach(button => {
+        button.classList.remove('active');
+        if (button.textContent === tabId.replace(/([A-Z])/g, ' $1').trim().replace(/^(create|edit)/, '')) {
+            button.classList.add('active');
+        }
+    });
+}
 
-    // Initialize to show the first tab
-    showTab('personalInfo');
 // CRUD
-// function editRecord(id) {
-    
-//     $.get('nx_query/manage_officials.php?action=get&id=' + id, function(response) {
-//         if (response.success) {
-//             const official = response.data;
-//             document.getElementById('editId').value = official.id;
-//             document.getElementById('editFname').value = official.fname;
-//             document.getElementById('editMname').value = official.mname;
-//             document.getElementById('editLname').value = official.lname;
-//             document.getElementById('editSuffix').value = official.suffix;
-//             document.getElementById('editPosition').value = official.position;
-//             document.getElementById('editContact').value = official.contact;
-//             document.getElementById('editBday').value = official.bday;
+function editRecord(id) {
+    $.get('nx_query/manage_residents.php?action=get&id=' + id, function(response) {
+        if (response.success) {
+            const official = response.data;
+            console.log(official);
+            // Set form fields with values from the official object
+            document.getElementById('editId').value = official.resident_id;
+            document.getElementById('editFname').value = official.fname || '';
+            document.getElementById('editMname').value = official.mname || '';
+            document.getElementById('editLname').value = official.lname || '';
+            document.getElementById('editSuffix').value = official.suffix || '';
+            document.getElementById('editBday').value = official.bday || '';
+            document.getElementById('editGender').value = official.gender || ''; // Handle user-defined values
+            document.getElementById('editAge').value = official.age || ''; 
+            document.getElementById('editHouseNo').value = official.houseNo || '';
+            document.getElementById('editPurok').value = official.purok || '';
+            document.getElementById('editBrgy').value = official.brgy || '';
+            document.getElementById('editMunicipality').value = official.municipality || '';
+            document.getElementById('editProvince').value = official.province || '';
+            document.getElementById('editCivilStatus').value = official.civil_status || '';
+            document.getElementById('editEducation').value = official.education || '';
+            document.getElementById('editOccupation').value = official.occupation || '';
+            document.getElementById('editBirthplace').value = official.birthplace || '';
 
-//             // Set up the image preview
-//             const imagePreview = document.getElementById('editImagePreview');
-//             imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
-//             imagePreview.style.display = 'block'; // Show the image preview
+            // Set Voter status dropdown
+            const voterSelect = document.getElementById('editVoter');
+            voterSelect.value = official.voter || '';
 
-//             openModal('editModal');
-//         } else {
-//             swal("Error: " + response.message, {
-//                 icon: "error",
-//             });
-//         }
-//     }).fail(function() {
-//         swal("Error retrieving record.", {
-//             icon: "error",
-//         });
-//     });
-// }
+            // Set Head of Family dropdown
+            const headFamSelect = document.getElementById('editHeadFam');
+            headFamSelect.value = official.head_fam || '';
+
+            // Set up the image preview
+            const imagePreview = document.getElementById('editImagePreview');
+            imagePreview.src = '../../assets/images/pfp/' + (official.image || 'default.png'); // Use a default image if none exists
+            imagePreview.style.display = 'block'; // Show the image preview
+
+            openModal('editModal');
+        } else {
+            swal("Error: " + response.message, {
+                icon: "error",
+            });
+        }
+    }).fail(function() {
+        swal("Error retrieving record.", {
+            icon: "error",
+        });
+    });
+}
+
 
 function deleteRecord(id) {
     swal({
@@ -257,57 +379,81 @@ function deleteRecord(id) {
 }
 
 
-function toggleApproval(id, isApproved) {
-  // Prevent the default checkbox behavior
-  event.preventDefault();
-  
-  const checkbox = document.getElementById(`toggle-${id}`);
-  const label = checkbox.nextElementSibling;
+function addRecord() {
+    const formData = new FormData(document.getElementById('createForm'));
 
-  swal({
-    title: "Are you sure?",
-    text: isApproved
-      ? "You will approve this user!"
-      : "You will disapprove this user!",
-    icon: "warning",
-    buttons: true,
-    dangerMode: true,
-  }).then((willProceed) => {
-    if (willProceed) {
-      $.ajax({
-        url: "nx_query/manage_residents.php?action=update&id=" + id,
-        type: "POST",
-        contentType: "application/json", // Set content type to JSON
-        data: JSON.stringify({ isApproved: isApproved }), // Send data as JSON
-        success: function (response) {
-          if (response.success) {
-            // Update the visual state only after successful server response
-            checkbox.checked = isApproved;
-            label.classList.toggle('peer-checked:bg-green-500', isApproved);
-            label.querySelector('span').classList.toggle('translate-x-5', isApproved);
-            label.querySelector('span').classList.toggle('translate-x-0', !isApproved);
-            
-            swal("Status updated successfully!", {
-              icon: "success",
-            });
-          } else {
-            swal("Error: " + response.message, {
-              icon: "error",
-            });
-          }
+    $.ajax({
+        url: 'nx_query/manage_residents.php?action=add',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                swal("Resident added successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload(); // Reload the page or refresh the table
+                });
+            } else {
+                swal("Error: " + response.message, {
+                    icon: "error",
+                });
+            }
         },
-        error: function () {
-          swal("Error updating record.", {
-            icon: "error",
-          });
-        },
-      });
-    } else {
-      // Reset the checkbox state if the user cancels the action
-      checkbox.checked = !isApproved;
-    }
-  });
+        error: function() {
+            swal("Error adding resident.", {
+                icon: "error",
+            });
+        }
+    });
 }
+function updateRecord(event) {
+    event.preventDefault();
+
+    const formData = new FormData(document.getElementById('editForm'));
+    
+    // Ensure resident_id is included in the formData
+    const residentId = document.getElementById('editId').value;
+    if (!residentId) {
+        swal("Error: Resident ID is missing.", {
+            icon: "error",
+        });
+        return;
+    }
+    formData.append('resident_id', residentId);
+
+    $.ajax({
+        url: 'nx_query/manage_residents.php?action=update',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log(response);
+            if (response.success) {
+                swal("Resident updated successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload(); // Reload the page or refresh the table
+                });
+            } else {
+                swal("Error: " + response.message, {
+                    icon: "error",
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            swal("Error updating resident.", {
+                icon: "error",
+            });
+        }
+    });
+}
+
+// Ensure this event listener is properly set
+document.getElementById('editForm').addEventListener('submit', updateRecord);
 
 </script>
 

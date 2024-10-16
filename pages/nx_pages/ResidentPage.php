@@ -13,7 +13,7 @@ if (!isset($_SESSION['user'])) {
 $user = $_SESSION['user'];
 
 // Get the page from the query parameter, default to 'home'
-$page = isset($_GET['page']) ? $_GET['page'] : 'home';
+$page = isset($_GET['page']) ? $_GET['page'] : 'residents';
 
 // Ensure the page is valid to prevent security issues
 $valid_pages = ['residents', 'head_of_the_family']; // Add other valid pages here
@@ -21,6 +21,7 @@ $valid_pages = ['residents', 'head_of_the_family']; // Add other valid pages her
 if (!in_array($page, $valid_pages)) {
     $page = 'residents'; 
 }
+$treeView = $page;
 ?>
 
 <!DOCTYPE html>
