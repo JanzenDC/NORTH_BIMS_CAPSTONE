@@ -93,11 +93,10 @@ $conn->close();
 
 <!-- Create Official Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/2">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
         <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Create Resident</h2>
         
-        <!-- Tab Navigation -->
         <div class="flex mb-4">
             <button onclick="showTab('createPersonalInfo')" class="tab-button active">Personal Info</button>
             <button onclick="showTab('createAddressInfo')" class="tab-button">Address Info</button>
@@ -105,69 +104,65 @@ $conn->close();
         </div>
         
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
-            <!-- Personal Info Tab -->
             <div id="createPersonalInfo" class="tab-content">
-                <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded">
                 <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded">
                 <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
-                <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" >
-                <input type="number" name="age" id="addAge" placeholder="Age" class="block w-full mb-2 p-2 border rounded" >
-                <select name="gender" id="addGender" class="block w-full mb-2 p-2 border rounded" >
+                <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded">
+                <input type="number" name="age" id="addAge" placeholder="Age" class="block w-full mb-2 p-2 border rounded" readonly>
+                <select name="gender" id="addGender" class="block w-full mb-2 p-2 border rounded">
                     <option value="" disabled selected>Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                 </select>
-                <input type="text" name="birthplace" id="addBirthplace" placeholder="Birthplace" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="birthplace" id="addBirthplace" placeholder="Birthplace" class="block w-full mb-2 p-2 border rounded">
             </div>
 
-            <!-- Address Info Tab -->
             <div id="createAddressInfo" class="tab-content hidden">
-                <input type="number" name="houseNo" id="addHouseNo" placeholder="House Number" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" name="purok" id="addPurok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" name="brgy" id="addBrgy" placeholder="Barangay" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" name="municipality" id="addMunicipality" placeholder="Municipality" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" name="province" id="addProvince" placeholder="Province" class="block w-full mb-2 p-2 border rounded" >
+                <input type="number" name="houseNo" id="addHouseNo" placeholder="House Number" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" name="purok" id="addPurok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" name="brgy" id="addBrgy" placeholder="Barangay" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" name="municipality" id="addMunicipality" placeholder="Municipality" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" name="province" id="addProvince" placeholder="Province" class="block w-full mb-2 p-2 border rounded">
             </div>
 
-            <!-- Other Info Tab -->
             <div id="createOtherInfo" class="tab-content hidden">
-                <select name="civil_status" id="addCivilStatus" class="block w-full mb-2 p-2 border rounded" >
-                    <option value="" disabled selected>Civil Status</option>
-                    <option value="Single">Single</option>
+                <select name="civil_status" id="addCivilStatus" class="block w-full mb-2 p-2 border rounded">
+                    <option value="" disabled>Civil Status</option>
+                    <option value="Single" selected>Single</option>
                     <option value="Married">Married</option>
                     <option value="Widowed">Widowed</option>
                     <option value="Divorced">Divorced</option>
                 </select>
-                <input type="text" name="year_stayed" id="addYearStayed" placeholder="Years Stayed" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" name="education" id="addEducation" placeholder="Education" class="block w-full mb-2 p-2 border rounded" >
-                <select name="head_fam" id="addHeadFam" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="year_stayed" id="addYearStayed" placeholder="Years Stayed" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" name="education" id="addEducation" placeholder="Education" class="block w-full mb-2 p-2 border rounded">
+                <select name="head_fam" id="addHeadFam" class="block w-full mb-2 p-2 border rounded">
                     <option value="" disabled selected>Head of Family?</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
-                <input type="text" name="occupation" id="addOccupation" placeholder="Occupation" class="block w-full mb-2 p-2 border rounded" >
-                <select name="voter" id="addVoter" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" name="occupation" id="addOccupation" placeholder="Occupation" class="block w-full mb-2 p-2 border rounded">
+                <select name="voter" id="addVoter" class="block w-full mb-2 p-2 border rounded">
                     <option value="" disabled selected>Voter?</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
-                <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" >
+                <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded">
             </div>
 
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Create</button>
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Create</button>
         </form>
     </div>
 </div>
 
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/2">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
         <span class="cursor-pointer float-right" onclick="closeModal('editModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Edit Resident</h2>
 
-        <!-- Tab Navigation -->
         <div class="flex mb-4">
             <button onclick="showTab('editPersonalInfo')" class="tab-button active">Personal Info</button>
             <button onclick="showTab('editAddressInfo')" class="tab-button">Address Info</button>
@@ -175,63 +170,58 @@ $conn->close();
         </div>
 
         <form id="editForm" enctype="multipart/form-data">
-            <!-- <input type="hidden" id="editId" name="id"> -->
+            <input type="hidden" id="editId" name="resident_id">
 
-            <!-- Personal Info Tab -->
             <div id="editPersonalInfo" class="tab-content">
-                <input type="hidden" id="editId" name="resident_id" value="">
-
-                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded">
                 <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded">
                 <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
-                <input type="date" id="editBday" name="bday" class="block w-full mb-2 p-2 border rounded" >
-                <input type="number" id="editAge" name="age" placeholder="Age" class="block w-full mb-2 p-2 border rounded" >
-                <select id="editGender" name="gender" class="block w-full mb-2 p-2 border rounded" >
+                <input type="date" id="editBday" name="bday" class="block w-full mb-2 p-2 border rounded">
+                <input type="number" id="editAge" name="age" placeholder="Age" class="block w-full mb-2 p-2 border rounded">
+                <select id="editGender" name="gender" class="block w-full mb-2 p-2 border rounded">
                     <option value="" disabled selected>Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                 </select>
-                <input type="text" id="editBirthplace" name="birthplace" placeholder="Birthplace" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editBirthplace" name="birthplace" placeholder="Birthplace" class="block w-full mb-2 p-2 border rounded">
             </div>
 
-            <!-- Address Info Tab -->
             <div id="editAddressInfo" class="tab-content hidden">
-                <input type="number" id="editHouseNo" name="houseNo" placeholder="House No." class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" id="editPurok" name="purok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" id="editBrgy" name="brgy" placeholder="Barangay" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" id="editMunicipality" name="municipality" placeholder="Municipality" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" id="editProvince" name="province" placeholder="Province" class="block w-full mb-2 p-2 border rounded" >
+                <input type="number" id="editHouseNo" name="houseNo" placeholder="House No." class="block w-full mb-2 p-2 border rounded">
+                <input type="text" id="editPurok" name="purok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" id="editBrgy" name="brgy" placeholder="Barangay" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" id="editMunicipality" name="municipality" placeholder="Municipality" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" id="editProvince" name="province" placeholder="Province" class="block w-full mb-2 p-2 border rounded">
             </div>
 
-            <!-- Other Info Tab -->
             <div id="editOtherInfo" class="tab-content hidden">
-                <select id="editCivilStatus" name="civil_status" class="block w-full mb-2 p-2 border rounded" >
+                <select id="editCivilStatus" name="civil_status" class="block w-full mb-2 p-2 border rounded">
                     <option value="" disabled selected>Civil Status</option>
                     <option value="Single">Single</option>
                     <option value="Married">Married</option>
                     <option value="Widowed">Widowed</option>
                     <option value="Divorced">Divorced</option>
                 </select>
-                <input type="text" id="editYearStayed" name="year_stayed" placeholder="Years Stayed" class="block w-full mb-2 p-2 border rounded" >
-                <input type="text" id="editEducation" name="education" placeholder="Education" class="block w-full mb-2 p-2 border rounded" >
-                <select id="editHeadFam" name="head_fam" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editYearStayed" name="year_stayed" placeholder="Years Stayed" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" id="editEducation" name="education" placeholder="Education" class="block w-full mb-2 p-2 border rounded">
+                <select id="editHeadFam" name="head_fam" class="block w-full mb-2 p-2 border rounded">
                     <option value="" disabled selected>Head of Family?</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
-                <input type="text" id="editOccupation" name="occupation" placeholder="Occupation" class="block w-full mb-2 p-2 border rounded" >
-                <select id="editVoter" name="voter" class="block w-full mb-2 p-2 border rounded" >
+                <input type="text" id="editOccupation" name="occupation" placeholder="Occupation" class="block w-full mb-2 p-2 border rounded">
+                <select id="editVoter" name="voter" class="block w-full mb-2 p-2 border rounded">
                     <option value="" disabled selected>Voter?</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
                 <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
-                <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
+                <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100%; max-width:100px; height:auto;">
             </div>
 
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Update</button>
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Update</button>
         </form>
     </div>
 </div>
@@ -289,6 +279,20 @@ function showTab(tabId) {
         }
     });
 }
+document.getElementById('addBday').addEventListener('change', function() {
+    const birthday = new Date(this.value);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthday.getFullYear();
+    const monthDifference = today.getMonth() - birthday.getMonth();
+
+    // Adjust age if the birthday hasn't occurred yet this year
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthday.getDate())) {
+        age--;
+    }
+
+    document.getElementById('addAge').value = age;
+});
 
 // CRUD
 function editRecord(id) {
@@ -361,6 +365,7 @@ function deleteRecord(id) {
                         }).then(() => {
                             // Optionally refresh the table or remove the row
                             $(`tr[data-id='${id}']`).remove(); // Remove the row from the table
+                            location.reload();
                         });
                     } else {
                         swal("Error: " + response.message, {
@@ -383,7 +388,7 @@ function addRecord() {
     const formData = new FormData(document.getElementById('createForm'));
 
     $.ajax({
-        url: 'nx_query/manage_residents.php?action=add',
+        url: 'nx_query/manage_residents.php?action=create',
         type: 'POST',
         data: formData,
         processData: false,
@@ -412,16 +417,40 @@ function updateRecord(event) {
     event.preventDefault();
 
     const formData = new FormData(document.getElementById('editForm'));
-    
+
     // Ensure resident_id is included in the formData
     const residentId = document.getElementById('editId').value;
-    if (!residentId) {
-        swal("Error: Resident ID is missing.", {
-            icon: "error",
-        });
-        return;
-    }
     formData.append('resident_id', residentId);
+
+    // Append additional fields directly without if statements
+    document.getElementById('editFname').value && formData.append('fname', document.getElementById('editFname').value);
+    document.getElementById('editMname').value && formData.append('mname', document.getElementById('editMname').value);
+    document.getElementById('editLname').value && formData.append('lname', document.getElementById('editLname').value);
+    document.getElementById('editSuffix').value && formData.append('suffix', document.getElementById('editSuffix').value);
+    document.getElementById('editBday').value && formData.append('bday', document.getElementById('editBday').value);
+    document.getElementById('editAge').value && formData.append('age', document.getElementById('editAge').value);
+    document.getElementById('editGender').value && formData.append('gender', document.getElementById('editGender').value);
+    document.getElementById('editBirthplace').value && formData.append('birthplace', document.getElementById('editBirthplace').value);
+    document.getElementById('editHouseNo').value && formData.append('houseNo', document.getElementById('editHouseNo').value);
+    document.getElementById('editPurok').value && formData.append('purok', document.getElementById('editPurok').value);
+    document.getElementById('editBrgy').value && formData.append('brgy', document.getElementById('editBrgy').value);
+    document.getElementById('editMunicipality').value && formData.append('municipality', document.getElementById('editMunicipality').value);
+    document.getElementById('editProvince').value && formData.append('province', document.getElementById('editProvince').value);
+    document.getElementById('editCivilStatus').value && formData.append('civil_status', document.getElementById('editCivilStatus').value);
+    document.getElementById('editYearStayed').value && formData.append('year_stayed', document.getElementById('editYearStayed').value);
+    document.getElementById('editEducation').value && formData.append('education', document.getElementById('editEducation').value);
+    document.getElementById('editHeadFam').value && formData.append('head_fam', document.getElementById('editHeadFam').value);
+    document.getElementById('editOccupation').value && formData.append('occupation', document.getElementById('editOccupation').value);
+    document.getElementById('editVoter').value && formData.append('voter', document.getElementById('editVoter').value);
+
+    // Handle the image file
+    const imageFile = document.getElementById('editImage').files[0];
+    imageFile && formData.append('image', imageFile);
+
+    // Log FormData contents
+    for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+    }
 
     $.ajax({
         url: 'nx_query/manage_residents.php?action=update',
@@ -451,6 +480,7 @@ function updateRecord(event) {
         }
     });
 }
+
 
 // Ensure this event listener is properly set
 document.getElementById('editForm').addEventListener('submit', updateRecord);
