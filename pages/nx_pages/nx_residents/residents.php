@@ -123,9 +123,9 @@ $conn->close();
             <div id="createAddressInfo" class="tab-content hidden">
                 <input type="number" name="houseNo" id="addHouseNo" placeholder="House Number" class="block w-full mb-2 p-2 border rounded">
                 <input type="text" name="purok" id="addPurok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="brgy" id="addBrgy" placeholder="Barangay" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="municipality" id="addMunicipality" placeholder="Municipality" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="province" id="addProvince" placeholder="Province" class="block w-full mb-2 p-2 border rounded">
+                <input type="text" name="brgy" id="addBrgy" placeholder="Barangay" disabled class="block w-full mb-2 p-2 border rounded" value="North Poblacion">
+                <input type="text" name="municipality" id="addMunicipality" disabled placeholder="Municipality" class="block w-full mb-2 p-2 border rounded" value="Gabaldon">
+                <input type="text" name="province" id="addProvince" disabled value="Nueva Ecija" placeholder="Province" class="block w-full mb-2 p-2 border rounded">
             </div>
 
             <div id="createOtherInfo" class="tab-content hidden">
@@ -254,6 +254,8 @@ function openModal(modalId) {
     console.log(modalId)
     if(modalId === 'createModal'){
         showTab('createPersonalInfo');
+    }else{
+        showTab('editPersonalInfo');
     }
     document.getElementById(modalId).classList.remove("hidden");
 }
@@ -308,6 +310,7 @@ function editRecord(id) {
             document.getElementById('editSuffix').value = official.suffix || '';
             document.getElementById('editBday').value = official.bday || '';
             document.getElementById('editGender').value = official.gender || ''; // Handle user-defined values
+            document.getElementById('editYearStayed').value = official.year_stayed;
             document.getElementById('editAge').value = official.age || ''; 
             document.getElementById('editHouseNo').value = official.houseNo || '';
             document.getElementById('editPurok').value = official.purok || '';
@@ -334,7 +337,7 @@ function editRecord(id) {
 
             openModal('editModal');
         } else {
-            swal("Error: " + response.message, {
+            swal(response.message, {
                 icon: "error",
             });
         }
@@ -368,7 +371,7 @@ function deleteRecord(id) {
                             location.reload();
                         });
                     } else {
-                        swal("Error: " + response.message, {
+                        swal(response.message, {
                             icon: "error",
                         });
                     }
@@ -401,7 +404,7 @@ function addRecord() {
                     location.reload(); // Reload the page or refresh the table
                 });
             } else {
-                swal("Error: " + response.message, {
+                swal(response.message, {
                     icon: "error",
                 });
             }
@@ -467,7 +470,7 @@ function updateRecord(event) {
                     location.reload(); // Reload the page or refresh the table
                 });
             } else {
-                swal("Error: " + response.message, {
+                swal(response.message, {
                     icon: "error",
                 });
             }

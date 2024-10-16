@@ -16,7 +16,7 @@ $user = $_SESSION['user'];
 $page = isset($_GET['page']) ? $_GET['page'] : 'residents';
 
 // Ensure the page is valid to prevent security issues
-$valid_pages = ['residents', 'head_of_the_family']; // Add other valid pages here
+$valid_pages = ['residents', 'headofthefamily']; // Add other valid pages here
 
 if (!in_array($page, $valid_pages)) {
     $page = 'residents'; 

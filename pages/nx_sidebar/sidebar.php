@@ -67,7 +67,7 @@ if ($_SESSION['user']['isApproved'] == 0) {
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="block ps-16 px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'headofthefamily' ? 'active:bg-green-400 text-white' : ''; ?>">
+                        <a href="../nx_pages/ResidentPage.php?page=headofthefamily" class="block ps-16 px-4 py-2 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'headofthefamily' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-user-circle"></i> Head of the Family
                         </a>
                     </li>

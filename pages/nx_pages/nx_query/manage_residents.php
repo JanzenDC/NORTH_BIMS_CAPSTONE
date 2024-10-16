@@ -75,7 +75,6 @@ case 'create':
             $head_fam = mysqli_real_escape_string($conn, $data['head_fam']);
             $occupation = mysqli_real_escape_string($conn, $data['occupation']);
             $voter = mysqli_real_escape_string($conn, $data['voter']);
-
             // Prepare and execute the insert query
             $query = "INSERT INTO tblresident (fname, mname, lname, suffix, bday, age, houseNo, 
                                                 purok, brgy, municipality, province, civil_status, 
