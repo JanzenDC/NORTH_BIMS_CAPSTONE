@@ -16,10 +16,24 @@ $response = [
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
+    case 'get':
+        // Read
+        $id = (int)$_GET['id'];
+        $query = "SELECT * FROM indigency_cert WHERE id = $id";
+        $result = mysqli_query($conn, $query);
+        $official = mysqli_fetch_assoc($result);
+        if ($official) {
+            $response['success'] = true;
+            $response['data'] = $official;
+        } else {
+            $response['message'] = "Health Worker not found.";
+        }
+        break;
+
     case 'create':
-        // Existing code for creating a certificate
+        // Create a certificate
         $ownerId = $_POST['resident_id'] ?? '';
-        
+
         // Validate the required fields
         if (empty($ownerId)) {
             $response['message'] = "Owner ID is required.";
@@ -30,7 +44,6 @@ switch ($action) {
 
             if (mysqli_num_rows($result) > 0) {
                 $resident = mysqli_fetch_assoc($result);
-
                 // Extract resident details
                 $fname = $resident['fname'];
                 $mname = $resident['mname'];
@@ -43,7 +56,7 @@ switch ($action) {
                 $amount = $_POST['amount'] ?? '';
                 $date_issued = $_POST['date_issued'] ?? '';
                 $purpose = $_POST['purpose'] ?? '';
-                $pickup = $_POST['pickup'] ?? ''; // Assuming you still need this
+                $pickup = $_POST['pickup'] ?? '';
                 $note = $_POST['note'] ?? '';
 
                 // Validate additional fields
@@ -82,7 +95,7 @@ switch ($action) {
         break;
 
     case 'mark_done':
-        // Retrieve the certificate ID from POST request
+        // Mark certificate as done
         $id = $_POST['id'] ?? '';
 
         // Validate the ID
@@ -101,6 +114,70 @@ switch ($action) {
                 }
             } else {
                 $response['message'] = "Error updating certificate: " . mysqli_error($conn);
+            }
+        }
+        break;
+
+    case 'updateApprove':
+        // Update certificate details
+        $id = $_POST['id'] ?? '';
+        $amount = $_POST['amount'] ?? '';
+        $date_issued = $_POST['date_issued'] ?? '';
+        $purpose = $_POST['purposes'] ?? ''; // Using 'purposes' as per your JavaScript
+
+        // Validate required fields
+        if (empty($id) || empty($amount) || empty($date_issued) || empty($purpose)) {
+            $response['message'] = "Certificate ID, Amount, Date Issued, and Purpose are required.";
+        } else {
+            // Escape user input for safety
+            $amount = mysqli_real_escape_string($conn, $amount);
+            $date_issued = mysqli_real_escape_string($conn, $date_issued);
+            $purpose = mysqli_real_escape_string($conn, $purpose);
+
+            // Construct SQL query to update indigency_cert
+            $sql = "UPDATE indigency_cert SET 
+                    amount='$amount', 
+                    date_issued='$date_issued', 
+                    purpose='$purpose' 
+                    WHERE id='$id'";
+
+            if (mysqli_query($conn, $sql)) {
+                if (mysqli_affected_rows($conn) > 0) {
+                    $response['success'] = true;
+                    $response['message'] = "Certificate updated successfully!";
+                } else {
+                    $response['message'] = "No record found with that ID.";
+                }
+            } else {
+                $response['message'] = "Error updating certificate: " . mysqli_error($conn);
+            }
+        }
+        break;
+
+    case 'updateNote':
+        // Update the note for the certificate
+        $id = $_POST['id'] ?? '';
+        $note = $_POST['note'] ?? '';
+
+        // Validate required fields
+        if (empty($id) || empty($note)) {
+            $response['message'] = "Certificate ID and Note are required.";
+        } else {
+            // Escape user input for safety
+            $note = mysqli_real_escape_string($conn, $note);
+
+            // Construct SQL query to update the note in indigency_cert
+            $sql = "UPDATE indigency_cert SET note='$note' WHERE id='$id'";
+
+            if (mysqli_query($conn, $sql)) {
+                if (mysqli_affected_rows($conn) > 0) {
+                    $response['success'] = true;
+                    $response['message'] = "Note updated successfully!";
+                } else {
+                    $response['message'] = "No record found with that ID.";
+                }
+            } else {
+                $response['message'] = "Error updating note: " . mysqli_error($conn);
             }
         }
         break;

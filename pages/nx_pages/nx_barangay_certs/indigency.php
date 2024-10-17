@@ -37,13 +37,24 @@ $doneData = $resultDone->fetch_all(MYSQLI_ASSOC);
 <script>
 $(document).ready(function() {
     // Initialize DataTables
-    $('#walkinTable').DataTable();
-    $('#newTable').DataTable();
-    $('#approvedTable').DataTable();
-    $('#disapprovedTable').DataTable();
-    $('#doneTable').DataTable();
+    $('#walkinTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
+    $('#newTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
+    $('#approvedTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
+    $('#disapprovedTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
+    $('#doneTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
     $('#residentTable').DataTable({
-        "searching": true // Enable the search feature
+        "searching": true, // Enable the search feature
+        "scrollX": true // Enable horizontal scrolling
     });
     // Initialize jQuery UI Tabs
     $("#tabs").tabs();
@@ -86,6 +97,58 @@ $(document).ready(function() {
     // Close dialog button
     $("#close-dialog").on("click", function() {
         $("#add-certificate-dialog").dialog("close");
+    });
+
+
+        $("#approvedDialog").dialog({
+        autoOpen: false,
+        width: 350, // Set your desired width
+        height: 500, // Set your desired height
+        modal: true,
+        title: "Edit Approved Record",
+        close: function() {
+            $(this).dialog("close");
+        }
+    });
+    // Open approvedDialog when search icon is clicked
+    $("#open-approved-dialog").click(function() {
+        $("#approvedDialog").dialog("open");
+    });
+
+    $('#editCertificateForm').on('submit', function(event) {
+    event.preventDefault();
+    
+    const formData = {
+        id: document.getElementById('editIDs').value,
+        note: document.getElementById('editNote').value
+    };
+    console.log(formData)
+    $.ajax({
+        url: 'nx_query/certificate_indigency.php?action=updateNote',
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+            if (jsonResponse.success) {
+                swal("Record updated successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload(); // Reload the page or update the UI as needed
+                    $('#editDialog').dialog("close"); // Close the dialog
+                });
+            } else {
+                swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                    icon: "error",
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            swal("Error updating record", "Please check the console for more details.", {
+                icon: "error",
+            });
+        }
+        });
     });
 });
 
@@ -178,6 +241,112 @@ function doneCert(id) {
         });
     }
 }
+function editApproved(targetID){
+    console.log(targetID)
+    $.get('nx_query/certificate_indigency.php?action=get&id=' + targetID, function(response) {
+        if (response.success) {
+            const official = response.data;
+            console.log(response.data);
+            document.getElementById('editID').value = official.id;
+            document.getElementById('editAmount').value = official.amount;
+            document.getElementById('editDate').value = official.date_issued;
+            document.getElementById('editPurposes').value = official.purpose;
+
+            // Open the dialog after populating the fields
+            $("#approvedDialog").dialog("open");
+        } else {
+            swal("Error: " + response.message, {
+                icon: "error",
+            });
+        }
+    }).fail(function() {
+        swal("Error retrieving record.", {
+            icon: "error",
+        });
+    });
+}
+function updateRecord() {
+    const id = document.getElementById('editID').value;
+    const amount = document.getElementById('editAmount').value;
+    const dateIssued = document.getElementById('editDate').value;
+    const editPurposes = document.getElementById('editPurposes').value;
+
+    const formData = {
+        id: id,
+        amount: amount,
+        date_issued: dateIssued,
+        purposes: editPurposes
+    };
+    console.log(formData)
+
+    $.ajax({
+        url: 'nx_query/certificate_indigency.php?action=updateApprove',
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+            if (jsonResponse.success) {
+                swal("Record updated successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload(); // Reload the page or update the UI as needed
+                    $('#approvedDialog').dialog("close"); // Close the dialog
+                });
+            } else {
+                swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                    icon: "error",
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            swal("Error updating record", "Please check the console for more details.", {
+                icon: "error",
+            });
+        }
+    });
+}
+function editDisapproved(id) {
+    console.log(id);
+    document.getElementById('editIDs').value = id;
+
+    // Fetch current note from the server
+    $.ajax({
+        url: 'nx_query/certificate_indigency.php?action=get',
+        type: 'GET',
+        data: { id: id },
+        success: function(response) {
+            const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+
+            if (jsonResponse.success) {
+                // Populate the note field with the current note
+                document.getElementById('editNote').value = jsonResponse.data.note || ''; // Default to empty if no note
+            } else {
+                console.error("Error fetching current note: " + jsonResponse.message);
+                document.getElementById('editNote').value = ''; // Clear if there's an error
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error fetching note:', status, error);
+            document.getElementById('editNote').value = ''; // Clear on error
+        }
+    });
+
+    $('#editDialog').dialog({
+        title: "Edit Certificate Notes",
+        modal: true,
+        width: 400,
+        buttons: {
+            "Cancel": function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+}
+
+
+// Handle form submission for editing
+
 
 </script>
 
@@ -299,6 +468,8 @@ function doneCert(id) {
                         <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
                         <td>
+                            <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
+                                    onclick="editApproved(<?php echo htmlspecialchars($row['id']); ?>)">Edit</button>
                             <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
                             <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
                         </td>
@@ -335,6 +506,8 @@ function doneCert(id) {
                         <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
                         <td>
+                            <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
+                                    onclick="editDisapproved(<?php echo htmlspecialchars($row['id']); ?>)">Edit</button>
                             <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
                             <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
                         </td>
@@ -467,5 +640,26 @@ function doneCert(id) {
             <button type="button" id="close-dialog" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-200">Close</button>
             <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Add Certificate</button>
         </div>
+    </form>
+</div>
+
+<!-- APPROVE DIALOG -->
+<div id="approvedDialog" style="display:none;">
+    <input type="number" id="editID" class="p-4 border mt-3" hidden/><br>
+    Amount:
+    <input type="number" id="editAmount" class="p-4 border mt-3"/><br>
+    Date:
+    <input type="date" id="editDate" class="p-4 border mt-3"/><br>
+    Purposes:
+    <textarea type="text" id="editPurposes" class="p-4 border mt-3"></textarea><br>
+    <button id="saveEdit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="updateRecord()">Save</button>
+</div>
+
+<div id="editDialog" style="display: none; width: 600px;">
+    <form id="editCertificateForm">
+        <input type="hidden" id="editIDs" name="id" />
+        <label for="editNote" class="block mb-2 font-medium">Notes:</label>
+        <textarea id="editNote" name="note" rows="4" class="w-full border-2 border-green-500 rounded-lg p-2 resize-none"></textarea>
+        <button type="submit" class="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200">Update</button>
     </form>
 </div>
