@@ -139,6 +139,46 @@ function addRecord(event) {
         }
     });
 }
+
+function doneCert(id) {
+    if (confirm('Are you sure you want to mark this certificate as done?')) {
+        // Send AJAX request to the server
+        $.ajax({
+            url: 'nx_query/certificate_indigency.php?action=mark_done',
+            type: 'POST',
+            data: { id: id },
+            success: function(response) {
+                console.log('Full server response:', response);
+                try {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Certificate marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); // Reload the page or update the UI as needed
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing server response:', e);
+                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                swal("Error marking record as done", "Please check the console for more details.", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+}
+
 </script>
 
 <div class="p-3 w-full bg-white">
@@ -147,7 +187,6 @@ function addRecord(event) {
 
     <div>
         <button id="open-resident-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Select Resident</button>
-
     </div>
     
     <div id="tabs" class="container mt-4">
@@ -194,6 +233,8 @@ function addRecord(event) {
                 </tbody>
             </table>
         </div>
+
+        <!-- Repeat similar structure for other sections (new, approved, disapproved, done) -->
 
         <div id="new">
             <table id="newTable" class="display" style="width:100%">
@@ -315,7 +356,7 @@ function addRecord(event) {
                         <th>Status</th>
                         <th>Certificate Amount</th>
                         <th>Date Issued</th>
-                        <th>Action</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -330,8 +371,9 @@ function addRecord(event) {
                         <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
                         <td>
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
+                            <div class="bg-green-400 p-2 text-center rounded-full border border-green-700 text-white">
+                                <?php echo htmlspecialchars($row['status']); ?>
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>

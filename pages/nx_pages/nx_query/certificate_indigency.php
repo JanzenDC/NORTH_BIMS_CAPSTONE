@@ -17,9 +17,9 @@ $action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'create':
-        // Retrieve ownerId from POST request
+        // Existing code for creating a certificate
         $ownerId = $_POST['resident_id'] ?? '';
-
+        
         // Validate the required fields
         if (empty($ownerId)) {
             $response['message'] = "Owner ID is required.";
@@ -77,6 +77,30 @@ switch ($action) {
                 }
             } else {
                 $response['message'] = "Resident not found.";
+            }
+        }
+        break;
+
+    case 'mark_done':
+        // Retrieve the certificate ID from POST request
+        $id = $_POST['id'] ?? '';
+
+        // Validate the ID
+        if (empty($id)) {
+            $response['message'] = "Certificate ID is required.";
+        } else {
+            // Update the status of the certificate to 'Done'
+            $sql = "UPDATE indigency_cert SET status = 'Done' WHERE id = '$id'";
+
+            if (mysqli_query($conn, $sql)) {
+                if (mysqli_affected_rows($conn) > 0) {
+                    $response['success'] = true;
+                    $response['message'] = "Certificate marked as done successfully!";
+                } else {
+                    $response['message'] = "No record found with that ID.";
+                }
+            } else {
+                $response['message'] = "Error updating certificate: " . mysqli_error($conn);
             }
         }
         break;
