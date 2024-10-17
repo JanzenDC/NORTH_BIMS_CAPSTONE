@@ -16,6 +16,28 @@ $response = [
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
+    case 'updateNotes':
+        // Get data from the POST request
+        $id = $_POST['id'] ?? '';
+        $notes = $_POST['notes'] ?? ''; // New field for notes
+
+        // Validate input
+        if (empty($id) || empty($notes)) {
+            $response['message'] = "ID and notes are required.";
+            break;
+        }
+
+        // Construct the SQL query to update the notes
+        $query = "UPDATE clearance_cert SET note = '$notes' WHERE id = $id";
+
+        // Execute the query
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Notes updated successfully.";
+        } else {
+            $response['message'] = "Error: " . mysqli_error($conn);
+        }
+        break;
     case 'create':
         // Get data from the POST request
         $fname = $_POST['fname'] ?? '';

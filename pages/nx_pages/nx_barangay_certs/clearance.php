@@ -105,6 +105,8 @@ $(document).ready(function() {
     $("#open-resident-dialog").click(function() {
         $("#residentDialog").dialog("open");
     });
+    
+    /////////////////////////////////////////////
     $("#approvedDialog").dialog({
         autoOpen: false,
         width: 350, // Set your desired width
@@ -118,6 +120,17 @@ $(document).ready(function() {
     // Open approvedDialog when search icon is clicked
     $("#open-approved-dialog").click(function() {
         $("#approvedDialog").dialog("open");
+    });
+///////////////////////////////////////////
+    $("#DisApproveddDialog").dialog({
+        autoOpen: false,
+        width: 350, // Set your desired width
+        height: 300, // Set your desired height
+        modal: true,
+        title: "Disapproved Certificate",
+        close: function() {
+            $(this).dialog("close");
+        }
     });
 
     $(document).on('click', '.select-resident', function() {
@@ -354,7 +367,64 @@ function doneCert(targetID) {
         }
     });
 }
+function editNote(targetID){
+    $.get('nx_query/certificate_clearance.php?action=get&id=' + targetID, function(response) {
+        if (response.success) {
+            const official = response.data;
+            console.log(response.data);
+            document.getElementById('editID').value = official.id;
+            document.getElementById('editNotes').value = official.note;
 
+            // Open the dialog after populating the fields
+            $("#DisApproveddDialog").dialog("open");
+        } else {
+            swal("Error: " + response.message, {
+                icon: "error",
+            });
+        }
+    }).fail(function() {
+        swal("Error retrieving record.", {
+            icon: "error",
+        });
+    });
+}
+function updateNote() {
+    const id = document.getElementById('editID').value;
+    const notes = document.getElementById('editNotes').value;
+
+    const formData = {
+        id: id,
+        notes: notes,
+    };
+    console.log(formData)
+
+    $.ajax({
+        url: 'nx_query/certificate_clearance.php?action=updateNotes',
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+            if (jsonResponse.success) {
+                swal("Record updated successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload(); // Reload the page or update the UI as needed
+                    $('#DisApproveddDialog').dialog("close"); // Close the dialog
+                });
+            } else {
+                swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                    icon: "error",
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            swal("Error updating record", "Please check the console for more details.", {
+                icon: "error",
+            });
+        }
+    });
+}
 </script>
 
 <div class="p-3 w-full bg-white">
@@ -501,7 +571,7 @@ function doneCert(targetID) {
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
                         <td><?php echo htmlspecialchars($row['note']); ?></td>
                         <td>
-                            <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200">Edit</button>
+                            <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" onclick="editNote(<?php echo htmlspecialchars($row['id']); ?>)">Edit</button>
                             <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-200 delete-btn" data-id="<?php echo $row['id']; ?>">Delete</button>
                         </td>
 
@@ -650,4 +720,12 @@ function doneCert(targetID) {
     Purposes:
     <textarea type="text" id="editPurposes" class="p-4 border mt-3"></textarea><br>
     <button id="saveEdit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="updateRecord()">Save</button>
+</div>
+
+<!-- DisApproved Edit Dialog -->
+<div id="DisApproveddDialog" style="display:none;">
+    <input type="number" id="editID" class="p-4 border mt-3" hidden/><br>
+    None:
+    <textarea type="text" id="editNotes" class="p-4 border mt-3"></textarea><br>
+    <button id="saveEdit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="updateNote()">Save</button>
 </div>
