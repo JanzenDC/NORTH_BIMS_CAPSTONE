@@ -35,7 +35,7 @@ switch ($action) {
 
         // Construct the SQL query
         $query = "INSERT INTO clearance_cert (fname, mname, lname, status, amount, bcNo, date_issued, purpose) 
-                VALUES ('$fname', '$mname', '$lname', '$status', $certificateAmount, '$bcNo', '$dateIssued', '$purposes')";
+                  VALUES ('$fname', '$mname', '$lname', '$status', $certificateAmount, '$bcNo', '$dateIssued', '$purposes')";
 
         // Execute the query
         if (mysqli_query($conn, $query)) {
@@ -56,28 +56,6 @@ switch ($action) {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
-
-    case 'delete':
-    // Get ID from the POST request
-    $id = $_POST['id'] ?? '';
-
-    // Check if ID is provided
-    if (empty($id)) {
-        $response['message'] = "ID is required to delete a record.";
-        break;
-    }
-
-    // Construct the SQL query to delete the record
-    $query = "DELETE FROM clearance_cert WHERE id = $id";
-
-    // Execute the query
-    if (mysqli_query($conn, $query)) {
-        $response['success'] = true;
-        $response['message'] = "Record deleted successfully.";
-    } else {
-        $response['message'] = "Error: " . mysqli_error($conn);
-    }
-    break;
 
     case 'delete':
         // Get ID from the POST request
@@ -135,6 +113,27 @@ switch ($action) {
         }
         break;
 
+    case 'setAsDone':
+        // Get ID from the POST request
+        $id = $_POST['id'] ?? '';
+
+        // Check if ID is provided
+        if (empty($id)) {
+            $response['message'] = "ID is required to set the record as done.";
+            break;
+        }
+
+        // Construct the SQL query to update the status to "Done"
+        $query = "UPDATE clearance_cert SET status = 'Done' WHERE id = $id";
+
+        // Execute the query
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Record marked as done successfully.";
+        } else {
+            $response['message'] = "Error: " . mysqli_error($conn);
+        }
+        break;
 
     default:
         $response['message'] = "Invalid action.";

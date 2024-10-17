@@ -303,6 +303,57 @@ function updateRecord() {
         }
     });
 }
+function doneCert(targetID) {
+    // Show confirmation dialog
+    swal({
+        title: "Are you sure?",
+        text: "Once you click 'Yes', this action cannot be undone.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willProceed) => {
+        if (willProceed) {
+            // If the user confirms, prepare the data for the AJAX request
+            const formData = {
+                id: targetID, // Target the specific ID
+                // Include other necessary fields here if needed
+            };
+
+            $.ajax({
+                url: 'nx_query/certificate_clearance.php?action=setAsDone', // Change to setAsDone
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Record marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); // Reload the page or update the UI as needed
+                            $('#approvedDialog').dialog("close"); // Close the dialog
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                    swal("Error marking record as done", "Please check the console for more details.", {
+                        icon: "error",
+                    });
+                }
+            });
+        } else {
+            // If the user cancels, you can show a message or simply do nothing
+            swal("Action canceled.", {
+                icon: "info",
+            });
+        }
+    });
+}
 
 </script>
 
@@ -349,7 +400,7 @@ function updateRecord() {
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
                         <td>
                             <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Done</button>
+                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
 
                         </td>
                     </tr>
@@ -384,7 +435,7 @@ function updateRecord() {
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
                         <td>
                             <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Done</button>
+                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
 
                         </td>
                     </tr>
@@ -421,7 +472,7 @@ function updateRecord() {
                             <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
                                     onclick="editApproved(<?php echo htmlspecialchars($row['id']); ?>)">Edit</button>
                             <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">Done</button>
+                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -484,7 +535,7 @@ function updateRecord() {
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
                         <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         <td><?php echo htmlspecialchars($row['bcNo']); ?></td>
-                        <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
+                        <td><?php echo $row['date_issued']; ?></td>
                         <td>
                             <div class="bg-green-400 p-2 text-center rounded-full border border-green-700 text-white">
                                 <?php echo htmlspecialchars($row['status']); ?>
