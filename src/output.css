@@ -751,6 +751,10 @@ video {
   margin-top: 250px;
 }
 
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+
 .block {
   display: block;
 }
@@ -1492,6 +1496,10 @@ video {
   transition-duration: 300ms;
 }
 
+.last\:block:last-child {
+  display: block;
+}
+
 .hover\:bg-blue-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity));
@@ -1703,6 +1711,10 @@ video {
 
   .md\:rounded-lg {
     border-radius: 0.5rem;
+  }
+
+  .md\:pr-2 {
+    padding-right: 0.5rem;
   }
 }
 
