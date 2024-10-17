@@ -6,7 +6,7 @@ if ($_SESSION['user']['isApproved'] == 0) {
     exit();
 }
 ?>
-<aside id="sidebar" class="w-[300px] md:block hidden bg-green-950 text-white shadow-lg h-full overflow-y-auto ">
+<aside id="sidebar" class="w-[300px] md:block hidden bg-green-800 text-white shadow-lg h-full overflow-y-auto ">
     <div class="flex justify-center items-center">
         <img src="../../assets/images/north.png" class="w-[100px] h-[100px]">
     </div>
@@ -24,7 +24,9 @@ if ($_SESSION['user']['isApproved'] == 0) {
             </li>
             <li>
                 <button onclick="toggleSettings('officials-menu', 'officials-icon')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'barangay_officials' ? 'active:bg-gray-400' : ''; ?>">
+                    <div>
                     <i class="fa-solid fa-users"></i> Barangay Officials
+                    </div>
                     <span id="officials-icon"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
                 <ul id="officials-menu" class="hidden">
@@ -57,7 +59,9 @@ if ($_SESSION['user']['isApproved'] == 0) {
             </li>
             <li>
                 <button onclick="toggleSettings('settings-menu-1', 'settings-icon-1')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'residents' ? 'active:bg-gray-400' : ''; ?>"">
-                    <i class="fa-solid fa-users"></i> Residents
+                    <div>
+                        <i class="fa-solid fa-users"></i> Residents
+                    </div>
                     <span id="settings-icon-1"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
                 <ul id="settings-menu-1" class="hidden">
@@ -74,13 +78,15 @@ if ($_SESSION['user']['isApproved'] == 0) {
                 </ul>
             </li>
             <li>
-                <button onclick="toggleSettings('settings-menu-2', 'settings-icon-2')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black">
+                <button onclick="toggleSettings('settings-menu-2', 'settings-icon-2')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'certs' ? 'active:bg-gray-400' : ''; ?>"">
+                    <div>
                     <i class="fa-solid fa-certificate"></i> Barangay Certificates
+                    </div>
                     <span id="settings-icon-2"><i class="fa-solid fa-caret-left"></i></span>
                 </button>
-                <ul id="settings-menu-2" class="hidden ml-4 mt-2">
+                <ul id="settings-menu-2" class="hidden ">
                     <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
+                        <a href="../nx_pages/BarangayCertificates.php?page=clearance" class="block px-4 py-2 hover:bg-gray-300 ps-16 hover:text-black <?php echo $treeView == 'clearance' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-file-alt"></i> Clearance
                         </a>
                     </li>

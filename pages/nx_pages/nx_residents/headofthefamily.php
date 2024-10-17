@@ -32,6 +32,8 @@ if ($resuktSqks->num_rows > 0) {
 ?>
 
 <div class="p-3 w-full bg-white">
+    <p class="text-3xl mb-3">HEAD OF FAMILY LIST</p>
+    <hr class="mt-3 mb-3">
     <table id="officials-table" style="width: 100%;" class="cell-border hover">
         <thead>
             <tr>
@@ -97,7 +99,7 @@ if ($resuktSqks->num_rows > 0) {
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"> -->
 <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
 <script>
 $(document).ready(function() {
