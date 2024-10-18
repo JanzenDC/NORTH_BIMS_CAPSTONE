@@ -156,6 +156,35 @@ switch ($action) {
         }
 
         break;
+    case 'updateNote':
+        // Update note for the certificate
+        $id = $_POST['id'] ?? '';
+        $note = mysqli_real_escape_string($conn, $_POST['note'] ?? '');
+
+        // Validate required fields
+        if (empty($id) || empty($note)) {
+            $response['message'] = 'Please fill in all required fields.';
+            echo json_encode($response);
+            exit;
+        }
+
+        // Prepare the SQL query to update the note
+        $sql = "UPDATE business_cert SET note='$note' WHERE id='$id'";
+
+        // Execute the query
+        if (mysqli_query($conn, $sql)) {
+            if (mysqli_affected_rows($conn) > 0) {
+                $response['success'] = true;
+                $response['message'] = 'Note updated successfully!';
+            } else {
+                $response['message'] = 'No record found with that ID.';
+            }
+        } else {
+            $response['message'] = 'Failed to update note: ' . mysqli_error($conn);
+        }
+
+        break;
+
     default:
         $response['message'] = "Invalid action.";
 }

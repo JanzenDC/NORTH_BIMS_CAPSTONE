@@ -61,6 +61,46 @@ $(document).ready(function() {
         saveEdit(id); // Call save function
     });
 
+        $("#editNoteDialog").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 400
+    });
+
+    window.openEditNoteDialog = function(id, currentNote) {
+        $("#editNoteId").val(id);
+        $("#editNote").val(currentNote);
+        $("#editNoteDialog").dialog("open");
+    };
+
+    $("#editNoteForm").on("submit", function(e) {
+        e.preventDefault();
+        const id = $("#editNoteId").val();
+        const note = $("#editNote").val();
+
+        $.ajax({
+            url: 'nx_query/certificate_bpermit.php?action=updateNote',
+            type: 'POST',
+            data: { id: id, note: note },
+            success: function(response) {
+                if (response.success) {
+                    swal("Certificate marked as done successfully!", {
+                        icon: "success",
+                    }).then(() => {
+                        location.reload(); // Reload the page or update the UI as needed
+                        $('#editCertificateDialog').dialog("close");
+                    });
+                    
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                alert('Error updating certificate.');
+            }
+        });
+    });
 });
 
 ///////////// CRUD ////////////////////
@@ -416,16 +456,23 @@ function saveEdit(id) {
                         <th>Type of Business</th>
                         <th>Status</th>
                         <th>Note</th>
+                        <th>Actions</th> <!-- Added Actions column -->
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($disapprovedData as $data): ?>
-                    <tr>
+                    <tr data-id="<?php echo $data['id']; ?>"> <!-- Added data-id attribute -->
                         <td><?php echo htmlspecialchars($data['businessName']); ?></td>
                         <td><?php echo htmlspecialchars($data['businessAddress']); ?></td>
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['note']); ?></td>
+                        <td class="flex space-x-2">
+                            <button onclick="openEditNoteDialog(<?php echo $data['id']; ?>, '<?php echo addslashes($data['note']); ?>')" 
+                                    class="bg-yellow-400 text-white px-4 py-2 rounded-md">
+                                Edit Note
+                            </button>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -571,3 +618,15 @@ function saveEdit(id) {
 </div>
 
 
+<div id="editNoteDialog" title="Edit Note" style="display:none;">
+    <form id="editNoteForm">
+        <input type="hidden" id="editNoteId" name="id">
+        <div class="mb-4">
+            <label for="editNote" class="block text-sm font-medium text-gray-700">Note:</label>
+            <textarea id="editNote" name="note" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
+            Save Note
+        </button>
+    </form>
+</div>
