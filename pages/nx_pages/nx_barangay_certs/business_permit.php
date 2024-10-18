@@ -55,6 +55,12 @@ $(document).ready(function() {
     $("#openDialogButton").on("click", function() {
         $("#addCertificateDialog").dialog("open");
     });
+
+    $('#updateButton').on('click', function() {
+        const id = $('#editCertId').val(); // Get the hidden ID
+        saveEdit(id); // Call save function
+    });
+
 });
 
 ///////////// CRUD ////////////////////
@@ -108,6 +114,181 @@ function addRecord(event) {
         }
     });
 }
+function doneCert(id) {
+    if (confirm('Are you sure you want to mark this certificate as done?')) {
+        // Send AJAX request to the server
+        $.ajax({
+            url: 'nx_query/certificate_bpermit.php?action=mark_done',
+            type: 'POST',
+            data: { id: id },
+            success: function(response) {
+                console.log('Full server response:', response);
+                try {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Certificate marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); // Reload the page or update the UI as needed
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing server response:', e);
+                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                swal("Error marking record as done", "Please check the console for more details.", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+}
+function approveCert(id) {
+    if (confirm('Are you sure you want to mark this certificate as done?')) {
+        // Send AJAX request to the server
+        $.ajax({
+            url: 'nx_query/certificate_bpermit.php?action=setApproved',
+            type: 'POST',
+            data: { id: id },
+            success: function(response) {
+                console.log('Full server response:', response);
+                try {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Certificate marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); // Reload the page or update the UI as needed
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing server response:', e);
+                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                swal("Error marking record as done", "Please check the console for more details.", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+}
+function disapproveCert(id) {
+    if (confirm('Are you sure you want to mark this certificate as disapproved?')) {
+        // Send AJAX request to the server
+        $.ajax({
+            url: 'nx_query/certificate_bpermit.php?action=setDisapproved',
+            type: 'POST',
+            data: { id: id },
+            success: function(response) {
+                console.log('Full server response:', response);
+                try {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Certificate marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); // Reload the page or update the UI as needed
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing server response:', e);
+                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                swal("Error marking record as done", "Please check the console for more details.", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+}
+
+function editCert(id) {
+    // Find the row data based on the id
+    const row = document.querySelector(`#approvedTable tr[data-id='${id}']`);
+    if (row) {
+        // Retrieve values from the row
+        const businessName = row.cells[0].innerText;
+        const address = row.cells[1].innerText;
+        const typeOfBusiness = row.cells[2].innerText;
+        const certAmount = row.cells[3].innerText;
+
+        // Populate the dialog fields
+        $('#editCertId').val(id); // Set the hidden ID
+        $('#editBusinessName').val(businessName);
+        $('#editAddress').val(address);
+        $('#editTypeOfBusiness').val(typeOfBusiness);
+        $('#editCertAmount').val(certAmount);
+
+        // Open the jQuery UI dialog
+        $('#editCertificateDialog').dialog({
+            modal: true
+        });
+    }
+}
+
+// Update button click event
+
+function saveEdit(id) {
+    console.log(id)
+    const formData = {
+        id: $('#editCertId').val(), // Use the hidden ID
+        businessName: $('#editBusinessName').val(),
+        address: $('#editAddress').val(),
+        typeOfBusiness: $('#editTypeOfBusiness').val(),
+        certAmount: $('#editCertAmount').val()
+    };
+
+    // Example AJAX call to save changes (adjust URL and handling as necessary)
+    $.ajax({
+        url: 'nx_query/certificate_bpermit.php?action=updateInfo',
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            if (response.success) {
+                swal("Certificate marked as done successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload(); // Reload the page or update the UI as needed
+                    $('#editCertificateDialog').dialog("close");
+                });
+                
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            alert('Error updating certificate.');
+        }
+    });
+}
 
 </script>
 
@@ -150,12 +331,17 @@ function addRecord(event) {
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
-                        <td><!-- Add action buttons here --></td>
+                        <td class="flex space-x-2">
+                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600" onclick="doneCert(<?php echo $data['id']; ?>)">Done</button>
+                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600" onclick="generateCertificate(<?php echo $data['id']; ?>)">Generate</button>
+                        </td>
+
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
+
 
         <div id="new">
             <table id="newTable" class="display" style="width:100%">
@@ -177,12 +363,16 @@ function addRecord(event) {
                         <td><?php echo htmlspecialchars($data['businessAddress']); ?></td>
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
-                        <td><!-- Add action buttons here --></td>
+                        <td class="flex space-x-2">
+                            <button class="btn-approve bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="approveCert(<?php echo $data['id']; ?>)">Approve</button>
+                            <button class="btn-disapprove bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="disapproveCert(<?php echo $data['id']; ?>)">Disapprove</button>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
+
 
         <div id="approved">
             <table id="approvedTable" class="display" style="width:100%">
@@ -198,18 +388,24 @@ function addRecord(event) {
                 </thead>
                 <tbody>
                     <?php foreach ($approvedData as $data): ?>
-                    <tr>
+                    <tr data-id="<?php echo $data['id']; ?>">
                         <td><?php echo htmlspecialchars($data['businessName']); ?></td>
                         <td><?php echo htmlspecialchars($data['businessAddress']); ?></td>
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
-                        <td><!-- Add action buttons here --></td>
+                        <td class="flex space-x-2">
+                            <button class="btn-edit bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" onclick="editCert(<?php echo $data['id']; ?>)">Edit</button>
+                            <button class="btn-generate bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="generateCert(<?php echo $data['id']; ?>)">Generate</button>
+                            <button class="btn-done bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="doneCert(<?php echo $data['id']; ?>)">Done</button>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
+
+
 
         <div id="disapproved">
             <table id="disapprovedTable" class="display" style="width:100%">
@@ -256,7 +452,11 @@ function addRecord(event) {
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['date_issued']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
-                        <td><?php echo htmlspecialchars($data['status']); ?></td>
+                        <td>
+                            <div class="bg-green-400 p-2 text-center rounded-full border border-green-700 text-white">
+                                <?php echo htmlspecialchars($row['status']); ?>
+                            </div>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -328,4 +528,46 @@ function addRecord(event) {
         <button type="submit" class="mt-6 w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600">Add Certificate</button>
     </form>
 </div>
+
+
+<!-- EDIT CERT -->
+<div id="editCertificateDialog" title="Edit Certificate" style="display:none;">
+    <div class="space-y-4">
+        <input type="hidden" id="editCertId" name="certId">
+
+        <div>
+            <label for="editBusinessName" class="block text-sm font-medium text-gray-700">Business Name:</label>
+            <input type="text" id="editBusinessName" name="businessName" required 
+                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500" 
+                   placeholder="Enter business name">
+        </div>
+
+        <div>
+            <label for="editAddress" class="block text-sm font-medium text-gray-700">Address:</label>
+            <input type="text" id="editAddress" name="address" required 
+                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500" 
+                   placeholder="Enter address">
+        </div>
+
+        <div>
+            <label for="editTypeOfBusiness" class="block text-sm font-medium text-gray-700">Type of Business:</label>
+            <input type="text" id="editTypeOfBusiness" name="typeOfBusiness" required 
+                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500" 
+                   placeholder="Enter type of business">
+        </div>
+
+        <div>
+            <label for="editCertAmount" class="block text-sm font-medium text-gray-700">Certificate Amount:</label>
+            <input type="text" id="editCertAmount" name="certAmount" required 
+                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500" 
+                   placeholder="Enter certificate amount">
+        </div>
+
+        <button id="updateButton" type="button" 
+                class="mt-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            Update
+        </button>
+    </div>
+</div>
+
 

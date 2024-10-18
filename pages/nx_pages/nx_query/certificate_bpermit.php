@@ -59,7 +59,103 @@ switch ($action) {
         }
 
         break;
+    case 'mark_done':
+        // Mark certificate as done
+        $id = $_POST['id'] ?? '';
 
+        // Validate the ID
+        if (empty($id)) {
+            $response['message'] = "Certificate ID is required.";
+        } else {
+            // Update the status of the certificate to 'Done'
+            $sql = "UPDATE business_cert SET status = 'Done' WHERE id = '$id'";
+
+            if (mysqli_query($conn, $sql)) {
+                if (mysqli_affected_rows($conn) > 0) {
+                    $response['success'] = true;
+                    $response['message'] = "Certificate marked as done successfully!";
+                } else {
+                    $response['message'] = "No record found with that ID.";
+                }
+            } else {
+                $response['message'] = "Error updating certificate: " . mysqli_error($conn);
+            }
+        }
+
+        break;
+    case 'setApproved':
+                // Get ID from the POST request
+        $id = $_POST['id'] ?? '';
+
+        // Check if ID is provided
+        if (empty($id)) {
+            $response['message'] = "ID is required to set the record as done.";
+            break;
+        }
+
+        // Construct the SQL query to update the status to "Done"
+        $query = "UPDATE business_cert SET status = 'Approved' WHERE id = $id";
+
+        // Execute the query
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Record marked as Approved successfully.";
+        } else {
+            $response['message'] = "Error: " . mysqli_error($conn);
+        }
+        break;
+    case 'setDisapproved':
+                        // Get ID from the POST request
+        $id = $_POST['id'] ?? '';
+
+        // Check if ID is provided
+        if (empty($id)) {
+            $response['message'] = "ID is required to set the record as done.";
+            break;
+        }
+
+        // Construct the SQL query to update the status to "Done"
+        $query = "UPDATE business_cert SET status = 'Disapproved' WHERE id = $id";
+
+        // Execute the query
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Record marked as Approved successfully.";
+        } else {
+            $response['message'] = "Error: " . mysqli_error($conn);
+        }
+        break;
+    case 'updateInfo':
+        // Update certificate details
+        $id = $_POST['id'] ?? '';
+        $businessName = mysqli_real_escape_string($conn, $_POST['businessName'] ?? '');
+        $address = mysqli_real_escape_string($conn, $_POST['address'] ?? '');
+        $typeOfBusiness = mysqli_real_escape_string($conn, $_POST['typeOfBusiness'] ?? '');
+        $certAmount = mysqli_real_escape_string($conn, $_POST['certAmount'] ?? '');
+
+        // Validate required fields
+        if (empty($id) || empty($businessName) || empty($address) || empty($typeOfBusiness) || empty($certAmount)) {
+            $response['message'] = 'Please fill in all required fields.';
+            echo json_encode($response);
+            exit;
+        }
+
+        // Prepare the SQL query to update the record
+        $sql = "UPDATE business_cert SET businessName='$businessName', businessAddress='$address', typeOfBusiness='$typeOfBusiness', cert_amount='$certAmount' WHERE id='$id'";
+
+        // Execute the query
+        if (mysqli_query($conn, $sql)) {
+            if (mysqli_affected_rows($conn) > 0) {
+                $response['success'] = true;
+                $response['message'] = 'Certificate updated successfully!';
+            } else {
+                $response['message'] = 'No record found with that ID.';
+            }
+        } else {
+            $response['message'] = 'Failed to update certificate: ' . mysqli_error($conn);
+        }
+
+        break;
     default:
         $response['message'] = "Invalid action.";
 }
