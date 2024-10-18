@@ -96,7 +96,7 @@ if ($_SESSION['user']['isApproved'] == 0) {
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
+                        <a href="../nx_pages/BarangayCertificates.php?page=residency" class="block px-4 py-2 ps-16 hover:bg-gray-300 hover:text-black <?php echo $treeView == 'residency' ? 'active:bg-green-400 text-white' : ''; ?>">
                             <i class="fa-solid fa-file-alt"></i> Residency
                         </a>
                     </li>
