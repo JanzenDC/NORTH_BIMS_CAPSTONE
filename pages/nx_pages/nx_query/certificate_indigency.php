@@ -181,7 +181,48 @@ switch ($action) {
             }
         }
         break;
+    case 'setAsApprove':
+        // Get ID from the POST request
+        $id = $_POST['id'] ?? '';
 
+        // Check if ID is provided
+        if (empty($id)) {
+            $response['message'] = "ID is required to set the record as done.";
+            break;
+        }
+
+        // Construct the SQL query to update the status to "Done"
+        $query = "UPDATE indigency_cert SET status = 'Approved' WHERE id = $id";
+
+        // Execute the query
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Record marked as Approved successfully.";
+        } else {
+            $response['message'] = "Error: " . mysqli_error($conn);
+        }
+        break;
+    case 'setDisapproved':
+        // Get ID from the POST request
+        $id = $_POST['id'] ?? '';
+
+        // Check if ID is provided
+        if (empty($id)) {
+            $response['message'] = "ID is required to set the record as done.";
+            break;
+        }
+
+        // Construct the SQL query to update the status to "Done"
+        $query = "UPDATE indigency_cert SET status = 'Disapproved' WHERE id = $id";
+
+        // Execute the query
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Record marked as Disapproved successfully.";
+        } else {
+            $response['message'] = "Error: " . mysqli_error($conn);
+        }
+        break;
     default:
         $response['message'] = "Invalid action.";
 }
