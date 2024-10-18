@@ -5,6 +5,9 @@ if ($_SESSION['user']['isApproved'] == 0) {
     header("Location: ../login.php"); // Redirect if not approved
     exit();
 }
+
+$userType = $_SESSION['user']['account_type'];  // Get user type from session
+
 ?>
 <aside id="sidebar" class="w-[300px] md:block hidden bg-green-800 text-white shadow-lg h-full overflow-y-auto ">
     <div class="flex justify-center items-center">
@@ -78,7 +81,7 @@ if ($_SESSION['user']['isApproved'] == 0) {
                 </ul>
             </li>
             <li>
-                <button onclick="toggleSettings('settings-menu-2', 'settings-icon-2')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'certs' ? 'active:bg-gray-400' : ''; ?>"">
+                <button onclick="toggleSettings('settings-menu-2', 'settings-icon-2')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'certs' ? 'active:bg-gray-400' : ''; ?>">
                     <div>
                     <i class="fa-solid fa-certificate"></i> Barangay Certificates
                     </div>
@@ -106,7 +109,7 @@ if ($_SESSION['user']['isApproved'] == 0) {
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
+                        <a href="../nx_pages/BarangayCertificates.php?page=livestock_sale" class="<?php echo $treeView == 'livestock_sale' ? 'active:bg-green-400 text-white' : ''; ?> block px-4 py-2 ps-16 hover:bg-gray-300 hover:text-black">
                             <i class="fa-solid fa-file-alt"></i> Livestock Sale
                         </a>
                     </li>
