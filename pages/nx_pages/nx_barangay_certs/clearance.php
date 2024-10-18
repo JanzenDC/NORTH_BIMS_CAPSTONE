@@ -63,13 +63,24 @@ if ($resultDone->num_rows > 0) {
 <script>
 $(document).ready(function() {
     // Initialize DataTables for all tables
-    $('#walkinTable').DataTable();
-    $('#newTable').DataTable();
-    $('#approvedTable').DataTable();
-    $('#disapprovedTable').DataTable();
-    $('#doneTable').DataTable();
+    $('#walkinTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
+    $('#newTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
+    $('#approvedTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
+    $('#disapprovedTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
+    $('#doneTable').DataTable({
+        "scrollX": true // Enable horizontal scrolling
+    });
     $('#residentTable').DataTable({
-        "searching": true // Enable the search feature
+        "searching": true, // Enable the search feature
+        "scrollX": true // Enable horizontal scrolling
     });
     // Initialize jQuery UI Tabs
     $("#tabs").tabs();
@@ -425,6 +436,106 @@ function updateNote() {
         }
     });
 }
+function approveCert(targetID) {
+    // Show confirmation dialog
+    swal({
+        title: "Are you sure?",
+        text: "Once you click 'Yes', this action cannot be undone.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willProceed) => {
+        if (willProceed) {
+            // If the user confirms, prepare the data for the AJAX request
+            const formData = {
+                id: targetID, // Target the specific ID
+                // Include other necessary fields here if needed
+            };
+
+            $.ajax({
+                url: 'nx_query/certificate_clearance.php?action=setAsApprove', // Change to setAsApprove
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Record marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); 
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                    swal("Error marking record as done", "Please check the console for more details.", {
+                        icon: "error",
+                    });
+                }
+            });
+        } else {
+            // If the user cancels, you can show a message or simply do nothing
+            swal("Action canceled.", {
+                icon: "info",
+            });
+        }
+    });
+}
+function disapproveCert(targetID) {
+    // Show confirmation dialog
+    swal({
+        title: "Are you sure?",
+        text: "Once you click 'Yes', this action cannot be undone.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willProceed) => {
+        if (willProceed) {
+            // If the user confirms, prepare the data for the AJAX request
+            const formData = {
+                id: targetID, // Target the specific ID
+                // Include other necessary fields here if needed
+            };
+
+            $.ajax({
+                url: 'nx_query/certificate_clearance.php?action=setDisapproved', // Change to setAsApprove
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Record marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); 
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                    swal("Error marking record as done", "Please check the console for more details.", {
+                        icon: "error",
+                    });
+                }
+            });
+        } else {
+            // If the user cancels, you can show a message or simply do nothing
+            swal("Action canceled.", {
+                icon: "info",
+            });
+        }
+    });
+}
 </script>
 
 <div class="p-3 w-full bg-white">
@@ -505,7 +616,7 @@ function updateNote() {
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
                         <td>
                             <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick="approveCert(<?php echo htmlspecialchars($row['id']); ?>)">Approve</button>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="disapproveCert(<?php echo htmlspecialchars($row['id']); ?>)">Disapprove</button>
+                            <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-200" onclick="disapproveCert(<?php echo htmlspecialchars($row['id']); ?>)">Disapprove</button>
                         </td>
                     </tr>
                     <?php endforeach; ?>
