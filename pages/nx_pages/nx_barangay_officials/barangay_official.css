@@ -1,0 +1,314 @@
+/* TO HIDE THE ARROW IN CONTACT FIELD */
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.text-field-outlined {
+  --pure-material-safari-helper1: rgb(
+    var(--pure-material-primary-rgb, 33, 150, 243)
+  );
+  position: relative;
+  display: inline-block;
+  padding-top: 6px;
+  font-family: var(
+    --pure-material-font,
+    "Roboto",
+    "Segoe UI",
+    BlinkMacSystemFont,
+    system-ui,
+    -apple-system
+  );
+  font-size: 16px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+/* Input, Textarea */
+.text-field-outlined > input,
+.text-field-outlined > textarea {
+  box-sizing: border-box;
+  margin: 0;
+  border: solid 1px; /* Safari */
+  border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+  border-top-color: transparent;
+  border-radius: 4px;
+  padding: 15px 13px 15px;
+  width: 100%;
+  height: inherit;
+  color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+  background-color: transparent;
+  box-shadow: none; /* Firefox */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  caret-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+/* Span */
+.text-field-outlined > input + span,
+.text-field-outlined > textarea + span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+  width: 100%;
+  max-height: 100%;
+  color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+  font-size: 75%;
+  line-height: 15px;
+  cursor: text;
+  transition: color 0.2s, font-size 0.2s, line-height 0.2s;
+}
+
+/* Corners */
+.text-field-outlined > input + span::before,
+.text-field-outlined > input + span::after,
+.text-field-outlined > textarea + span::before,
+.text-field-outlined > textarea + span::after {
+  content: "";
+  display: block;
+  box-sizing: border-box;
+  margin-top: 6px;
+  border-top: solid 1px;
+  border-top-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+  min-width: 10px;
+  height: 8px;
+  pointer-events: none;
+  box-shadow: inset 0 1px transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.text-field-outlined > input + span::before,
+.text-field-outlined > textarea + span::before {
+  margin-right: 4px;
+  border-left: solid 1px transparent;
+  border-radius: 4px 0;
+}
+
+.text-field-outlined > input + span::after,
+.text-field-outlined > textarea + span::after {
+  flex-grow: 1;
+  margin-left: 4px;
+  border-right: solid 1px transparent;
+  border-radius: 0 4px;
+}
+
+/* Hover */
+.text-field-outlined:hover > input,
+.text-field-outlined:hover > textarea {
+  border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+  border-top-color: transparent;
+}
+
+.text-field-outlined:hover > input + span::before,
+.text-field-outlined:hover > textarea + span::before,
+.text-field-outlined:hover > input + span::after,
+.text-field-outlined:hover > textarea + span::after {
+  border-top-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+}
+
+.text-field-outlined:hover > input:not(:focus):placeholder-shown,
+.text-field-outlined:hover > textarea:not(:focus):placeholder-shown {
+  border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+}
+
+/* Placeholder-shown */
+.text-field-outlined > input:not(:focus):placeholder-shown,
+.text-field-outlined > textarea:not(:focus):placeholder-shown {
+  border-top-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+}
+
+.text-field-outlined > input:not(:focus):placeholder-shown + span,
+.text-field-outlined > textarea:not(:focus):placeholder-shown + span {
+  font-size: inherit;
+  line-height: 68px;
+}
+
+.text-field-outlined > input:not(:focus):placeholder-shown + span::before,
+.text-field-outlined > textarea:not(:focus):placeholder-shown + span::before,
+.text-field-outlined > input:not(:focus):placeholder-shown + span::after,
+.text-field-outlined > textarea:not(:focus):placeholder-shown + span::after {
+  border-top-color: transparent;
+}
+
+/* Focus */
+.text-field-outlined > input:focus,
+.text-field-outlined > textarea:focus {
+  border-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+  border-top-color: transparent;
+  box-shadow: inset 1px 0 var(--pure-material-safari-helper1),
+    inset -1px 0 var(--pure-material-safari-helper1),
+    inset 0 -1px var(--pure-material-safari-helper1);
+  outline: none;
+}
+
+.text-field-outlined > input:focus + span,
+.text-field-outlined > textarea:focus + span {
+  color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+}
+
+.text-field-outlined > input:focus + span::before,
+.text-field-outlined > input:focus + span::after,
+.text-field-outlined > textarea:focus + span::before,
+.text-field-outlined > textarea:focus + span::after {
+  border-top-color: var(--pure-material-safari-helper1) !important;
+  box-shadow: inset 0 1px var(--pure-material-safari-helper1);
+}
+
+/* Disabled */
+.text-field-outlined > input:disabled,
+.text-field-outlined > input:disabled + span,
+.text-field-outlined > textarea:disabled,
+.text-field-outlined > textarea:disabled + span {
+  border-color: rgba(
+    var(--pure-material-onsurface-rgb, 0, 0, 0),
+    0.38
+  ) !important;
+  border-top-color: transparent !important;
+  color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+  pointer-events: none;
+}
+
+.text-field-outlined > input:disabled + span::before,
+.text-field-outlined > input:disabled + span::after,
+.text-field-outlined > textarea:disabled + span::before,
+.text-field-outlined > textarea:disabled + span::after {
+  border-top-color: rgba(
+    var(--pure-material-onsurface-rgb, 0, 0, 0),
+    0.38
+  ) !important;
+}
+
+.text-field-outlined > input:disabled:placeholder-shown,
+.text-field-outlined > input:disabled:placeholder-shown + span,
+.text-field-outlined > textarea:disabled:placeholder-shown,
+.text-field-outlined > textarea:disabled:placeholder-shown + span {
+  border-top-color: rgba(
+    var(--pure-material-onsurface-rgb, 0, 0, 0),
+    0.38
+  ) !important;
+}
+
+.text-field-outlined > input:disabled:placeholder-shown + span::before,
+.text-field-outlined > input:disabled:placeholder-shown + span::after,
+.text-field-outlined > textarea:disabled:placeholder-shown + span::before,
+.text-field-outlined > textarea:disabled:placeholder-shown + span::after {
+  border-top-color: transparent !important;
+}
+
+/* Faster transition in Safari for less noticable fractional font-size issue */
+@media not all and (min-resolution: 0.001dpcm) {
+  @supports (-webkit-appearance: none) {
+    .text-field-outlined > input,
+    .text-field-outlined > input + span,
+    .text-field-outlined > textarea,
+    .text-field-outlined > textarea + span,
+    .text-field-outlined > input + span::before,
+    .text-field-outlined > input + span::after,
+    .text-field-outlined > textarea + span::before,
+    .text-field-outlined > textarea + span::after {
+      transition-duration: 0.1s;
+    }
+  }
+}
+
+.custom-btn {
+  width: 130px;
+  height: 40px;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 25px;
+  font-family: "Lato", sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.btn-3 {
+  background: rgb(0, 172, 238);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 172, 238, 1) 0%,
+    rgba(2, 126, 251, 1) 100%
+  );
+  width: 130px;
+  height: 40px;
+  line-height: 42px;
+  padding: 0;
+  border: none;
+}
+.btn-3 span {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.btn-3:before,
+.btn-3:after {
+  position: absolute;
+  content: "";
+  right: 0;
+  top: 0;
+  background: rgba(2, 126, 251, 1);
+  transition: all 0.3s ease;
+}
+.btn-3:before {
+  height: 0%;
+  width: 2px;
+}
+.btn-3:after {
+  width: 0%;
+  height: 2px;
+}
+.btn-3:hover {
+  background: transparent;
+  box-shadow: none;
+}
+.btn-3:hover:before {
+  height: 100%;
+}
+.btn-3:hover:after {
+  width: 100%;
+}
+.btn-3 span:hover {
+  color: rgba(2, 126, 251, 1);
+}
+.btn-3 span:before,
+.btn-3 span:after {
+  position: absolute;
+  content: "";
+  left: 0;
+  bottom: 0;
+  background: rgba(2, 126, 251, 1);
+  transition: all 0.3s ease;
+}
+.btn-3 span:before {
+  width: 2px;
+  height: 0%;
+}
+.btn-3 span:after {
+  width: 0%;
+  height: 2px;
+}
+.btn-3 span:hover:before {
+  height: 100%;
+}
+.btn-3 span:hover:after {
+  width: 100%;
+}

@@ -26,7 +26,7 @@ if ($resuktSqks->num_rows > 0) {
 $conn->close();
 ?>
 
-<div class="p-3 w-full bg-white">
+<div class="p-3 w-full bg-white rounded-md shadow-xl mb-[80px]">
     <h1 class="text-3xl font-bold">Barangay Officials</h1>
     <hr>
     <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Official</button>
@@ -36,10 +36,10 @@ $conn->close();
         <thead>
             <tr>
                 <th>Image</th>
-                <th>Full Name</th>
-                <th>Position</th>
+                <th class="text-start">Full Name</th>
+                <th class="text-center">Position</th>
                 <th>Contact</th>
-                <th>Birthday</th>
+                <th class="text-center">Birthday</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -47,11 +47,11 @@ $conn->close();
             <?php foreach ($data as $official): ?>
                 <tr data-id="<?= $official['id'] ?>">
                     <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
-                    <td><?= htmlspecialchars($official['full_name']) ?></td>
-                    <td><?= htmlspecialchars($official['position']) ?></td>
-                    <td><?= htmlspecialchars($official['contact']) ?></td>
-                    <td><?= htmlspecialchars($official['bday']) ?></td>
-                    <td>
+                    <td class="text-start"><?= htmlspecialchars($official['full_name']) ?></td>
+                    <td class="text-start"><?= htmlspecialchars($official['position']) ?></td>
+                    <td class="text-center"><?= htmlspecialchars($official['contact']) ?></td>
+                    <td class="text-center"><?= htmlspecialchars($official['bday']) ?></td>
+                    <td class="text-center">
                         <button class="text-yellow-500" title="Edit" onclick="editRecord(<?= $official['id'] ?>)">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -67,20 +67,46 @@ $conn->close();
 
 <!-- MODALS SECTION -->
 <!-- Create Official Modal -->
-<div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
-        <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
-        <h2 class="text-lg font-semibold mb-4">Create Official</h2>
+<div id="createModal" class="modal fixed inset-0 bg-gray-500  bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3 ">
+        <i class="fa-solid  text-sm fa-x float-right cursor-pointer"  onclick="closeModal('createModal')" style="color:red;"></i>
+        <!-- <span class="cursor-pointer float-right ">&times;</span> -->
+        <h1 class="text-xl font-bold mb-4">Add Barangay Official</h1>
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
-            <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
-            <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
-            <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" required>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Create</button>
+
+            <label class="text-field-outlined w-full ">
+            <input placeholder="" type="text" name="fname" id="addFname" required>
+            <span class="text-bold">Firstname</span>
+            </label>
+            <label class="text-field-outlined w-full ">
+            <input placeholder="" type="text" name="mname" id="addMname"  required>
+            <span class="text-bold">Middlename</span>
+            </label>
+            <label class="text-field-outlined w-full ">
+            <input placeholder="" type="text" name="lname" id="addLname" required>
+            <span class="text-bold">Lastname</span>
+            </label>
+            <label class="text-field-outlined w-full ">
+            <input placeholder="" type="text" name="suffix" id="addSuffix" required>
+            <span class="text-bold">Suffix</span>
+            </label>
+            <label class="text-field-outlined w-full ">
+            <input placeholder="" type="text" name="position" id="addPosition" required>
+            <span class="text-bold">Position</span>
+            </label>
+            <label class="text-field-outlined w-full ">
+            <input placeholder="" type="number" pattern="\d{1,11}" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11);"  name="contact" id="addContact"  required>
+            <span class="text-bold">Contact Number</span>
+            </label>
+            <label class="text-field-outlined w-full ">
+            <input placeholder="" type="date" name="bday" id="addBday"  required>
+            <span class="text-bold">Birthdate</span>
+            </label>
+            <input type="file" name="image" id="addImage" class="block w-full mt-1 mb-2 p-2 border rounded-md border-opacity-70 border-black" required>
+
+
+            <button type="submit" class="custom-btn btn-3 rounded mt-1"><span>Create</span></button>
+           
         </form>
     </div>
 </div>
@@ -123,11 +149,15 @@ $conn->close();
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
+<style>
+<?php include 'barangay_official.css' ?>
+</style>
+
 <script>
 $(document).ready(function() {
     const table = $('#officials-table').DataTable({
-        pageLength: 4,
-        lengthMenu: [4, 10, 25, 50]
+        pageLength: 6,
+        lengthMenu: [6, 10, 25, 50]
     });
 });
 function openModal(modalId) {
@@ -209,7 +239,9 @@ function deleteRecord(id) {
                             icon: "success",
                         }).then(() => {
                             // Optionally refresh the table or remove the row
-                            $(`tr[data-id='${id}']`).remove(); // Remove the row from the table
+                            $(`tr[data-id='${id}']`).remove();
+                            location.reload();
+                             // Remove the row from the table
                         });
                     } else {
                         swal("Error: " + response.message, {
@@ -329,5 +361,3 @@ function addRecord() {
 }
 
 </script>
-
-
