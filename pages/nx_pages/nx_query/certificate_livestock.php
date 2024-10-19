@@ -16,6 +16,29 @@ $response = [
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
+    case 'delete':
+        // Delete a record
+        $id = $_POST['id'] ?? '';
+        
+        // Validate the ID
+        if (empty($id)) {
+            $response['message'] = "ID is required to delete the record.";
+        } else {
+            // Construct the SQL DELETE query
+            $query = "DELETE FROM livestock_cert WHERE id = '$id'";
+
+            if (mysqli_query($conn, $query)) {
+                if (mysqli_affected_rows($conn) > 0) {
+                    $response['success'] = true;
+                    $response['message'] = "Record deleted successfully.";
+                } else {
+                    $response['message'] = "No record found with that ID.";
+                }
+            } else {
+                $response['message'] = "Error deleting record: " . mysqli_error($conn);
+            }
+        }
+        break;
     case 'updateNote':
         // Update the note for the certificate
         $id = $_POST['id'] ?? '';

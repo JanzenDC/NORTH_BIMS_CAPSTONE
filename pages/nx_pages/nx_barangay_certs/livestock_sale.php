@@ -318,6 +318,44 @@ function editDisapproved(id) {
         }
     });
 }
+function deleteDisapproved(id) {
+    if (confirm('Are you sure you want to remove this certificate?')) {
+        // Send AJAX request to the server
+        $.ajax({
+            url: 'nx_query/certificate_livestock.php?action=delete',
+            type: 'POST',
+            data: { id: id },
+            success: function(response) {
+                console.log('Full server response:', response);
+                try {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Certificate marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); // Reload the page or update the UI as needed
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing server response:', e);
+                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                swal("Error marking record as done", "Please check the console for more details.", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+}
 </script>
 
 <div class="p-3 w-full bg-white">
@@ -535,15 +573,18 @@ function editDisapproved(id) {
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
                         <td><?php echo htmlspecialchars($data['note']); ?></td>
-                        <td>
+                        <td class="flex space-x-2">
                             <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
                             onclick="editDisapproved(<?php echo htmlspecialchars($data['id']); ?>)">Edit</button>
+                            <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-200" 
+                            onclick="deleteDisapproved(<?php echo htmlspecialchars($data['id']); ?>)">Delete</button>
                         </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
+
 
         <div id="done">
             <table id="doneTable" class="display" style="width:100%">
