@@ -133,8 +133,8 @@ $(document).ready(function() {
                 swal("Record updated successfully!", {
                     icon: "success",
                 }).then(() => {
-                    location.reload(); // Reload the page or update the UI as needed
-                    $('#editDialog').dialog("close"); // Close the dialog
+                    location.reload();
+                    $('#editDialog').dialog("close"); 
                 });
             } else {
                 swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {

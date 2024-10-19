@@ -50,7 +50,48 @@ $(document).ready(function() {
         $("#addCertificateDialog").dialog("open");
     });
 
-  
+    $('#editCertificateForm').on('submit', function(event) {
+    event.preventDefault();
+    
+    const formData = {
+        id: document.getElementById('editIDs').value,
+        note: document.getElementById('editNote').value
+    };
+    console.log(formData)
+    $.ajax({
+        url: 'nx_query/certificate_livestock.php?action=updateNote',
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+            if (jsonResponse.success) {
+                swal("Record updated successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload();
+                    $('#editDialog').dialog("close"); 
+                });
+            } else {
+                swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                    icon: "error",
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            swal("Error updating record", "Please check the console for more details.", {
+                icon: "error",
+            });
+        }
+        });
+    });
+
+    $('#editDialog').dialog({
+        title: "Edit Certificate Notes",
+        modal: true,
+        autoOpen: false,
+        width: 400,
+    });
 });
 function approveCert(targetID) {
     // Show confirmation dialog
@@ -239,6 +280,43 @@ function doneCert(id) {
             }
         });
     }
+}
+function editDisapproved(id) {
+    console.log(id);
+    document.getElementById('editIDs').value = id;
+
+    // Fetch current note from the server
+    $.ajax({
+        url: 'nx_query/certificate_livestock.php?action=get',
+        type: 'GET',
+        data: { id: id },
+        success: function(response) {
+            const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+
+            if (jsonResponse.success) {
+                // Populate the note field with the current note
+                document.getElementById('editNote').value = jsonResponse.data.note || ''; // Default to empty if no note
+            } else {
+                console.error("Error fetching current note: " + jsonResponse.message);
+                document.getElementById('editNote').value = ''; // Clear if there's an error
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error fetching note:', status, error);
+            document.getElementById('editNote').value = ''; // Clear on error
+        }
+    });
+
+    $('#editDialog').dialog({
+        title: "Edit Certificate Notes",
+        modal: true,
+        width: 400,
+        buttons: {
+            "Cancel": function() {
+                $(this).dialog("close");
+            }
+        }
+    });
 }
 </script>
 
@@ -433,6 +511,7 @@ function doneCert(id) {
                         <th>Transaction Date</th>
                         <th>Status</th>
                         <th>Certificate Amount</th>
+                        <th>Note</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -455,7 +534,11 @@ function doneCert(id) {
                         <td><?php echo htmlspecialchars($data['transacDate']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
-                        <td><!-- Actions here --></td>
+                        <td><?php echo htmlspecialchars($data['note']); ?></td>
+                        <td>
+                            <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
+                            onclick="editDisapproved(<?php echo htmlspecialchars($data['id']); ?>)">Edit</button>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -621,7 +704,15 @@ function doneCert(id) {
     </form>
 </div>
 
-    
+<div id="editDialog" style="display: none; width: 600px;">
+    <form id="editCertificateForm">
+        <input type="hidden" id="editIDs" name="id" />
+        <label for="editNote" class="block mb-2 font-medium">Notes:</label>
+        <textarea id="editNote" name="note" rows="4" class="w-full border-2 border-green-500 rounded-lg p-2 resize-none"></textarea>
+        <button type="submit" class="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200">Update</button>
+    </form>
+</div>
+
 <script>
     const pages = document.querySelectorAll('.page');
     let currentPage = 0;

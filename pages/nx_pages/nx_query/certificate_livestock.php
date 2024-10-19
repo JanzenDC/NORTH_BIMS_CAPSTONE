@@ -16,6 +16,46 @@ $response = [
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
+    case 'updateNote':
+        // Update the note for the certificate
+        $id = $_POST['id'] ?? '';
+        $note = $_POST['note'] ?? '';
+
+        // Validate required fields
+        if (empty($id) || empty($note)) {
+            $response['message'] = "Certificate ID and Note are required.";
+        } else {
+            // Escape user input for safety
+            $note = mysqli_real_escape_string($conn, $note);
+
+            // Construct SQL query to update the note in livestock_cert
+            $sql = "UPDATE livestock_cert SET note='$note' WHERE id='$id'";
+
+            if (mysqli_query($conn, $sql)) {
+                if (mysqli_affected_rows($conn) > 0) {
+                    $response['success'] = true;
+                    $response['message'] = "Note updated successfully!";
+                } else {
+                    $response['message'] = "No record found with that ID.";
+                }
+            } else {
+                $response['message'] = "Error updating note: " . mysqli_error($conn);
+            }
+        }
+        break;
+    case 'get':
+        // Read
+        $id = (int)$_GET['id'];
+        $query = "SELECT * FROM livestock_cert WHERE id = $id";
+        $result = mysqli_query($conn, $query);
+        $official = mysqli_fetch_assoc($result);
+        if ($official) {
+            $response['success'] = true;
+            $response['data'] = $official;
+        } else {
+            $response['message'] = "Livestock not found.";
+        }
+        break;
     case 'create':
         
         // Get data from the POST request
