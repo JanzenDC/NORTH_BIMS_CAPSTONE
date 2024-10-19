@@ -29,7 +29,6 @@ $conn->close();
 <div class="p-3 w-full bg-white rounded-md shadow-xl mb-[80px]">
     <h1 class="text-3xl font-bold">Barangay Officials</h1>
     <hr>
-    <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Official</button>
 
 
     <table id="officials-table" class="display w-full">
@@ -64,6 +63,7 @@ $conn->close();
         </tbody>
     </table>
 </div>
+
 
 <!-- MODALS SECTION -->
 <!-- Create Official Modal -->
@@ -126,32 +126,18 @@ $conn->close();
                 <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required>
             </div>
 
-            <!-- Other Fields in Two Columns -->
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded">
-                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required>
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required>
-                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
-            </div>
-
-            <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
-            <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded" onclick="updateRecord()">Update</button>
-        </form>
-    </div>
-</div>
 
 
 
-<!-- Include DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
+
 <style>
 <?php include 'barangay_official.css' ?>
 </style>
+
 
 <script>
 $(document).ready(function() {
@@ -160,6 +146,7 @@ $(document).ready(function() {
         lengthMenu: [6, 10, 25, 50]
     });
 });
+
 function openModal(modalId) {
     document.getElementById(modalId).classList.remove("hidden");
 }
@@ -361,3 +348,9 @@ function addRecord() {
 }
 
 </script>
+
+</script>
+
+<!-- Include DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+

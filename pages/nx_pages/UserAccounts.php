@@ -1,26 +1,26 @@
 <?php
 session_start();
 require '../db_connect.php';
-$currentPage = 'barangay_officials'; // Change this value based on the current page
+$currentPage = 'residents'; // Change this value based on the current page
 
 // Check if the user is logged in
 if (!isset($_SESSION['user'])) {
     header("Location: ../login.php"); 
     exit();
 }
+
+
 $user = $_SESSION['user'];
 
 // Get the page from the query parameter, default to 'home'
-$page = isset($_GET['page']) ? $_GET['page'] : 'barangay_official';
+$page = isset($_GET['page']) ? $_GET['page'] : 'home';
 
 // Ensure the page is valid to prevent security issues
-$valid_pages = ['barangay_official', 'barangay_police', 'BHW', 'purok_leader', 'sk']; // Add other valid pages here
+$valid_pages = ['useraccounts']; // Add other valid pages here
 
 if (!in_array($page, $valid_pages)) {
-    $page = 'barangay_official'; // Fallback to 'home' if the page is invalid
+    $page = 'useraccounts'; 
 }
-
-$treeView = $page;
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +28,7 @@ $treeView = $page;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barangay Officials</title>
+    <title>Dashboard</title>
     <?php 
         include_once "../headers.php"
     ?>
@@ -44,10 +44,10 @@ $treeView = $page;
         ?>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6 overflow-y-auto mb-4">
+        <main class="flex-1 p-6 overflow-y-auto mb-16">
              <?php 
             // Include the corresponding page content
-            include_once("../nx_pages/nx_barangay_officials/{$page}.php"); 
+            include_once("../nx_pages/nx_useraccounts/{$page}.php"); 
             ?>
         </main>
     </div>
