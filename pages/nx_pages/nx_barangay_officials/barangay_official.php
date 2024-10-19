@@ -126,6 +126,21 @@ $conn->close();
                 <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required>
             </div>
 
+            <!-- Other Fields in Two Columns -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded">
+                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required>
+                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required>
+                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+            </div>
+
+            <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
+            <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded" onclick="updateRecord()">Update</button>
+        </form>
+    </div>
+</div>
+
 
 
 
@@ -177,8 +192,9 @@ function closeModal(modalId) {
     showTab('personalInfo');
 // CRUD
 function editRecord(id) {
-    
+    console.log(id);
     $.get('nx_query/manage_officials.php?action=get&id=' + id, function(response) {
+        console.log(response)
         if (response.success) {
             const official = response.data;
             document.getElementById('editId').value = official.id;
