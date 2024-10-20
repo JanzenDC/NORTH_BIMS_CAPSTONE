@@ -65,18 +65,6 @@ $conn->close();
     </table>
 </div>
 
-<!-- MODALS SECTION -->
-<!-- Create Official Modal -->
-<div id="createModal" class="modal fixed inset-0 bg-gray-500  bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3 ">
-        <i class="fa-solid  text-sm fa-x float-right cursor-pointer"  onclick="closeModal('createModal')" style="color:red;"></i>
-        <!-- <span class="cursor-pointer float-right ">&times;</span> -->
-        <h1 class="text-xl font-bold mb-4">Add Barangay Official</h1>
-        <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
-
-
-
-<!-- MODALS SECTION -->
 <!-- Create Official Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500  bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-lg p-6 w-1/3 ">
@@ -154,15 +142,6 @@ $conn->close();
     </div>
 </div>
 
-
-
-
-
-            <button type="submit" class="custom-btn btn-3 rounded mt-1"><span>Create</span></button>
-           
-        </form>
-    </div>
-</div>
 
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
@@ -245,7 +224,7 @@ function closeModal(modalId) {
     showTab('personalInfo');
 // CRUD
 function editRecord(id) {
-    
+
     $.get('nx_query/manage_officials.php?action=get&id=' + id, function(response) {
         if (response.success) {
             const official = response.data;
@@ -414,212 +393,6 @@ function addRecord() {
         }
     });
 }
-
-</script>
-=======
-
-function openModal(modalId) {
-    document.getElementById(modalId).classList.remove("hidden");
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).classList.add("hidden");
-}
-    function showTab(tabId) {
-        const tabs = document.querySelectorAll('.tab-content');
-        const buttons = document.querySelectorAll('.tab-button');
-
-        tabs.forEach(tab => {
-            tab.classList.add('hidden');
-            if (tab.id === tabId) {
-                tab.classList.remove('hidden');
-            }
-        });
-
-        buttons.forEach(button => {
-            button.classList.remove('active');
-            if (button.textContent === tabId.charAt(0).toUpperCase() + tabId.slice(1).replace('Info', ' Info')) {
-                button.classList.add('active');
-            }
-        });
-    }
-
-    // Initialize to show the first tab
-    showTab('personalInfo');
-// CRUD
-function editRecord(id) {
-    console.log(id);
-    $.get('nx_query/manage_officials.php?action=get&id=' + id, function(response) {
-        console.log(response)
-        if (response.success) {
-            const official = response.data;
-            document.getElementById('editId').value = official.id;
-            document.getElementById('editFname').value = official.fname;
-            document.getElementById('editMname').value = official.mname;
-            document.getElementById('editLname').value = official.lname;
-            document.getElementById('editSuffix').value = official.suffix;
-            document.getElementById('editPosition').value = official.position;
-            document.getElementById('editContact').value = official.contact;
-            document.getElementById('editBday').value = official.bday;
-
-            // Set up the image preview
-            const imagePreview = document.getElementById('editImagePreview');
-            imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
-            imagePreview.style.display = 'block'; // Show the image preview
-
-            openModal('editModal');
-        } else {
-            swal("Error: " + response.message, {
-                icon: "error",
-            });
-        }
-    }).fail(function() {
-        swal("Error retrieving record.", {
-            icon: "error",
-        });
-    });
-}
-
-function deleteRecord(id) {
-    swal({
-        title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover this record!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    }).then((willDelete) => {
-        if (willDelete) {
-            $.ajax({
-                url: 'nx_query/manage_officials.php?action=delete&id=' + id,
-                type: 'DELETE',
-                success: function(response) {
-                    if (response.success) {
-                        swal("Record deleted successfully!", {
-                            icon: "success",
-                        }).then(() => {
-                            // Optionally refresh the table or remove the row
-                            $(`tr[data-id='${id}']`).remove();
-                            location.reload();
-                             // Remove the row from the table
-                        });
-                    } else {
-                        swal("Error: " + response.message, {
-                            icon: "error",
-                        });
-                    }
-                },
-                error: function() {
-                    swal("Error deleting record.", {
-                        icon: "error",
-                    });
-                }
-            });
-        }
-    });
-}
-function updateRecord() {
-    const id = document.getElementById('editId').value;
-    const fname = document.getElementById('editFname').value;
-    const mname = document.getElementById('editMname').value;
-    const lname = document.getElementById('editLname').value;
-    const suffix = document.getElementById('editSuffix').value;
-    const position = document.getElementById('editPosition').value;
-    const contact = document.getElementById('editContact').value;
-    const bday = document.getElementById('editBday').value;
-
-    // Create FormData object for file uploads if needed
-    const formData = new FormData();
-    formData.append('id', id);
-    formData.append('fname', fname);
-    formData.append('mname', mname);
-    formData.append('lname', lname);
-    formData.append('suffix', suffix);
-    formData.append('position', position);
-    formData.append('contact', contact);
-    formData.append('bday', bday);
-    
-    // If you have an image to upload
-    const imageInput = document.getElementById('editImage'); // Assuming you have an input for the image
-    if (imageInput.files.length > 0) {
-        formData.append('image', imageInput.files[0]);
-    }
-    console.log('FormData:', Object.fromEntries(formData));
-
-
-    $.ajax({
-        url: 'nx_query/manage_officials.php?action=update',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            if (response.success) {
-                swal("Record updated successfully!", {
-                    icon: "success",
-                }).then(() => {
-                    
-                    closeModal('editModal');
-                });
-                location.reload();
-            } else {
-                swal("Error: " + response.message, {
-                    icon: "error",
-                });
-                location.reload();
-            }
-        },
-        error: function() {
-            swal("Error updating record.", {
-                icon: "error",
-            });
-        }
-    });
-}
-function addRecord() {
-    const formData = new FormData(document.getElementById('createForm'));
-
-    $.ajax({
-        url: 'nx_query/manage_officials.php?action=create',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            console.log('Full server response:', response);
-            try {
-                const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                if (jsonResponse.success) {
-                    swal("Official added successfully!", {
-                        icon: "success",
-                    }).then(() => {
-                        location.reload();
-                        closeModal('createModal');
-                    });
-                } else {
-                    swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                        icon: "error",
-                    });
-                }
-            } catch (e) {
-                console.error('Error parsing server response:', e);
-                console.log('Raw server response:', response);
-                swal("Server Error", "The server encountered an error. Please check the server logs.", {
-                    icon: "error",
-                });
-                
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX error:', status, error);
-            console.log('Response Text:', xhr.responseText);
-            swal("Error adding record", "Please check the console for more details.", {
-                icon: "error",
-            });
-        }
-    });
-}
-
-</script>
 
 </script>
 
