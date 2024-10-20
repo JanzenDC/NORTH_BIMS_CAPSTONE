@@ -114,7 +114,7 @@ $userType = $_SESSION['user']['account_type'];  // Get user type from session
                         </a>
                     </li>
                     <li>
-                        <a href="../nx_pages/BarangayCertificates.php?page=land" class="block px-4 py-2 hover:bg-gray-300 hover:text-black">
+                        <a href="../nx_pages/BarangayCertificates.php?page=land" class="<?php echo $treeView == 'land' ? 'active:bg-green-400 text-white' : ''; ?> block px-4 py-2 hover:bg-gray-300 hover:text-black">
                             <i class="fa-solid fa-file-alt"></i> Deed of Sale for Land
                         </a>
                     </li>
