@@ -8,6 +8,46 @@ if ($resultWalkin->num_rows > 0) {
         $walkinData[] = $row;
     }
 }
+
+$sqlNew = "SELECT * FROM land_cert WHERE status = 'New'";
+$resultNew = $conn->query($sqlNew);
+
+$newData = [];
+if ($resultNew->num_rows > 0) {
+    while ($row = $resultNew->fetch_assoc()) {
+        $newData[] = $row;
+    }
+}
+
+$sqlApproved = "SELECT * FROM land_cert WHERE status = 'Approved'";
+$resultApproved = $conn->query($sqlApproved);
+
+$approvedData = [];
+if ($resultApproved->num_rows > 0) {
+    while ($row = $resultApproved->fetch_assoc()) {
+        $approvedData[] = $row;
+    }
+}
+
+$sqlDisApproved = "SELECT * FROM land_cert WHERE status = 'Dispproved'";
+$resultDisApproved = $conn->query($sqlDisApproved);
+
+$disapprovedData = [];
+if ($resultDisApproved->num_rows > 0) {
+    while ($row = $resultDisApproved->fetch_assoc()) {
+        $disapprovedData[] = $row;
+    }
+}
+
+$sqlDone = "SELECT * FROM land_cert WHERE status = 'Done'";
+$resultDone = $conn->query($sqlDone);
+
+$doneData = [];
+if ($resultDone->num_rows > 0) {
+    while ($row = $resultDone->fetch_assoc()) {
+        $doneData[] = $row;
+    }
+}
 ?>
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -32,11 +72,34 @@ $(document).ready(function() {
       autoOpen: false,
       modal: true,
       width:  800,
-    //   buttons: {
-    //     Ok: function() {
-    //       $( this ).dialog( "close" );
-    //     }
-    //   }
+    });
+    $( "#EditAmount" ).dialog({
+      autoOpen: false,
+      modal: true,
+      width:  250,
+      height: 200,
+      buttons: {
+        Submit: function(){
+            editSave();
+        },
+        Ok: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+    $( "#AddCertDialogOpen" ).dialog({
+      autoOpen: false,
+      modal: true,
+      width:  600,
+      height: 400,
+      buttons: {
+        Submit: function(){
+            submitCert();
+        },
+        Ok: function() {
+          $( this ).dialog( "close" );
+        }
+      }
     });
 });
 
@@ -73,6 +136,250 @@ function ViewLand(targetID){
         });
     });
 }
+
+function AddCert(){
+    $("#AddCertDialogOpen").dialog("open");
+}
+function submitCert() {
+    
+    const sellerName = document.getElementById("new_sellerName").value;
+    const sellerAddress = document.getElementById("new_sellerAddress").value;
+    const buyerName = document.getElementById("new_buyerName").value;
+    const buyerAddress = document.getElementById("new_buyerAddress").value;
+    const landArea = document.getElementById("new_landArea").value;
+    const propertySold = document.getElementById("new_propertyAddress").value; // Update propertyAddress to propertySold
+    const saleAgreement = document.getElementById("new_saleAgreement").value;
+    const buyersPayment = document.getElementById("new_buyersPayment").value;
+    const receiptOfPayment = document.getElementById("new_receiptOfPayment").value;
+    const date = document.getElementById("new_date").value;
+    const witness = document.getElementById("new_witness").value;
+    const notarizeDate = document.getElementById("new_datenotarization").value; // Updated dateOfNotarization to notarizeDate
+
+    // Create an object to hold the values
+    const data = {
+        sellerName,
+        sellerAddress,
+        buyerName,
+        buyerAddress,
+        landArea,
+        propertySold,
+        saleAgreement,
+        buyersPayment,
+        receiptOfPayment,
+        date,
+        witness,
+        notarizeDate
+    };
+
+    $.ajax({
+        url: 'nx_query/certificate_land.php?action=create',
+        type: 'POST',
+        data: data,
+        success: function(response) {
+            console.log(response)
+            if (response.success) {
+                swal("Record updated successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload(); // Reload the page or update the UI as needed
+                    $('#approvedDialog').dialog("close"); // Close the dialog
+                });
+            } else {
+                // Handle error message from server
+                console.error(response.message);
+                swal("Error creating certificate", response.message, {
+                    icon: "error",
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            swal("Error updating record", "Please check the console for more details.", {
+                icon: "error",
+            });
+        }
+    });
+}
+
+function editCert(x)
+{
+    document.getElementById('hiddenID').value = x;
+    $("#EditAmount").dialog("open");
+}
+function editSave(){
+    const hiddenID = document.getElementById("hiddenID").value;
+    const AmountEdit =  document.getElementById("AmountEdit").value;
+    const data = {
+        hiddenID,
+        AmountEdit
+    };
+    $.ajax({
+        url: 'nx_query/certificate_land.php?action=updateAmount',
+        type: 'POST',
+        data: data,
+        success: function(response) {
+            console.log(response)
+            if (response.success) {
+                swal("Record updated successfully!", {
+                    icon: "success",
+                }).then(() => {
+                    location.reload(); // Reload the page or update the UI as needed
+                    $('#approvedDialog').dialog("close"); // Close the dialog
+                });
+            } else {
+                // Handle error message from server
+                console.error(response.message);
+                swal("Error creating certificate", response.message, {
+                    icon: "error",
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            swal("Error updating record", "Please check the console for more details.", {
+                icon: "error",
+            });
+        }
+    });
+}
+function approveCert(targetID) {
+    // Show confirmation dialog
+    swal({
+        title: "Are you sure?",
+        text: "Once you click 'Yes', this action cannot be undone.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willProceed) => {
+        if (willProceed) {
+            // If the user confirms, prepare the data for the AJAX request
+            const formData = {
+                id: targetID, // Target the specific ID
+                // Include other necessary fields here if needed
+            };
+
+            $.ajax({
+                url: 'nx_query/certificate_land.php?action=setAsApprove', // Change to setAsApprove
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Record marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); 
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                    swal("Error marking record as done", "Please check the console for more details.", {
+                        icon: "error",
+                    });
+                }
+            });
+        } else {
+            // If the user cancels, you can show a message or simply do nothing
+            swal("Action canceled.", {
+                icon: "info",
+            });
+        }
+    });
+}
+function disapproveCert(targetID) {
+    // Show confirmation dialog
+    swal({
+        title: "Are you sure?",
+        text: "Once you click 'Yes', this action cannot be undone.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willProceed) => {
+        if (willProceed) {
+            // If the user confirms, prepare the data for the AJAX request
+            const formData = {
+                id: targetID, // Target the specific ID
+                // Include other necessary fields here if needed
+            };
+
+            $.ajax({
+                url: 'nx_query/certificate_land.php?action=setDisapproved', // Change to setAsApprove
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Record marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); 
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                    swal("Error marking record as done", "Please check the console for more details.", {
+                        icon: "error",
+                    });
+                }
+            });
+        } else {
+            // If the user cancels, you can show a message or simply do nothing
+            swal("Action canceled.", {
+                icon: "info",
+            });
+        }
+    });
+}
+function doneCert(id) {
+    if (confirm('Are you sure you want to mark this certificate as done?')) {
+        // Send AJAX request to the server
+        $.ajax({
+            url: 'nx_query/certificate_land.php?action=mark_done',
+            type: 'POST',
+            data: { id: id },
+            success: function(response) {
+                console.log('Full server response:', response);
+                try {
+                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (jsonResponse.success) {
+                        swal("Certificate marked as done successfully!", {
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); // Reload the page or update the UI as needed
+                        });
+                    } else {
+                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
+                            icon: "error",
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing server response:', e);
+                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+                swal("Error marking record as done", "Please check the console for more details.", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+}
 </script>
 
 <div class="p-3 w-full bg-white">
@@ -80,7 +387,7 @@ function ViewLand(targetID){
     <hr class="mb-3 mt-3">
     
     <div>
-        <button id="open-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Add Certificate</button>
+        <button id="open-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick='AddCert()'>Add Certificate</button>
     </div>
     
     <div id="tabs" class="container mt-4">
@@ -114,14 +421,12 @@ function ViewLand(targetID){
                             <div class="bg-yellow-300 rounded-lg p-2" title='View' onclick="ViewLand(<?php echo htmlspecialchars($row['id']);?>)">
                                 <i class="fa-solid fa-eye"></i>
                             </div>
-                            <div class="bg-blue-400 rounded-lg p-2 " title='Edit'>
+                            <div class="bg-blue-400 rounded-lg p-2 " title='Edit'  onclick="editCert(<?php echo htmlspecialchars($row['id']);?>)">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </div>
                             <div class="bg-green-400 rounded-lg p-2 " title='Generate'>
                                 <i class="fa-solid fa-arrows-rotate"></i>
                             </div>
-                            
-                            
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -133,18 +438,30 @@ function ViewLand(targetID){
             <table id="newTable" class="display" style="width: 100%">
                 <thead>
                     <tr>
-                        <th>Column 1</th>
-                        <th>Column 2</th>
-                        <th>Column 3</th>
+                        <th>#</th>
+                        <th>Seller Name</th>
+                        <th>Buyer Name</th>
+                        <th>Date of Pickup</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                     <?php foreach ($newData as $row): ?>
                     <tr>
-                        <td>Data 1</td>
-                        <td>Data 2</td>
-                        <td>Data 3</td>
+                        <td><?php echo htmlspecialchars($row['id']);?></td>
+                        <td><?php echo htmlspecialchars($row['sellerName']);?></td>
+                        <td><?php echo htmlspecialchars($row['buyerName']);?></td>
+                        <td><?php echo htmlspecialchars($row['date_of_pickup']);?></td>
+                        <td class="flex space-x-2">
+                            <div class="bg-green-400 rounded-lg p-2 " title='Approve'  onclick="approveCert(<?php echo htmlspecialchars($row['id']);?>)">
+                               <i class="fa-solid fa-thumbs-up"></i>
+                            </div>
+                            <div class="bg-red-400 rounded-lg p-2 " title='Disapprove' onclick="disapproveCert(<?php echo htmlspecialchars($row['id']);?>)">
+                                <i class="fa-solid fa-thumbs-down"></i>
+                            </div>
+                        </td>
                     </tr>
-                    <!-- More rows as needed -->
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -153,12 +470,27 @@ function ViewLand(targetID){
             <table id="approvedTable" class="display" style="width: 100%">
                 <thead>
                     <tr>
-                        <th>Column 1</th>
-                        <th>Column 2</th>
-                        <th>Column 3</th>
+                        <th>#</th>
+                        <th>Seller Name</th>
+                        <th>Buyer Name</th>
+                        <th>Date of Pickup</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                     <?php foreach ($approvedData as $row): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['id']);?></td>
+                        <td><?php echo htmlspecialchars($row['sellerName']);?></td>
+                        <td><?php echo htmlspecialchars($row['buyerName']);?></td>
+                        <td><?php echo htmlspecialchars($row['date_of_pickup']);?></td>
+                        <td class="flex space-x-2">
+                            <div class="bg-green-400 rounded-lg p-2 flex items-center gap-2" title='Mark as Done'  onclick="doneCert(<?php echo htmlspecialchars($row['id']);?>)">
+                               <i class="fa-solid fa-circle-check"></i> Done
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -167,12 +499,27 @@ function ViewLand(targetID){
             <table id="disapprovedTable" class="display" style="width: 100%">
                 <thead>
                     <tr>
-                        <th>Column 1</th>
-                        <th>Column 2</th>
-                        <th>Column 3</th>
+                        <th>#</th>
+                        <th>Seller Name</th>
+                        <th>Buyer Name</th>
+                        <th>Date of Pickup</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                     <?php foreach ($approvedData as $row): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['id']);?></td>
+                        <td><?php echo htmlspecialchars($row['sellerName']);?></td>
+                        <td><?php echo htmlspecialchars($row['buyerName']);?></td>
+                        <td><?php echo htmlspecialchars($row['date_of_pickup']);?></td>
+                        <td class="flex space-x-2">
+                            <div class="bg-green-400 rounded-lg p-2 flex items-center gap-2" title='Mark as Done'  onclick="doneCert(<?php echo htmlspecialchars($row['id']);?>)">
+                               <i class="fa-solid fa-circle-check"></i> Done
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -181,12 +528,30 @@ function ViewLand(targetID){
             <table id="doneTable" class="display" style="width: 100%">
                 <thead>
                     <tr>
-                        <th>Column 1</th>
-                        <th>Column 2</th>
-                        <th>Column 3</th>
+                        <th>#</th>
+                        <th>Seller Name</th>
+                        <th>Buyer Name</th>
+                        <th>Date of Pickup</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
+                     <?php foreach ($doneData as $row): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['id']);?></td>
+                        <td><?php echo htmlspecialchars($row['sellerName']);?></td>
+                        <td><?php echo htmlspecialchars($row['buyerName']);?></td>
+                        <td><?php echo htmlspecialchars($row['date_of_pickup']);?></td>
+                        <td class="flex space-x-2">
+                            <div class="bg-yellow-300 rounded-lg p-2" title='View' onclick="ViewLand(<?php echo htmlspecialchars($row['id']);?>)">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                            <div class="bg-green-400 rounded-lg p-2 " title='Done'>
+                                Done
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -301,4 +666,76 @@ function ViewLand(targetID){
 
         </div>
     </div>
+</div>
+
+<!-- Add Certificate -->
+<div id="AddCertDialogOpen" title="Add Certificate" class="p-6 bg-white rounded-lg shadow-md">
+    <div class="mb-4">
+        <label for="new_sellerName" class="block text-sm font-medium text-gray-700">Seller Name:</label>
+        <input type="text" id="new_sellerName" name="new_sellerName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_sellerAddress" class="block text-sm font-medium text-gray-700">Seller Address:</label>
+        <input type="text" id="new_sellerAddress" name="new_sellerAddress" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_buyerName" class="block text-sm font-medium text-gray-700">Buyer Name:</label>
+        <input type="text" id="new_buyerName" name="new_buyerName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_buyerAddress" class="block text-sm font-medium text-gray-700">Buyer Address:</label>
+        <input type="text" id="new_buyerAddress" name="new_buyerAddress" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_landArea" class="block text-sm font-medium text-gray-700">Land Area:</label>
+        <input type="text" id="new_landArea" name="new_landArea" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_propertyAddress" class="block text-sm font-medium text-gray-700">Property Address:</label>
+        <input type="text" id="new_propertyAddress" name="new_propertyAddress" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_saleAgreement" class="block text-sm font-medium text-gray-700">Sale Agreement:</label>
+        <input type="text" id="new_saleAgreement" name="new_saleAgreement" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_buyersPayment" class="block text-sm font-medium text-gray-700">Buyer's Payment:</label>
+        <input type="text" id="new_buyersPayment" name="new_buyersPayment" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_receiptOfPayment" class="block text-sm font-medium text-gray-700">Receipt of Payment:</label>
+        <input type="text" id="new_receiptOfPayment" name="new_receiptOfPayment" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_date" class="block text-sm font-medium text-gray-700">Date:</label>
+        <input type="date" id="new_date" name="new_date" placeholder="mm/dd/yyyy" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_witness" class="block text-sm font-medium text-gray-700">Witness:</label>
+        <input type="text" id="new_witness" name="new_witness" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+    <div class="mb-4">
+        <label for="new_date" class="block text-sm font-medium text-gray-700">Date Notarization:</label>
+        <input type="date" id="new_datenotarization" name="new_date" placeholder="mm/dd/yyyy" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
+    </div>
+
+</div>
+
+<!-- Edit Amount -->
+
+<div id="EditAmount" title="Edit Certificate" class="p-6 bg-white rounded-lg shadow-md">
+    <input type="hidden" id='hiddenID' value=''>
+    <p>Amount</p>
+    <input type='number' value='' id='AmountEdit' name='AmountEdit'>
 </div>
