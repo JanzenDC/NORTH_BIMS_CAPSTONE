@@ -5,12 +5,18 @@
 <link href="../../assets/js/toastr.min.css" rel="stylesheet">
 <link href="../../assets/js/datatables.css" rel="stylesheet">
 <!-- JAVASCRIPT -->
- <script src="../../assets/js/all.js"></script>
- <script src="../../assets/js/jquery-3.6.0.js"></script>
- <script src="../../assets/js/toastr.min.js"></script>
- <scri[t src="../../assets/js/datatables.js"></script>
+<script src="../../assets/js/all.js"></script>
+<script src="../../assets/js/jquery-3.6.0.js"></script>
+<script src="../../assets/js/toastr.min.js"></script>
+<script src="../../assets/js/datatables.js"></script>
+<script src="../../assets/js/html2canvas.js"></script>
+<script src="../../assets/js/html2canvas.min.js"></script>
+<script src="../assets/js/html2canvas.js"></script>
+<script src="../assets/js/html2canvas.min.js"></script>
 <!-- ICONS -->
 <link rel="icon" href="../assets/images/north.ico" type="image/x-icon">
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
+
 
 
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

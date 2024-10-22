@@ -580,7 +580,7 @@ function disapproveCert(targetID) {
                         <td><?php echo htmlspecialchars($row['bcNo']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
                         <td>
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
+                            <a href='GenerateCertificate.php?page=generate_clearance&id=<?php echo $row['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
                             <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
 
                         </td>
