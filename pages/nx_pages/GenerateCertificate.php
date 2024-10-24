@@ -46,7 +46,7 @@ $treeView = $page;
 
         <!-- Main Content -->
         <main class="flex-1 p-6 ">
-            <button id="printButton" class="bg-blue-500 text-white px-4 py-2 rounded">Print</button>
+            <button onclick="printDiv('contents')" class="bg-blue-500 text-white px-4 py-2 rounded">Print</button>
              <?php 
             // Include the corresponding page content
             include_once("../nx_pages/nx_certifcates/{$page}.php"); 

@@ -651,7 +651,7 @@ function disapproveCert(targetID) {
                         <td class="flex space-x-2">
                             <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
                                     onclick="editApproved(<?php echo htmlspecialchars($row['id']); ?>)">Edit</button>
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
+                            <a href='GenerateCertificate.php?page=generate_clearance&id=<?php echo $row['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
                             <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
                         </td>
                     </tr>
