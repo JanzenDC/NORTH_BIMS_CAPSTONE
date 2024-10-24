@@ -127,7 +127,7 @@ $userType = $_SESSION['user']['account_type'];  // Get user type from session
             </li>
 
             <li>
-                <a href="UserAccounts.php?page=useraccounts" class="block px-4 py-2 hover:bg-gray-300 hover:text-black" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'user_profile' ? 'active:bg-gray-400' : ''; ?>">
+                <a href="UserAccounts.php?page=useraccounts" class="block px-4 py-2 hover:bg-gray-300 hover:text-black" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'users' ? 'active:bg-gray-400' : ''; ?>">
                     <i class="fa-solid fa-user"></i> User Accounts
                 </a>
             </li>

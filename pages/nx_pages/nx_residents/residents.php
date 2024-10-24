@@ -1,5 +1,4 @@
 <?php
-$treeView = 'residents'; // Change this value based on the current page
 $sqls = "SELECT 
             *,
             CONCAT_WS(' ', fname, mname, lname, suffix) AS full_name

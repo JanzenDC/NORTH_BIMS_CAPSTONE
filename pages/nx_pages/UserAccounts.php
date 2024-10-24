@@ -1,7 +1,7 @@
 <?php
 session_start();
 require '../db_connect.php';
-$currentPage = 'residents'; // Change this value based on the current page
+$currentPage = 'users'; // Change this value based on the current page
 
 // Check if the user is logged in
 if (!isset($_SESSION['user'])) {
