@@ -1,4 +1,6 @@
 <?php // DO NOT REMOVE THIS LINE BECAUSE THIS IS THE MAIN DYNAMIC SIDEBAR SO IT WILL REDIRECT TO LOGIN IF THE USER IS NOT APPROVE
+require '../db_connect.php';
+
 if ($_SESSION['user']['isApproved'] == 0) {
     $_SESSION['toastr_message'] = 'Your account need approval from admin.';
     $_SESSION['toastr_type'] = 'error';
@@ -129,6 +131,11 @@ $userType = $_SESSION['user']['account_type'];  // Get user type from session
             <li>
                 <a href="UserAccounts.php?page=useraccounts" class="block px-4 py-2 hover:bg-gray-300 hover:text-black" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'users' ? 'active:bg-gray-400' : ''; ?>">
                     <i class="fa-solid fa-user"></i> User Accounts
+                </a>
+            </li>
+            <li>
+                <a href="ReportPage.php?page=report_init" class="block px-4 py-2 hover:bg-gray-300 hover:text-black" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'reports' ? 'active:bg-gray-400' : ''; ?>">
+                    <i class="fa-regular fa-flag"></i> Reports
                 </a>
             </li>
         </ul>
