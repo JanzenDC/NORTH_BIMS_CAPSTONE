@@ -373,7 +373,7 @@ function saveEdit(id) {
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td class="flex space-x-2">
                             <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600" onclick="doneCert(<?php echo $data['id']; ?>)">Done</button>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600" onclick="generateCertificate(<?php echo $data['id']; ?>)">Generate</button>
+                            <a href='GenerateCertificate.php?page=generate_bpermit&id=<?php echo $data['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
                         </td>
 
                     </tr>
@@ -436,7 +436,7 @@ function saveEdit(id) {
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td class="flex space-x-2">
                             <button class="btn-edit bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" onclick="editCert(<?php echo $data['id']; ?>)">Edit</button>
-                            <button class="btn-generate bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="generateCert(<?php echo $data['id']; ?>)">Generate</button>
+                            <a href='GenerateCertificate.php?page=generate_bpermit&id=<?php echo $data['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
                             <button class="btn-done bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="doneCert(<?php echo $data['id']; ?>)">Done</button>
                         </td>
                     </tr>
