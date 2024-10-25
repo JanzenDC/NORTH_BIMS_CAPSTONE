@@ -31,11 +31,37 @@ $user = $_SESSION['user'];
         ?>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
- 
+        <main class="flex-1 p-6 mb-8 overflow-y-auto">
+            <div class='h-screen bg-white p-3'>
+                <div class='bg-red-500 text-white p-3 rounded-md w-32'>
+                    <i class="fa-solid fa-plus"></i> Add Activity
+                </div>
+
+                <div class='mt-5'>
+                    <table id="activityTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Date of Acitivity</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </main>
     </div>
 
+    <script>
+        $(document).ready(function() {
+            $('#activityTable').DataTable({
+                "scrollX": true // Enable horizontal scrolling
+            });
+        });
+    </script>
     <!-- If meron na javascript dito nalang mag add wag na sa header.php -->
 </body>
 </html>
