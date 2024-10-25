@@ -59,7 +59,7 @@ while ($row = mysqli_fetch_assoc($result_blotter)) {
 }
 ?>
 
-            <div class="flex  justify-between mb-3">
+            <div class="md:flex  md:justify-between mb-3">
                 <div class='text-2xl'>
                     Reports
                 </div>
@@ -67,7 +67,7 @@ while ($row = mysqli_fetch_assoc($result_blotter)) {
                     <a href='../nx_pages/ReportPage.php?page=report_stats' class='bg-green-600 rounded-md p-3 text-white cursor-pointer'>
                         Resident Statistics
                     </a>
-                    <div class='bg-green-600 rounded-md p-3 text-white cursor-pointer'>
+                    <div id='openDialogButton' class='bg-green-600 rounded-md p-3 text-white cursor-pointer'>
                         Blotter Report
                     </div>
                     <a href='../nx_pages/ReportPage.php?page=document_stats' class='bg-green-600 rounded-md p-3 text-white cursor-pointer'>
@@ -106,7 +106,61 @@ while ($row = mysqli_fetch_assoc($result_blotter)) {
                     <canvas id="blotterChart"></canvas>
                 </div>
             </div>
-    <script>
+
+<div id="blotterDialog" title="Blotter Report Filter" style="display:none;">
+    <div class="mb-3">
+        <label for="yearFilter" class="form-label">Select Year</label>
+        <select class="w-full p-3" id="monthYearFilter" name="monthYear" required>
+            <option value="" disabled selected>Choose a month and year...</option>
+            <?php
+            // Fetch available months and years with counts from the database
+            $monthYearQuery = "
+                SELECT DATE_FORMAT(date, '%M, %Y') AS monthYear, COUNT(*) AS count,date
+                FROM tblblotter 
+                GROUP BY MONTH(date), YEAR(date) 
+                ORDER BY YEAR(date) DESC, MONTH(date) DESC
+            ";
+            $monthYearResult = mysqli_query($conn, $monthYearQuery);
+
+            while ($row = mysqli_fetch_assoc($monthYearResult)) {
+                echo '<option value="' . htmlspecialchars($row['date']) . '">' . htmlspecialchars($row['monthYear']) . ' - ' . htmlspecialchars($row['count']) . ' entries</option>';
+            }
+            ?>
+        </select>
+
+
+    </div>
+</div>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#blotterDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: 300,
+            buttons: {
+                Submit: function(){
+                    printDocuments();
+                },
+                Cancel: function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        $("#openDialogButton").on("click", function() {
+            $("#blotterDialog").dialog("open");
+        });
+    });
+
+        function printDocuments() {
+            const monthYearFilter = document.getElementById('monthYearFilter');
+            const selectedValue = monthYearFilter.value; // Get the selected value
+            const pdfUrl = '../nx_pages/nx_reports/blotter_details.php?year=' + encodeURIComponent(selectedValue);
+            window.open(pdfUrl, '_blank');
+        }
+
         // Gender Distribution Pie Chart
         const genderCtx = document.getElementById('genderChart').getContext('2d');
         new Chart(genderCtx, {
