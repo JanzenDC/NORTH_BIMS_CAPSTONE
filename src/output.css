@@ -891,6 +891,10 @@ video {
   height: 100vh;
 }
 
+.h-24 {
+  height: 6rem;
+}
+
 .max-h-screen {
   max-height: 100vh;
 }
@@ -925,6 +929,10 @@ video {
 
 .w-28 {
   width: 7rem;
+}
+
+.w-32 {
+  width: 8rem;
 }
 
 .w-4 {
@@ -969,10 +977,6 @@ video {
 
 .w-full {
   width: 100%;
-}
-
-.w-32 {
-  width: 8rem;
 }
 
 .max-w-4xl {
@@ -1345,6 +1349,11 @@ video {
 
 .bg-center {
   background-position: center;
+}
+
+.object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .p-1 {
