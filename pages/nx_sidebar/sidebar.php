@@ -145,6 +145,11 @@ $userType = $_SESSION['user']['account_type'];  // Get user type from session
                 </a>
             </li>
             <li>
+                <a href="../nx_pages/BlotterPage.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'blotter' ? 'active:bg-gray-400' : ''; ?>">
+                    <i class="fa-solid fa-building-shield"></i> Blotter
+                </a>
+            </li>
+            <li>
                 <a href="../nx_pages/SystemLogs.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'logs' ? 'active:bg-gray-400' : ''; ?>">
                     <i class="fa-solid fa-shuffle"></i> Logs
                 </a>
