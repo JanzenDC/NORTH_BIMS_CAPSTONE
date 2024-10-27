@@ -13,15 +13,26 @@ $response = [
     'data' => null,
 ];
 
+// Function to log actions
+function logAction($conn, $action, $user) {
+    $logdate = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $user, $logdate, $action);
+    $stmt->execute();
+}
+
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
     case 'get':
-        // Read
         $id = (int)$_GET['id'];
-        $query = "SELECT * FROM residency_cert WHERE id = $id";
-        $result = mysqli_query($conn, $query);
-        $official = mysqli_fetch_assoc($result);
+        $stmt = $conn->prepare("SELECT * FROM residency_cert WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $official = $result->fetch_assoc();
+        
         if ($official) {
             $response['success'] = true;
             $response['data'] = $official;
@@ -31,19 +42,19 @@ switch ($action) {
         break;
 
     case 'create':
-        // Create a certificate
         $ownerId = $_POST['resident_id'] ?? '';
 
-        // Validate the required fields
         if (empty($ownerId)) {
             $response['message'] = "Owner ID is required.";
         } else {
-            // Fetch resident details from tblresident
-            $query = "SELECT * FROM tblresident WHERE resident_id = '$ownerId'";
-            $result = mysqli_query($conn, $query);
+            $stmt = $conn->prepare("SELECT * FROM tblresident WHERE resident_id = ?");
+            $stmt->bind_param("s", $ownerId);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-            if (mysqli_num_rows($result) > 0) {
-                $resident = mysqli_fetch_assoc($result);
+            if ($result->num_rows > 0) {
+                $resident = $result->fetch_assoc();
+                
                 // Extract resident details
                 $fname = $resident['fname'];
                 $mname = $resident['mname'];
@@ -52,40 +63,33 @@ switch ($action) {
                 $bday = $resident['bday'];
                 $purok = $resident['purok'];
                 $year_stayed = $resident['year_stayed'];
-                $status = "Walk-in"; // Example static value
+                $status = "Walk-in"; // Static value
                 $amount = $_POST['amount'] ?? '';
                 $date_issued = $_POST['date_issued'] ?? '';
                 $purpose = $_POST['purpose'] ?? '';
                 $pickup = $_POST['pickup'] ?? '';
                 $note = $_POST['note'] ?? '';
 
-                // Validate additional fields
-                if (empty($amount)) {
+                if (empty($amount) || empty($date_issued) || empty($purpose) || empty($pickup)) {
                     $response['message'] = "All certificate fields are required.";
                 } else {
-                    // Escape user input for safety
-                    $amount = mysqli_real_escape_string($conn, $amount);
-                    $date_issued = mysqli_real_escape_string($conn, $date_issued);
-                    $purpose = mysqli_real_escape_string($conn, $purpose);
-                    $pickup = mysqli_real_escape_string($conn, $pickup);
-                    $note = mysqli_real_escape_string($conn, $note);
+                    // Prepare and execute the insert statement
+                    $stmt = $conn->prepare("INSERT INTO residency_cert (ownerId, fname, mname, lname, age, bday, purok, year_stayed, date_issued, amount, status, purpose, pickup_date, note) 
+                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    $stmt->bind_param("ssssssssssisss", $ownerId, $fname, $mname, $lname, $age, $bday, $purok, $year_stayed, $date_issued, $amount, $status, $purpose, $pickup, $note);
 
-                    // Construct SQL query to insert into residency_cert
-                    $sql = "INSERT INTO residency_cert (ownerId, fname, mname, lname, age, bday, purok, year_stayed, date_issued, amount, status, purpose, pickup_date, note) 
-                            VALUES ('$ownerId', '$fname', '$mname', '$lname', '$age', '$bday', '$purok', '$year_stayed', '$date_issued', '$amount', '$status', '$purpose', '$pickup', '$note')";
-
-                    // Execute query
-                    if (mysqli_query($conn, $sql)) {
+                    if ($stmt->execute()) {
                         $response['success'] = true;
                         $response['message'] = "Certificate added successfully!";
                         $response['data'] = [
-                            'id' => mysqli_insert_id($conn),
+                            'id' => $stmt->insert_id,
                             'ownerId' => $ownerId,
                             'first_name' => $fname,
                             'last_name' => $lname,
                         ];
+                        logAction($conn, "Created residency certificate for owner ID $ownerId", $_SESSION['user']['username']);
                     } else {
-                        $response['message'] = "Error adding certificate: " . mysqli_error($conn);
+                        $response['message'] = "Error adding certificate: " . $stmt->error;
                     }
                 }
             } else {
@@ -95,139 +99,107 @@ switch ($action) {
         break;
 
     case 'mark_done':
-        // Mark certificate as done
         $id = $_POST['id'] ?? '';
-
-        // Validate the ID
         if (empty($id)) {
             $response['message'] = "Certificate ID is required.";
         } else {
-            // Update the status of the certificate to 'Done'
-            $sql = "UPDATE residency_cert SET status = 'Done' WHERE id = '$id'";
-
-            if (mysqli_query($conn, $sql)) {
-                if (mysqli_affected_rows($conn) > 0) {
+            $stmt = $conn->prepare("UPDATE residency_cert SET status = 'Done' WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            if ($stmt->execute()) {
+                if ($stmt->affected_rows > 0) {
                     $response['success'] = true;
                     $response['message'] = "Certificate marked as done successfully!";
                 } else {
                     $response['message'] = "No record found with that ID.";
                 }
             } else {
-                $response['message'] = "Error updating certificate: " . mysqli_error($conn);
+                $response['message'] = "Error updating certificate: " . $stmt->error;
             }
         }
         break;
 
     case 'updateApprove':
-        // Update certificate details
         $id = $_POST['id'] ?? '';
         $amount = $_POST['amount'] ?? '';
         $date_issued = $_POST['date_issued'] ?? '';
-        $purpose = $_POST['purposes'] ?? ''; // Using 'purposes' as per your JavaScript
+        $purpose = $_POST['purposes'] ?? '';
 
-        // Validate required fields
         if (empty($id) || empty($amount) || empty($date_issued) || empty($purpose)) {
             $response['message'] = "Certificate ID, Amount, Date Issued, and Purpose are required.";
         } else {
-            // Escape user input for safety
-            $amount = mysqli_real_escape_string($conn, $amount);
-            $date_issued = mysqli_real_escape_string($conn, $date_issued);
-            $purpose = mysqli_real_escape_string($conn, $purpose);
-
-            // Construct SQL query to update residency_cert
-            $sql = "UPDATE residency_cert SET 
-                    amount='$amount', 
-                    date_issued='$date_issued', 
-                    purpose='$purpose' 
-                    WHERE id='$id'";
-
-            if (mysqli_query($conn, $sql)) {
-                if (mysqli_affected_rows($conn) > 0) {
+            $stmt = $conn->prepare("UPDATE residency_cert SET amount = ?, date_issued = ?, purpose = ? WHERE id = ?");
+            $stmt->bind_param("sssi", $amount, $date_issued, $purpose, $id);
+            if ($stmt->execute()) {
+                if ($stmt->affected_rows > 0) {
                     $response['success'] = true;
                     $response['message'] = "Certificate updated successfully!";
                 } else {
                     $response['message'] = "No record found with that ID.";
                 }
             } else {
-                $response['message'] = "Error updating certificate: " . mysqli_error($conn);
+                $response['message'] = "Error updating certificate: " . $stmt->error;
             }
         }
         break;
 
     case 'updateNote':
-        // Update the note for the certificate
         $id = $_POST['id'] ?? '';
         $note = $_POST['note'] ?? '';
 
-        // Validate required fields
         if (empty($id) || empty($note)) {
             $response['message'] = "Certificate ID and Note are required.";
         } else {
-            // Escape user input for safety
-            $note = mysqli_real_escape_string($conn, $note);
-
-            // Construct SQL query to update the note in residency_cert
-            $sql = "UPDATE residency_cert SET note='$note' WHERE id='$id'";
-
-            if (mysqli_query($conn, $sql)) {
-                if (mysqli_affected_rows($conn) > 0) {
+            $stmt = $conn->prepare("UPDATE residency_cert SET note = ? WHERE id = ?");
+            $stmt->bind_param("si", $note, $id);
+            if ($stmt->execute()) {
+                if ($stmt->affected_rows > 0) {
                     $response['success'] = true;
                     $response['message'] = "Note updated successfully!";
                 } else {
                     $response['message'] = "No record found with that ID.";
                 }
             } else {
-                $response['message'] = "Error updating note: " . mysqli_error($conn);
+                $response['message'] = "Error updating note: " . $stmt->error;
             }
         }
         break;
-    case 'setAsApprove':
-        // Get ID from the POST request
-        $id = $_POST['id'] ?? '';
 
-        // Check if ID is provided
+    case 'setAsApprove':
+        $id = $_POST['id'] ?? '';
         if (empty($id)) {
-            $response['message'] = "ID is required to set the record as done.";
+            $response['message'] = "ID is required to set the record as approved.";
             break;
         }
-
-        // Construct the SQL query to update the status to "Done"
-        $query = "UPDATE residency_cert SET status = 'Approved' WHERE id = $id";
-
-        // Execute the query
-        if (mysqli_query($conn, $query)) {
+        $stmt = $conn->prepare("UPDATE residency_cert SET status = 'Approved' WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
             $response['success'] = true;
             $response['message'] = "Record marked as Approved successfully.";
         } else {
-            $response['message'] = "Error: " . mysqli_error($conn);
+            $response['message'] = "Error: " . $stmt->error;
         }
         break;
-    case 'setDisapproved':
-        // Get ID from the POST request
-        $id = $_POST['id'] ?? '';
 
-        // Check if ID is provided
+    case 'setDisapproved':
+        $id = $_POST['id'] ?? '';
         if (empty($id)) {
-            $response['message'] = "ID is required to set the record as done.";
+            $response['message'] = "ID is required to set the record as disapproved.";
             break;
         }
-
-        // Construct the SQL query to update the status to "Done"
-        $query = "UPDATE residency_cert SET status = 'Disapproved' WHERE id = $id";
-
-        // Execute the query
-        if (mysqli_query($conn, $query)) {
+        $stmt = $conn->prepare("UPDATE residency_cert SET status = 'Disapproved' WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
             $response['success'] = true;
             $response['message'] = "Record marked as Disapproved successfully.";
         } else {
-            $response['message'] = "Error: " . mysqli_error($conn);
+            $response['message'] = "Error: " . $stmt->error;
         }
         break;
+
     default:
         $response['message'] = "Invalid action.";
 }
 
-// Return JSON response
 echo json_encode($response);
 mysqli_close($conn);
 ?>

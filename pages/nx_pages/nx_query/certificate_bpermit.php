@@ -7,6 +7,8 @@ header('Content-Type: application/json');
 
 require "../../db_connect.php"; // Ensure this file establishes a MySQLi connection
 
+session_start(); // Start the session to access session variables
+
 $response = [
     'success' => false,
     'message' => '',
@@ -14,6 +16,14 @@ $response = [
 ];
 
 $action = $_GET['action'] ?? '';
+
+function logAction($conn, $action, $user) {
+    $logdate = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $user, $logdate, $action);
+    $stmt->execute();
+}
 
 switch ($action) {
     case 'create':
@@ -54,11 +64,13 @@ switch ($action) {
             $response['data'] = [
                 'id' => mysqli_insert_id($conn), // Return the ID of the new record
             ];
+            logAction($conn, "Created certificate for $businessName", $_SESSION['user']['username']);
         } else {
             $response['message'] = 'Failed to add certificate: ' . mysqli_error($conn);
         }
-
+        
         break;
+
     case 'mark_done':
         // Mark certificate as done
         $id = $_POST['id'] ?? '';
@@ -74,6 +86,7 @@ switch ($action) {
                 if (mysqli_affected_rows($conn) > 0) {
                     $response['success'] = true;
                     $response['message'] = "Certificate marked as done successfully!";
+                    logAction($conn, "Marked certificate ID $id as done", $_SESSION['user']['username']);
                 } else {
                     $response['message'] = "No record found with that ID.";
                 }
@@ -83,48 +96,53 @@ switch ($action) {
         }
 
         break;
+
     case 'setApproved':
-                // Get ID from the POST request
+        // Get ID from the POST request
         $id = $_POST['id'] ?? '';
 
         // Check if ID is provided
         if (empty($id)) {
-            $response['message'] = "ID is required to set the record as done.";
+            $response['message'] = "ID is required to set the record as approved.";
             break;
         }
 
-        // Construct the SQL query to update the status to "Done"
+        // Construct the SQL query to update the status to "Approved"
         $query = "UPDATE business_cert SET status = 'Approved' WHERE id = $id";
 
         // Execute the query
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Record marked as Approved successfully.";
+            logAction($conn, "Approved certificate ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
+
     case 'setDisapproved':
-                        // Get ID from the POST request
+        // Get ID from the POST request
         $id = $_POST['id'] ?? '';
 
         // Check if ID is provided
         if (empty($id)) {
-            $response['message'] = "ID is required to set the record as done.";
+            $response['message'] = "ID is required to set the record as disapproved.";
             break;
         }
 
-        // Construct the SQL query to update the status to "Done"
+        // Construct the SQL query to update the status to "Disapproved"
         $query = "UPDATE business_cert SET status = 'Disapproved' WHERE id = $id";
 
         // Execute the query
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
-            $response['message'] = "Record marked as Approved successfully.";
+            $response['message'] = "Record marked as Disapproved successfully.";
+            logAction($conn, "Disapproved certificate ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
+
     case 'updateInfo':
         // Update certificate details
         $id = $_POST['id'] ?? '';
@@ -148,6 +166,7 @@ switch ($action) {
             if (mysqli_affected_rows($conn) > 0) {
                 $response['success'] = true;
                 $response['message'] = 'Certificate updated successfully!';
+                logAction($conn, "Updated certificate ID $id", $_SESSION['user']['username']);
             } else {
                 $response['message'] = 'No record found with that ID.';
             }
@@ -156,6 +175,7 @@ switch ($action) {
         }
 
         break;
+
     case 'updateNote':
         // Update note for the certificate
         $id = $_POST['id'] ?? '';
@@ -176,6 +196,7 @@ switch ($action) {
             if (mysqli_affected_rows($conn) > 0) {
                 $response['success'] = true;
                 $response['message'] = 'Note updated successfully!';
+                logAction($conn, "Updated note for certificate ID $id", $_SESSION['user']['username']);
             } else {
                 $response['message'] = 'No record found with that ID.';
             }

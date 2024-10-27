@@ -15,6 +15,15 @@ $response = [
 
 $action = $_GET['action'] ?? '';
 
+// Function to log actions
+function logAction($conn, $action, $user) {
+    $logdate = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $user, $logdate, $action);
+    $stmt->execute();
+}
+
 switch ($action) {
     case 'create':
         // Get data from POST request
@@ -38,14 +47,7 @@ switch ($action) {
         $date_of_pickup  = mysqli_real_escape_string($conn, $_POST['date_of_pickup'] ?? '');
         $note            = mysqli_real_escape_string($conn, $_POST['note'] ?? '');
 
-        // Validate required fields
-        // if (empty($sellerName) || empty($buyerName) || empty($landArea)) {
-        //     $response['message'] = "Required fields are missing.";
-        //     echo json_encode($response);
-        //     exit;
-        // }
-
-        // Construct the SQL query without sellerId
+        // Construct the SQL query
         $query = "
             INSERT INTO land_cert (
                 sellerName, sellerAddress, buyerName, buyerAddress, landArea, 
@@ -82,11 +84,11 @@ switch ($action) {
             $response['data'] = [
                 'id' => mysqli_insert_id($conn), // Return the ID of the new record
             ];
+            logAction($conn, "Created land certificate for seller: $sellerName", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Failed to create certificate: " . mysqli_error($conn);
         }
         break;
-
 
     case 'get':
         // Read
@@ -101,6 +103,7 @@ switch ($action) {
             $response['message'] = "Land Certificate data not found.";
         }
         break;
+
     case 'updateAmount':
         $hiddenID = (int)$_POST['hiddenID'] ?? 0;
         $amountEdit = mysqli_real_escape_string($conn, $_POST['AmountEdit'] ?? '');
@@ -117,52 +120,58 @@ switch ($action) {
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Amount updated successfully.";
+            logAction($conn, "Updated amount for land certificate ID $hiddenID", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Failed to update amount: " . mysqli_error($conn);
         }
         break;
+
     case 'setAsApprove':
         // Get ID from the POST request
         $id = $_POST['id'] ?? '';
 
         // Check if ID is provided
         if (empty($id)) {
-            $response['message'] = "ID is required to set the record as done.";
+            $response['message'] = "ID is required to set the record as approved.";
             break;
         }
 
-        // Construct the SQL query to update the status to "Done"
+        // Construct the SQL query to update the status to "Approved"
         $query = "UPDATE land_cert SET status = 'Approved' WHERE id = $id";
 
         // Execute the query
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Record marked as Approved successfully.";
+            logAction($conn, "Approved land certificate ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
+
     case 'setDisapproved':
         // Get ID from the POST request
         $id = $_POST['id'] ?? '';
 
         // Check if ID is provided
         if (empty($id)) {
-            $response['message'] = "ID is required to set the record as done.";
+            $response['message'] = "ID is required to set the record as disapproved.";
             break;
         }
 
-        // Construct the SQL query to update the status to "Done"
+        // Construct the SQL query to update the status to "Disapproved"
         $query = "UPDATE land_cert SET status = 'Disapproved' WHERE id = $id";
 
         // Execute the query
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Record marked as Disapproved successfully.";
+            logAction($conn, "Disapproved land certificate ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
+
     case 'mark_done':
         // Mark certificate as done
         $id = $_POST['id'] ?? '';
@@ -178,6 +187,7 @@ switch ($action) {
                 if (mysqli_affected_rows($conn) > 0) {
                     $response['success'] = true;
                     $response['message'] = "Certificate marked as done successfully!";
+                    logAction($conn, "Marked land certificate ID $id as done", $_SESSION['user']['username']);
                 } else {
                     $response['message'] = "No record found with that ID.";
                 }
@@ -186,6 +196,7 @@ switch ($action) {
             }
         }
         break;
+
     default:
         $response['message'] = "Invalid action.";
 }

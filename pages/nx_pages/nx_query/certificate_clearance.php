@@ -7,6 +7,8 @@ header('Content-Type: application/json');
 
 require "../../db_connect.php"; // Ensure this file establishes a MySQLi connection
 
+session_start(); // Start the session to access session variables
+
 $response = [
     'success' => false,
     'message' => '',
@@ -14,6 +16,14 @@ $response = [
 ];
 
 $action = $_GET['action'] ?? '';
+
+function logAction($conn, $action, $user) {
+    $logdate = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $user, $logdate, $action);
+    $stmt->execute();
+}
 
 switch ($action) {
     case 'updateNotes':
@@ -34,10 +44,12 @@ switch ($action) {
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Notes updated successfully.";
+            logAction($conn, "Updated notes for clearance_cert ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
+
     case 'create':
         // Get data from the POST request
         $fname = $_POST['fname'] ?? '';
@@ -74,6 +86,7 @@ switch ($action) {
                 'dateIssued' => $dateIssued,
                 'purpose' => $purposes // Include purposes in the response
             ];
+            logAction($conn, "Created clearance certificate for $fname $lname", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
@@ -96,6 +109,7 @@ switch ($action) {
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Record deleted successfully.";
+            logAction($conn, "Deleted clearance certificate ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
@@ -130,6 +144,7 @@ switch ($action) {
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Record updated successfully.";
+            logAction($conn, "Updated clearance certificate ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
@@ -152,52 +167,58 @@ switch ($action) {
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Record marked as done successfully.";
+            logAction($conn, "Marked clearance certificate ID $id as done", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
+
     case 'setAsApprove':
         // Get ID from the POST request
         $id = $_POST['id'] ?? '';
 
         // Check if ID is provided
         if (empty($id)) {
-            $response['message'] = "ID is required to set the record as done.";
+            $response['message'] = "ID is required to set the record as approved.";
             break;
         }
 
-        // Construct the SQL query to update the status to "Done"
+        // Construct the SQL query to update the status to "Approved"
         $query = "UPDATE clearance_cert SET status = 'Approved' WHERE id = $id";
 
         // Execute the query
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Record marked as Approved successfully.";
+            logAction($conn, "Approved clearance certificate ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
+
     case 'setDisapproved':
         // Get ID from the POST request
         $id = $_POST['id'] ?? '';
 
         // Check if ID is provided
         if (empty($id)) {
-            $response['message'] = "ID is required to set the record as done.";
+            $response['message'] = "ID is required to set the record as disapproved.";
             break;
         }
 
-        // Construct the SQL query to update the status to "Done"
+        // Construct the SQL query to update the status to "Disapproved"
         $query = "UPDATE clearance_cert SET status = 'Disapproved' WHERE id = $id";
 
         // Execute the query
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Record marked as Disapproved successfully.";
+            logAction($conn, "Disapproved clearance certificate ID $id", $_SESSION['user']['username']);
         } else {
             $response['message'] = "Error: " . mysqli_error($conn);
         }
         break;
+
     default:
         $response['message'] = "Invalid action.";
 }

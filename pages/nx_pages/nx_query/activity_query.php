@@ -14,6 +14,18 @@ $response = [
     'data' => null,
 ];
 
+// Function to log actions
+function logAction($conn, $user, $action) {
+    $logdate = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $user, $logdate, $action);
+    $stmt->execute();
+}
+
+// Get user info (replace with your user authentication logic)
+$user = "currentUser"; // Replace this with the actual user
+
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
@@ -69,6 +81,9 @@ switch ($action) {
                 throw new Exception("Database error: " . $stmt->error);
             }
 
+            // Log the action
+            logAction($conn, $user, "Created activity: $activityName");
+
             $response['success'] = true;
             $response['message'] = "Activity added successfully";
             $response['data'] = [
@@ -122,6 +137,8 @@ switch ($action) {
             }
 
             if ($stmt->affected_rows > 0) {
+                // Log the action
+                logAction($conn, $user, "Deleted activity ID: $id");
                 $response['success'] = true;
                 $response['message'] = "Activity deleted successfully";
             } else {
@@ -231,6 +248,9 @@ switch ($action) {
                 throw new Exception("Failed to update activity");
             }
 
+            // Log the action
+            logAction($conn, $user, "Updated activity ID: $id");
+
             $response['success'] = true;
             $response['message'] = "Activity updated successfully";
             
@@ -238,7 +258,7 @@ switch ($action) {
             $response['success'] = false;
             $response['message'] = $e->getMessage();
         }
-    break;
+        break;
     default:
         $response['message'] = "Invalid action";
 }
