@@ -26,7 +26,7 @@ if ($row['count'] > 0) {
     $error = '
     <div class="bg-red-300 w-full flex justify-between text-red-800 p-4 border border-red-800 rounded-lg">
         <div>
-            There ' . ($count === 1 ? 'is' : 'are') . " $count account" . ($count === 1 ? '' : 's') . " that need approval. Click <a class='font-bold cursor-pointer' href='ResidentPage.php?page=residents'>here</a> to view.
+            There ' . ($count === 1 ? 'is' : 'are') . " $count account" . ($count === 1 ? '' : 's') . " that need approval. Click <a class='font-bold cursor-pointer' href='UserAccounts.php?page=useraccounts'>here</a> to view.
         </div>
     </div>";
 }
