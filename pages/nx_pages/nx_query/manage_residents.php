@@ -154,7 +154,34 @@ switch ($action) {
             logAction($conn, "Failed to delete resident ID $id: $response[message]", $user);
         }
         break;
-
+    case 'setAdmin':
+        // Set a resident as an admin
+        $id = (int)$_GET['id'];
+        
+        // Update the resident's role (assuming you have a column named 'role' in your tblresident)
+        $query = "UPDATE tblregistered_account SET isAdmin = '1' WHERE id = $id";
+        
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Resident ID $id has been set as admin.";
+            logAction($conn, "Set resident ID $id as admin", $user);
+        } else {
+            $response['message'] = "Error setting resident as admin: " . mysqli_error($conn);
+            logAction($conn, "Failed to set resident ID $id as admin: $response[message]", $user);
+        }
+        break;
+    case 'removeAdmin':
+        // Remove admin status
+        $id = (int)$_GET['id'];
+        $query = "UPDATE tblregistered_account SET isAdmin = '0' WHERE id = $id"; // Assuming '0' is not admin
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "User removed from admin.";
+            logAction($conn, "User ID $id removed from admin", $user);
+        } else {
+            $response['message'] = "Error removing admin: " . mysqli_error($conn);
+        }
+        break;
     default:
         $response['message'] = "Invalid action.";
         logAction($conn, "Invalid action attempted: $action", $user);

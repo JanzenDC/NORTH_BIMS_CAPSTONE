@@ -74,9 +74,21 @@ $conn->close();
                     </label>
                 </td>
                 <td>
-                    <button class="text-red-500" title="Delete" onclick="deleteRecord(<?= $official['id'] ?>)">
+                    <button class="bg-red-500 text-white px-4 py-2 rounded mb-4 mt-2" title="Delete" onclick="deleteRecord(<?= $official['id'] ?>)">
                         <i class="fas fa-trash"></i>
                     </button>
+                    <?php if ($_SESSION['user']['isAdmin'] == '2'): ?>
+                        <?php if ($official['isAdmin'] == '1'): // Assuming '1' indicates admin ?>
+                            <button onclick="removeAdmin(<?= $official['id'] ?>)" title='Remove Admin' class="bg-red-300 text-white px-4 py-2 rounded mb-4 mt-2">
+                                <i class="fas fa-user-times"></i>
+                            </button>
+                        <?php else: ?>
+                            <button onclick="setAdmin(<?= $official['id'] ?>)" title='Set Admin' class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">
+                                <i class="fas fa-user-shield"></i> 
+                            </button>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -254,7 +266,63 @@ function deleteRecord(id) {
         }
     });
 }
-
+function setAdmin(id) {
+    swal({
+        title: "Are you sure?",
+        text: "This user will be set as an admin!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willSetAdmin) => {
+        if (willSetAdmin) {
+            $.ajax({
+                url: 'nx_query/manage_residents.php?action=setAdmin&id=' + id,
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        swal("User set as admin successfully!", {
+                            icon: "success",
+                        });
+                    } else {
+                        swal("Error: " + response.message, {
+                            icon: "error",
+                        });
+                    }
+                },
+                error: function() {
+                    swal("Error setting user as admin.", {
+                        icon: "error",
+                    });
+                }
+            });
+        }
+    });
+}
+function removeAdmin(id) {
+    // AJAX call to remove admin status
+    $.ajax({
+        url: 'nx_query/manage_residents.php?action=removeAdmin&id=' + id,
+        type: 'POST',
+        success: function(response) {
+            if (response.success) {
+                swal("User is no longer an admin!", {
+                    icon: "success",
+                }).then(() => {
+                    // Optionally, refresh the page or update the UI
+                });
+            } else {
+                swal("Error: " + response.message, {
+                    icon: "error",
+                });
+            }
+        },
+        error: function() {
+            swal("Error updating admin status.", {
+                icon: "error",
+            });
+        }
+    });
+}
 
 function toggleApproval(id, isApproved) {
   // Prevent the default checkbox behavior

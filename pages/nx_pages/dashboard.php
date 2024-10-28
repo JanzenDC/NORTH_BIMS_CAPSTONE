@@ -169,7 +169,7 @@ function getNewNotifications($conn) {
             'title' => 'New Vehicle Certificate Request',
             'message' => "From {$row['sellerName']}",
             'date' => $row['date'],
-            'link' => "BarangayCertificates.php?page=vehicle"
+            'link' => "BarangayCertificates.php?page=livestock_sale"
         );
     }
     
