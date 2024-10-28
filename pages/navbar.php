@@ -30,3 +30,18 @@ if ($_SESSION['user']['isApproved'] == 0) {
         </div>
     </div>
 </nav>
+<script>
+    function toggleProfileCard() {
+        const profileCard = document.getElementById('profile-card');
+        profileCard.classList.toggle('hidden');
+    }
+
+    window.onclick = function(event) {
+        const profileCard = document.getElementById('profile-card');
+        if (!event.target.matches('.cursor-pointer')) {
+            if (!profileCard.classList.contains('hidden')) {
+                profileCard.classList.add('hidden');
+            }
+        }
+    };
+</script>

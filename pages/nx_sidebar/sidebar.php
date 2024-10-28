@@ -1,7 +1,13 @@
 <?php // DO NOT REMOVE THIS LINE BECAUSE THIS IS THE MAIN DYNAMIC SIDEBAR SO IT WILL REDIRECT TO LOGIN IF THE USER IS NOT APPROVE
 require '../db_connect.php';
 
-
+$account_type = $_SESSION['user']['account_type'];
+// 0 - non resident
+// 1 - resident - can only view certificates make it default toggled
+$isAdmin = $_SESSION['user']['isAdmin'];
+// 0 -default for normal user i want change the dashboard path depend on account_type
+// 1 - admin - all pages will be view
+// 2 - superadmin - all pages will view
 
 
 ?>
