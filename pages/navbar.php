@@ -1,3 +1,11 @@
+<?php
+if ($_SESSION['user']['isApproved'] == 0) {
+    $_SESSION['toastr_message'] = 'Your account need approval from admin.';
+    $_SESSION['toastr_type'] = 'error';
+    header("Location: ../login.php"); // Redirect if not approved
+    exit();
+}
+?>
 <nav class="text-white w-full bg-green-600 p-4 justify-between flex relative">
     <div class="hidden md:block">
         Barangay Information and Management System 

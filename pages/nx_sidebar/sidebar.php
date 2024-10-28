@@ -1,14 +1,8 @@
 <?php // DO NOT REMOVE THIS LINE BECAUSE THIS IS THE MAIN DYNAMIC SIDEBAR SO IT WILL REDIRECT TO LOGIN IF THE USER IS NOT APPROVE
 require '../db_connect.php';
 
-if ($_SESSION['user']['isApproved'] == 0) {
-    $_SESSION['toastr_message'] = 'Your account need approval from admin.';
-    $_SESSION['toastr_type'] = 'error';
-    header("Location: ../login.php"); // Redirect if not approved
-    exit();
-}
 
-$userType = $_SESSION['user']['account_type'];  // Get user type from session
+
 
 ?>
 <aside id="sidebar" class="w-[300px] md:block hidden bg-green-800 text-white shadow-lg h-full overflow-y-auto ">

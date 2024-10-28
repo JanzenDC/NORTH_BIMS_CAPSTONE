@@ -14,7 +14,7 @@
 <script src="../assets/js/html2canvas.js"></script>
 <script src="../assets/js/html2canvas.min.js"></script>
 <!-- ICONS -->
-<link rel="icon" href="../assets/images/north.ico" type="image/x-icon">
+<link rel="icon" href="../../assets/images/north.ico" type="image/x-icon">
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> -->
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
