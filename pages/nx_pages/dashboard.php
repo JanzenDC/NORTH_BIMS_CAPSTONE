@@ -63,6 +63,126 @@ if ($resultBlotter) {
     }
 }
 
+
+
+function getNewNotifications($conn) {
+    $notifications = array();
+    
+    $sql_business = "SELECT id, businessName, owner_fname, owner_lname, date_issued, status 
+                    FROM business_cert 
+                    WHERE status = 'new' 
+                    ORDER BY date_issued DESC";
+    $result_business = $conn->query($sql_business);
+    while($row = $result_business->fetch_assoc()) {
+        $notifications[] = array(
+            'type' => 'Business Certificate',
+            'title' => 'New Business Certificate Request',
+            'message' => "From {$row['owner_fname']} {$row['owner_lname']} for {$row['businessName']}",
+            'date' => $row['date_issued'],
+            'link' => "BarangayCertificates.php?page=business_permit"
+        );
+    }
+    
+    $sql_clearance = "SELECT id, fname, lname, date_issued, status 
+                      FROM clearance_cert 
+                      WHERE status = 'new' 
+                      ORDER BY date_issued DESC";
+    $result_clearance = $conn->query($sql_clearance);
+    while($row = $result_clearance->fetch_assoc()) {
+        $notifications[] = array(
+            'type' => 'Clearance Certificate',
+            'title' => 'New Clearance Certificate Request',
+            'message' => "From {$row['fname']} {$row['lname']}",
+            'date' => $row['date_issued'],
+            'link' => "BarangayCertificates.php?page=clearance"
+        );
+    }
+    
+    $sql_indigency = "SELECT id, fname, lname, date_issued, status 
+                      FROM indigency_cert 
+                      WHERE status = 'new' 
+                      ORDER BY date_issued DESC";
+    $result_indigency = $conn->query($sql_indigency);
+    while($row = $result_indigency->fetch_assoc()) {
+        $notifications[] = array(
+            'type' => 'Indigency Certificate',
+            'title' => 'New Indigency Certificate Request',
+            'message' => "From {$row['fname']} {$row['lname']}",
+            'date' => $row['date_issued'],
+            'link' => "BarangayCertificates.php?page=indigency"
+        );
+    }
+    
+    $sql_land = "SELECT id, sellerName, date, status 
+                 FROM land_cert 
+                 WHERE status = 'new' 
+                 ORDER BY date DESC";
+    $result_land = $conn->query($sql_land);
+    while($row = $result_land->fetch_assoc()) {
+        $notifications[] = array(
+            'type' => 'Land Certificate',
+            'title' => 'New Land Certificate Request',
+            'message' => "From {$row['sellerName']}",
+            'date' => $row['date'],
+            'link' => "BarangayCertificates.php?page=land"
+        );
+    }
+    
+    $sql_livestock = "SELECT id, sellerName, transacDate, status 
+                     FROM livestock_cert 
+                     WHERE status = 'new' 
+                     ORDER BY transacDate DESC";
+    $result_livestock = $conn->query($sql_livestock);
+    while($row = $result_livestock->fetch_assoc()) {
+        $notifications[] = array(
+            'type' => 'Livestock Certificate',
+            'title' => 'New Livestock Certificate Request',
+            'message' => "From {$row['sellerName']}",
+            'date' => $row['transacDate'],
+            'link' => "BarangayCertificates.php?page=livestock_sale"
+        );
+    }
+    
+    $sql_residency = "SELECT id, fname, lname, date_issued, status 
+                      FROM residency_cert 
+                      WHERE status = 'new' 
+                      ORDER BY date_issued DESC";
+    $result_residency = $conn->query($sql_residency);
+    while($row = $result_residency->fetch_assoc()) {
+        $notifications[] = array(
+            'type' => 'Residency Certificate',
+            'title' => 'New Residency Certificate Request',
+            'message' => "From {$row['fname']} {$row['lname']}",
+            'date' => $row['date_issued'],
+            'link' => "BarangayCertificates.php?page=residency"
+        );
+    }
+    
+    $sql_vehicle = "SELECT id, sellerName, date, status 
+                    FROM vehicle_cert 
+                    WHERE status = 'new' 
+                    ORDER BY date DESC";
+    $result_vehicle = $conn->query($sql_vehicle);
+    while($row = $result_vehicle->fetch_assoc()) {
+        $notifications[] = array(
+            'type' => 'Vehicle Certificate',
+            'title' => 'New Vehicle Certificate Request',
+            'message' => "From {$row['sellerName']}",
+            'date' => $row['date'],
+            'link' => "BarangayCertificates.php?page=vehicle"
+        );
+    }
+    
+    usort($notifications, function($a, $b) {
+        return strtotime($b['date']) - strtotime($a['date']);
+    });
+    
+    return $notifications;
+}
+
+$notifications = getNewNotifications($conn);
+$notificationCount = count($notifications);
+
 // Close the connection
 $conn->close();
 
@@ -78,6 +198,37 @@ $blotterDataJson = json_encode($blotterData);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <?php include_once "../headers.php"; ?>
+    <style>
+        .notification-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        #notificationDropdown {
+            top: 100%;
+            right: 0;
+            min-width: 320px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        #notificationDropdown::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #notificationDropdown::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #notificationDropdown::-webkit-scrollbar-thumb {
+            background-color: #4CAF50;
+            border-radius: 10px;
+        }
+
+        #notificationDropdown::-webkit-scrollbar-thumb:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 overflow-hidden">
     <?php include_once("../navbar.php"); ?>
@@ -95,9 +246,56 @@ $blotterDataJson = json_encode($blotterData);
             <div class="bg-green-600 text-white py-3 rounded-xl shadow-md mt-5">
                 <div class="flex justify-between items-center px-4">
                     <h1 id="dateDisplay" class="text-xl font-bold"></h1>
-                    <div class="relative">
-                        <i class="fas fa-bell w-6 h-7"></i>
-                        <span class="absolute top-0 left-3 bottom-2 right-0 inline-flex items-center justify-center w-4 h-4 bg-red-600 rounded-full text-white text-xs">3</span>
+                    <div class="relative notification-container">
+                        <button id="notificationButton" class="focus:outline-none">
+                            <i class="fas fa-bell w-6 h-7"></i>
+                            <?php if ($notificationCount > 0): ?>
+                            <span class="absolute top-0 left-3 bottom-2 right-0 inline-flex items-center justify-center w-4 h-4 bg-red-600 rounded-full text-white text-xs">
+                                <?php echo $notificationCount; ?>
+                            </span>
+                            <?php endif; ?>
+                        </button>
+                        
+                        <!-- Notification Dropdown -->
+                        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50">
+                            <div class="p-4 border-b">
+                                <h3 class="text-lg font-semibold text-gray-800">Notifications</h3>
+                            </div>
+                            <div class="max-h-96 overflow-y-auto">
+                                <?php if ($notificationCount > 0): ?>
+                                    <?php foreach($notifications as $notification): ?>
+                                        <a href="<?php echo htmlspecialchars($notification['link']); ?>" 
+                                        class="block p-4 border-b hover:bg-gray-50 transition-colors">
+                                            <div class="flex items-start">
+                                                <div class="flex-shrink-0">
+                                                    <span class="inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <p class="text-sm font-medium text-gray-800">
+                                                        <?php echo htmlspecialchars($notification['title']); ?>
+                                                    </p>
+                                                    <p class="text-sm text-gray-600">
+                                                        <?php echo htmlspecialchars($notification['message']); ?>
+                                                    </p>
+                                                    <p class="text-xs text-gray-500 mt-1">
+                                                        <?php echo date('M d, Y', strtotime($notification['date'])); ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="p-4 text-center text-gray-500">
+                                        No new notifications
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($notificationCount > 0): ?>
+                            <div class="p-4 border-t text-center">
+                                <a href="all_requests.php" class="text-sm text-green-600 hover:text-green-700">View all requests</a>
+                            </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -247,7 +445,23 @@ $blotterDataJson = json_encode($blotterData);
         const formattedDate = now.toLocaleString('en-US', options);
         document.getElementById('dateDisplay').textContent = formattedDate;
     }
-
+    document.addEventListener('DOMContentLoaded', function() {
+        const notificationButton = document.getElementById('notificationButton');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        
+        // Toggle dropdown when clicking the bell icon
+        notificationButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!notificationDropdown.contains(e.target) && e.target !== notificationButton) {
+                notificationDropdown.classList.add('hidden');
+            }
+        });
+    });
     // Update the date immediately
     updateDate();
     // Set an interval to update the date every second
