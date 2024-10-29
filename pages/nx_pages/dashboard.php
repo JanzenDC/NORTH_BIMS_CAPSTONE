@@ -290,11 +290,11 @@ $blotterDataJson = json_encode($blotterData);
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            <?php if ($notificationCount > 0): ?>
+                            <!-- <?php if ($notificationCount > 0): ?>
                             <div class="p-4 border-t text-center">
                                 <a href="all_requests.php" class="text-sm text-green-600 hover:text-green-700">View all requests</a>
                             </div>
-                            <?php endif; ?>
+                            <?php endif; ?> -->
                         </div>
                     </div>
                 </div>
