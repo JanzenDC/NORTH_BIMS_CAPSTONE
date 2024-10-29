@@ -24,7 +24,8 @@ $sqlDisapproved = "SELECT * FROM indigency_cert WHERE status = 'Disapproved' AND
 $resultDisapproved = $conn->query($sqlDisapproved);
 $disapprovedData = $resultDisapproved->fetch_all(MYSQLI_ASSOC);
 
-$sqlDone = "SELECT * FROM indigency_cert WHERE status = 'Done'";
+$sqlDone = "SELECT * FROM indigency_cert WHERE status = 'Done'  AND ownerid = $userid";
+
 $resultDone = $conn->query($sqlDone);
 $doneData = $resultDone->fetch_all(MYSQLI_ASSOC);
 ?>
