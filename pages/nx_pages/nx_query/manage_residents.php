@@ -46,7 +46,7 @@ switch ($action) {
 
         // Validate required fields
         $requiredFields = ['fname', 'mname', 'lname', 'suffix', 'bday', 'age', 'houseNo', 
-                           'purok', 'brgy', 'municipality', 'province', 'civil_status', 
+                           'purok', 'municipality', 'province', 'civil_status', 
                            'year_stayed', 'education', 'gender', 'birthplace', 
                            'head_fam', 'occupation', 'voter'];
 

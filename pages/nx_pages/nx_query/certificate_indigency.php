@@ -137,10 +137,6 @@ switch ($action) {
         $date_issued = $_POST['date_issued'] ?? '';
         $purpose = $_POST['purposes'] ?? ''; // Using 'purposes' as per your JavaScript
 
-        // Validate required fields
-        if (empty($id) || empty($amount) || empty($date_issued) || empty($purpose)) {
-            $response['message'] = "Certificate ID, Amount, Date Issued, and Purpose are required.";
-        } else {
             // Escape user input for safety
             $amount = mysqli_real_escape_string($conn, $amount);
             $date_issued = mysqli_real_escape_string($conn, $date_issued);
@@ -164,7 +160,6 @@ switch ($action) {
             } else {
                 $response['message'] = "Error updating certificate: " . mysqli_error($conn);
             }
-        }
         break;
 
     case 'updateNote':

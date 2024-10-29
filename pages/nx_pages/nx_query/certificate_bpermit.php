@@ -46,13 +46,6 @@ switch ($action) {
         $note = mysqli_real_escape_string($conn, $_POST['note'] ?? '');
         $status = mysqli_real_escape_string($conn, $_POST['status'] ?? '');
 
-        // Validate required fields
-        if (empty($owner_fname) || empty($owner_lname) || empty($businessName) || empty($businessAddress) || empty($date_issued)) {
-            $response['message'] = 'Please fill in all required fields.';
-            echo json_encode($response);
-            exit;
-        }
-
         // Prepare the SQL query
         $sql = "INSERT INTO business_cert (owner_fname, owner_mname, owner_lname, owner_suffix, businessName, typeOfBusiness, businessAddress, street, barangay, municipality, province, date_issued, amount, status, cert_amount, date_of_pickup, note) 
                 VALUES ('$owner_fname', '$owner_mname', '$owner_lname', '$owner_suffix', '$businessName', '$typeOfBusiness', '$businessAddress', '$street', '$barangay', '$municipality', '$province', '$date_issued', '$amount', '$status', '$cert_amount', '$date_of_pickup', '$note')";
@@ -151,13 +144,6 @@ switch ($action) {
         $typeOfBusiness = mysqli_real_escape_string($conn, $_POST['typeOfBusiness'] ?? '');
         $certAmount = mysqli_real_escape_string($conn, $_POST['certAmount'] ?? '');
 
-        // Validate required fields
-        if (empty($id) || empty($businessName) || empty($address) || empty($typeOfBusiness) || empty($certAmount)) {
-            $response['message'] = 'Please fill in all required fields.';
-            echo json_encode($response);
-            exit;
-        }
-
         // Prepare the SQL query to update the record
         $sql = "UPDATE business_cert SET businessName='$businessName', businessAddress='$address', typeOfBusiness='$typeOfBusiness', cert_amount='$certAmount' WHERE id='$id'";
 
@@ -180,13 +166,6 @@ switch ($action) {
         // Update note for the certificate
         $id = $_POST['id'] ?? '';
         $note = mysqli_real_escape_string($conn, $_POST['note'] ?? '');
-
-        // Validate required fields
-        if (empty($id) || empty($note)) {
-            $response['message'] = 'Please fill in all required fields.';
-            echo json_encode($response);
-            exit;
-        }
 
         // Prepare the SQL query to update the note
         $sql = "UPDATE business_cert SET note='$note' WHERE id='$id'";

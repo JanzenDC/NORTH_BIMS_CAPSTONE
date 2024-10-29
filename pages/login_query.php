@@ -15,9 +15,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result && mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
-        $hashed_password = $user['password']; // Correctly fetched
+        $hashed_password = $user['password'];
 
-        if (password_verify($password, $hashed_password)) { // Removed strtolower
+        if (password_verify($password, $hashed_password)) {
             $_SESSION['user'] = [
                 'id' => $user['id'],
                 'fname' => $user['fname'],
@@ -42,8 +42,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'isAdmin' => $user['isAdmin'],
                 'isApproved' => $user['isApproved'],
             ];
-            header("Location: nx_pages/dashboard.php");
-            exit;
+
+            // Check if user is approved to access the dashboard
+            if ($_SESSION['user']['isApproved'] == '1') {
+                // Redirect based on admin level and account type
+                if ($_SESSION['user']['isAdmin'] == '2') {
+                    // Superadmin dashboard
+                    header("Location: nx_pages/dashboard.php");
+                } elseif ($_SESSION['user']['isAdmin'] == '1') {
+                    // Admin dashboard
+                    header("Location: nx_pages/dashboard.php");
+                } elseif ($_SESSION['user']['account_type'] == '1') {
+                    // Resident dashboard
+                    header("Location: nx_residentpage/res_Dashboard.php");
+                } else {
+                    // Non-resident dashboard
+                    header("Location: nx_pages/nresident_dashboard.php");
+                }
+                exit;
+            } else {
+                $_SESSION['toastr_message'] = 'Account is not approved. Please contact support.';
+                $_SESSION['toastr_type'] = 'warning';
+            }
         } else {
             $_SESSION['toastr_message'] = 'Invalid username or password.';
             $_SESSION['toastr_type'] = 'error';
@@ -53,6 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['toastr_type'] = 'error';
     }
 
+    // Redirect back to login page if login fails
     header("Location: login.php");
     exit;
 }
