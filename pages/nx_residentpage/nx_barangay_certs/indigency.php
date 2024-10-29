@@ -1,6 +1,7 @@
 <?php
-// Fetch walk-in data from the database
-$sqlWalkin = "SELECT * FROM indigency_cert WHERE status = 'Walk-in'";
+$userid = $_SESSION['user']['id'];
+
+$sqlWalkin = "SELECT * FROM indigency_cert WHERE status = 'Walk-in' AND ownerid = $userid";
 $resultWalkin = $conn->query($sqlWalkin);
 
 $walkinData = [];
@@ -11,15 +12,15 @@ if ($resultWalkin->num_rows > 0) {
 }
 
 // Fetch other data as needed (example SQL queries)
-$sqlNew = "SELECT * FROM indigency_cert WHERE status = 'New'";
+$sqlNew = "SELECT * FROM indigency_cert WHERE status = 'New' AND ownerid = $userid";
 $resultNew = $conn->query($sqlNew);
 $newData = $resultNew->fetch_all(MYSQLI_ASSOC);
 
-$sqlApproved = "SELECT * FROM indigency_cert WHERE status = 'Approved'";
+$sqlApproved = "SELECT * FROM indigency_cert WHERE status = 'Approved' AND ownerid = $userid";
 $resultApproved = $conn->query($sqlApproved);
 $approvedData = $resultApproved->fetch_all(MYSQLI_ASSOC);
 
-$sqlDisapproved = "SELECT * FROM indigency_cert WHERE status = 'Disapproved'";
+$sqlDisapproved = "SELECT * FROM indigency_cert WHERE status = 'Disapproved' AND ownerid = $userid";
 $resultDisapproved = $conn->query($sqlDisapproved);
 $disapprovedData = $resultDisapproved->fetch_all(MYSQLI_ASSOC);
 
@@ -70,13 +71,12 @@ $(document).ready(function() {
     $("#add-certificate-dialog").dialog({
         autoOpen: false,
         modal: true,
-        width: 800, // Set your desired width
-        height: 430, // Set your desired height
+        width: 300, // Set your desired width
     });
 
     // Open resident dialog on button click
     $("#open-resident-dialog").on("click", function() {
-        $("#residentDialog").dialog("open");
+        $("#add-certificate-dialog").dialog("open");
     });
 
     // Handle resident selection
@@ -451,7 +451,7 @@ function disapproveCert(targetID) {
     <hr class="mb-3 mt-3">
 
     <div>
-        <button id="open-resident-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Select Resident</button>
+        <button id="open-resident-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Request</button>
     </div>
     
     <div id="tabs" class="container mt-4">
@@ -475,7 +475,6 @@ function disapproveCert(targetID) {
                         <th>Status</th>
                         <th>Certificate Amount</th>
                         <th>Date Issued</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -489,10 +488,7 @@ function disapproveCert(targetID) {
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
                         <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
-                        <td class="flex space-x-2">
-                            <a href='GenerateCertificate.php?page=generate_indigency&id=<?php echo $row['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
-                        </td>
+
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -513,7 +509,6 @@ function disapproveCert(targetID) {
                         <th>Status</th>
                         <th>Certificate Amount</th>
                         <th>Date Issued</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -527,10 +522,6 @@ function disapproveCert(targetID) {
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
                         <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick="approveCert(<?php echo htmlspecialchars($row['id']); ?>)">Approve</button>
-                            <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-200" onclick="disapproveCert(<?php echo htmlspecialchars($row['id']); ?>)">Disapprove</button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -549,7 +540,6 @@ function disapproveCert(targetID) {
                         <th>Status</th>
                         <th>Certificate Amount</th>
                         <th>Date Issued</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -563,12 +553,6 @@ function disapproveCert(targetID) {
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
                         <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
-                                    onclick="editApproved(<?php echo htmlspecialchars($row['id']); ?>)">Edit</button>
-                            <a href='GenerateCertificate.php?page=generate_indigency&id=<?php echo $row['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -587,7 +571,6 @@ function disapproveCert(targetID) {
                         <th>Status</th>
                         <th>Certificate Amount</th>
                         <th>Date Issued</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -601,12 +584,6 @@ function disapproveCert(targetID) {
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
                         <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
-                                    onclick="editDisapproved(<?php echo htmlspecialchars($row['id']); ?>)">Edit</button>
-                            <a href='GenerateCertificate.php?page=generate_indigency&id=<?php echo $row['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -653,82 +630,18 @@ function disapproveCert(targetID) {
     </div>
 </div>
 
-<!-- Resident Search Dialog -->
-<div id="residentDialog" style="display:none;">
-    <h2>Select Resident</h2>
-    <table id="residentTable" class="display" style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr>
-                <th style="border: 1px solid #ccc; padding: 8px;">Resident Name</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Age</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            // Fetch residents from tblresident
-            $sqlResidents = "SELECT * FROM tblresident";
-            $resultResidents = $conn->query($sqlResidents);
-
-            if ($resultResidents->num_rows > 0) {
-                while ($row = $resultResidents->fetch_assoc()) {
-                    $fullName = htmlspecialchars($row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']);
-                    echo "<tr>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'>" . $fullName . "</td>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'>" . htmlspecialchars($row['age']) . "</td>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'><button class='select-resident bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200' data-name='" . $fullName . "' data-age='" . htmlspecialchars($row['age']) . "' data-id='" . htmlspecialchars($row['resident_id']) . "'>Select</button></td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr><td colspan='3' style='text-align:center; border: 1px solid #ccc; padding: 8px;'>No residents found</td></tr>";
-            }
-            ?>
-        </tbody>
-    </table>
-</div>
-
 <!-- Add Certificate Dialog -->
 <div id="add-certificate-dialog" title="Add Certificate" style="display:none;">
-    <form id="addCertificateForm" class="flex flex-wrap" onsubmit="addRecord(event)">
-
-        <div class="w-full mb-2" style="display: none;">
-            <label for="resident_id" class="block mb-1">Resident ID:</label>
-            <input type="hidden" id="resident_id" name="resident_id">
-        </div>
+    <form id="addCertificateForm" onsubmit="addRecord(event)">
 
         <div class="w-full mb-2">
-            <label for="status" class="block mb-1">Status:</label>
-            <input type="text" id="status" name="status" value="Walk-in" readonly class="border rounded p-2 w-full">
+            <label for="year_residence" class="block mb-1">Year Residence:</label>
+            <input type="number" id="year_residence" name="year_residence" required class="border rounded p-2 w-full">
         </div>
 
-        <div class="w-full md:w-1/2 md:pr-2 mb-2">
-            <label for="fname" class="block mb-1">First Name:</label>
-            <input type="text" id="fname" name="fname" required readonly class="border rounded p-2 w-full">
-        </div>
-
-        <div class="w-full md:w-1/2 mb-2">
-            <label for="mname" class="block mb-1">Middle Initial:</label>
-            <input type="text" id="mname" name="mname" readonly class="border rounded p-2 w-full">
-        </div>
-
-        <div class="w-full md:w-1/2 md:pr-2 mb-2">
-            <label for="lname" class="block mb-1">Last Name:</label>
-            <input type="text" id="lname" name="lname" required readonly class="border rounded p-2 w-full">
-        </div>
-
-        <div class="w-full md:w-1/2 md:pr-2 mb-2">
-            <label for="amount" class="block mb-1">Certificate Amount:</label>
-            <input type="text" id="amount" name="amount" required class="border rounded p-2 w-full">
-        </div>
-
-        <div class="w-full md:w-1/2 mb-2">
+        <div class="w-full  mb-2">
             <label for="date_issued" class="block mb-1">Date Issued:</label>
             <input type="date" id="date_issued" name="date_issued" required class="border rounded p-2 w-full">
-        </div>
-
-        <div class="w-full mb-2">
-            <label for="purpose" class="block mb-1">Purpose:</label>
-            <textarea id="purpose" name="purpose" required class="border rounded p-2 w-full" rows="3"></textarea>
         </div>
 
         <!-- Close button -->
