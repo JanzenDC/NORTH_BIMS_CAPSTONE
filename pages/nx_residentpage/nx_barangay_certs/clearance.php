@@ -2,7 +2,7 @@
 $userid = $_SESSION['user']['id'];
 
 // Fetch data from the clearance_cert table based on status for Walk-in only
-$sqlWalkin = "SELECT * FROM clearance_cert WHERE status = 'Walk-in' AND ownerid = $userid";
+$sqlWalkin = "SELECT * FROM clearance_cert WHERE status = 'Walk-in' AND ownerId = $userid";
 $resultWalkin = $conn->query($sqlWalkin);
 
 $walkinData = [];

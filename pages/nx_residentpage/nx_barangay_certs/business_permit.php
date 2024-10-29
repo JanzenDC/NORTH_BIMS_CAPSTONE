@@ -1,4 +1,5 @@
 <?php
+$userid = $_SESSION['user']['id'];
 
 $walkinData = []; // Fetch your walk-in data
 $newData = []; // Fetch new data
@@ -7,11 +8,11 @@ $disapprovedData = []; // Fetch disapproved data
 $doneData = []; // Fetch done data
 
 // Example queries (customize according to your actual table logic)
-$walkinQuery = "SELECT * FROM business_cert WHERE status = 'Walk-in'";
-$newQuery = "SELECT * FROM business_cert WHERE status = 'New'";
-$approvedQuery = "SELECT * FROM business_cert WHERE status = 'Approved'";
-$disapprovedQuery = "SELECT * FROM business_cert WHERE status = 'Disapproved'";
-$doneQuery = "SELECT * FROM business_cert WHERE status = 'Done'";
+$walkinQuery = "SELECT * FROM business_cert WHERE status = 'Walk-in' AND ownerId = $userid";
+$newQuery = "SELECT * FROM business_cert WHERE status = 'New' AND ownerId = $userid";
+$approvedQuery = "SELECT * FROM business_cert WHERE status = 'Approved' AND ownerId = $userid";
+$disapprovedQuery = "SELECT * FROM business_cert WHERE status = 'Disapproved' AND ownerId = $userid";
+$doneQuery = "SELECT * FROM business_cert WHERE status = 'Done' AND ownerId = $userid";
 
 
 foreach ([$walkinQuery => &$walkinData, $newQuery => &$newData, 
@@ -44,6 +45,8 @@ $(document).ready(function() {
         autoOpen: false,
         modal: true,
         width: 700,
+        height:  500,
+
         buttons: {
             Cancel: function() {
                 $(this).dialog("close");
@@ -154,181 +157,8 @@ function addRecord(event) {
         }
     });
 }
-function doneCert(id) {
-    if (confirm('Are you sure you want to mark this certificate as done?')) {
-        // Send AJAX request to the server
-        $.ajax({
-            url: 'nx_query/certificate_bpermit.php?action=mark_done',
-            type: 'POST',
-            data: { id: id },
-            success: function(response) {
-                console.log('Full server response:', response);
-                try {
-                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (jsonResponse.success) {
-                        swal("Certificate marked as done successfully!", {
-                            icon: "success",
-                        }).then(() => {
-                            location.reload(); // Reload the page or update the UI as needed
-                        });
-                    } else {
-                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                            icon: "error",
-                        });
-                    }
-                } catch (e) {
-                    console.error('Error parsing server response:', e);
-                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
-                        icon: "error",
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-                swal("Error marking record as done", "Please check the console for more details.", {
-                    icon: "error",
-                });
-            }
-        });
-    }
-}
-function approveCert(id) {
-    if (confirm('Are you sure you want to mark this certificate as done?')) {
-        // Send AJAX request to the server
-        $.ajax({
-            url: 'nx_query/certificate_bpermit.php?action=setApproved',
-            type: 'POST',
-            data: { id: id },
-            success: function(response) {
-                console.log('Full server response:', response);
-                try {
-                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (jsonResponse.success) {
-                        swal("Certificate marked as done successfully!", {
-                            icon: "success",
-                        }).then(() => {
-                            location.reload(); // Reload the page or update the UI as needed
-                        });
-                    } else {
-                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                            icon: "error",
-                        });
-                    }
-                } catch (e) {
-                    console.error('Error parsing server response:', e);
-                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
-                        icon: "error",
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-                swal("Error marking record as done", "Please check the console for more details.", {
-                    icon: "error",
-                });
-            }
-        });
-    }
-}
-function disapproveCert(id) {
-    if (confirm('Are you sure you want to mark this certificate as disapproved?')) {
-        // Send AJAX request to the server
-        $.ajax({
-            url: 'nx_query/certificate_bpermit.php?action=setDisapproved',
-            type: 'POST',
-            data: { id: id },
-            success: function(response) {
-                console.log('Full server response:', response);
-                try {
-                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (jsonResponse.success) {
-                        swal("Certificate marked as done successfully!", {
-                            icon: "success",
-                        }).then(() => {
-                            location.reload(); // Reload the page or update the UI as needed
-                        });
-                    } else {
-                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                            icon: "error",
-                        });
-                    }
-                } catch (e) {
-                    console.error('Error parsing server response:', e);
-                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
-                        icon: "error",
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-                swal("Error marking record as done", "Please check the console for more details.", {
-                    icon: "error",
-                });
-            }
-        });
-    }
-}
 
-function editCert(id) {
-    // Find the row data based on the id
-    const row = document.querySelector(`#approvedTable tr[data-id='${id}']`);
-    if (row) {
-        // Retrieve values from the row
-        const businessName = row.cells[0].innerText;
-        const address = row.cells[1].innerText;
-        const typeOfBusiness = row.cells[2].innerText;
-        const certAmount = row.cells[3].innerText;
 
-        // Populate the dialog fields
-        $('#editCertId').val(id); // Set the hidden ID
-        $('#editBusinessName').val(businessName);
-        $('#editAddress').val(address);
-        $('#editTypeOfBusiness').val(typeOfBusiness);
-        $('#editCertAmount').val(certAmount);
-
-        // Open the jQuery UI dialog
-        $('#editCertificateDialog').dialog({
-            modal: true
-        });
-    }
-}
-
-// Update button click event
-
-function saveEdit(id) {
-    console.log(id)
-    const formData = {
-        id: $('#editCertId').val(), // Use the hidden ID
-        businessName: $('#editBusinessName').val(),
-        address: $('#editAddress').val(),
-        typeOfBusiness: $('#editTypeOfBusiness').val(),
-        certAmount: $('#editCertAmount').val()
-    };
-
-    // Example AJAX call to save changes (adjust URL and handling as necessary)
-    $.ajax({
-        url: 'nx_query/certificate_bpermit.php?action=updateInfo',
-        type: 'POST',
-        data: formData,
-        success: function(response) {
-            if (response.success) {
-                swal("Certificate marked as done successfully!", {
-                    icon: "success",
-                }).then(() => {
-                    location.reload(); // Reload the page or update the UI as needed
-                    $('#editCertificateDialog').dialog("close");
-                });
-                
-            } else {
-                alert('Error: ' + response.message);
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX error:', status, error);
-            alert('Error updating certificate.');
-        }
-    });
-}
 
 </script>
 
@@ -337,7 +167,7 @@ function saveEdit(id) {
     <hr class="mb-3 mt-3">
 
     <div>
-        <button id="openDialogButton" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Add Certificate</button>
+        <button id="openDialogButton" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Request</button>
     </div>
 
     <div id="tabs" class="container mt-4">
@@ -359,7 +189,6 @@ function saveEdit(id) {
                         <th>Type of Business</th>
                         <th>Certificate Amount</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -371,11 +200,6 @@ function saveEdit(id) {
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600" onclick="doneCert(<?php echo $data['id']; ?>)">Done</button>
-                            <a href='GenerateCertificate.php?page=generate_bpermit&id=<?php echo $data['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
-                        </td>
-
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -392,7 +216,6 @@ function saveEdit(id) {
                         <th>Address</th>
                         <th>Type of Business</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -403,10 +226,6 @@ function saveEdit(id) {
                         <td><?php echo htmlspecialchars($data['businessAddress']); ?></td>
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="btn-approve bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="approveCert(<?php echo $data['id']; ?>)">Approve</button>
-                            <button class="btn-disapprove bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="disapproveCert(<?php echo $data['id']; ?>)">Disapprove</button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -423,7 +242,6 @@ function saveEdit(id) {
                         <th>Type of Business</th>
                         <th>Certificate Amount</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -434,11 +252,6 @@ function saveEdit(id) {
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="btn-edit bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" onclick="editCert(<?php echo $data['id']; ?>)">Edit</button>
-                            <a href='GenerateCertificate.php?page=generate_bpermit&id=<?php echo $data['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
-                            <button class="btn-done bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="doneCert(<?php echo $data['id']; ?>)">Done</button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -456,7 +269,6 @@ function saveEdit(id) {
                         <th>Type of Business</th>
                         <th>Status</th>
                         <th>Note</th>
-                        <th>Actions</th> <!-- Added Actions column -->
                     </tr>
                 </thead>
                 <tbody>
@@ -467,12 +279,6 @@ function saveEdit(id) {
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['note']); ?></td>
-                        <td class="flex space-x-2">
-                            <button onclick="openEditNoteDialog(<?php echo $data['id']; ?>, '<?php echo addslashes($data['note']); ?>')" 
-                                    class="bg-yellow-400 text-white px-4 py-2 rounded-md">
-                                Edit Note
-                            </button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -517,10 +323,10 @@ function saveEdit(id) {
 
 <!-- ADD CERT -->
 <div id="loadingIndicator" class="hidden">Loading...</div>
-<div id="addCertificateDialog" title="Add Certificate" style="display:none;">
+<div id="addCertificateDialog" title="Request" style="display:none;">
     <form id="addCertificateForm" onsubmit="addRecord(event)">
-        <h2 class="text-xl font-semibold mb-4">Add Certificate</h2>
-        <input type="text" id="status" name="status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 disabled" value="Walk-in">
+        <h2 class="text-xl font-semibold mb-4">Request</h2>
+        <input type="text" id="status" name="status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 disabled" value="New">
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Personal Information -->
@@ -572,7 +378,7 @@ function saveEdit(id) {
             </div>
         </div>
 
-        <button type="submit" class="mt-6 w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600">Add Certificate</button>
+        <button type="submit" class="mt-6 w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600">Request</button>
     </form>
 </div>
 
