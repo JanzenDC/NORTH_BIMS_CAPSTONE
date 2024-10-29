@@ -34,7 +34,7 @@ if ($row['count'] > 0) {
 // New query to fetch total residents per year based on year_stayed
 $queryResidents = "
     SELECT year_stayed AS year, COUNT(*) AS total_residents
-    FROM residents
+    FROM tblresident
     GROUP BY year_stayed
     ORDER BY year_stayed;
 ";

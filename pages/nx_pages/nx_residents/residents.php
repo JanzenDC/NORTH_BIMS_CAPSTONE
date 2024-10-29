@@ -64,7 +64,7 @@ $conn->close();
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
+<tbody>
         <?php foreach ($data as $official): ?> 
             <tr data-id="<?= $official['resident_id'] ?>">
                 <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
