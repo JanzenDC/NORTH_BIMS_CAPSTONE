@@ -121,13 +121,6 @@ switch ($action) {
         $note = $_POST['note'] ?? '';
         $date_of_pickup = $_POST['date_of_pickup'] ?? '';
 
-        // Validate required fields
-        if (empty($sellerName) || empty($buyerName) || empty($amount)) {
-            $response['message'] = "Required fields are missing.";
-            echo json_encode($response);
-            exit;
-        }
-
         // Set default status to 'Walk-in'
         $status = 'Walk-in';
 

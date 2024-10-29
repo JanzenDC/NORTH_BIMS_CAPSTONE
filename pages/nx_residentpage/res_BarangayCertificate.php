@@ -10,17 +10,17 @@ if (!isset($_SESSION['user'])) {
 }
 $user = $_SESSION['user'];
 
-// // Get the page from the query parameter, default to 'home'
-// $page = isset($_GET['page']) ? $_GET['page'] : 'barangay_official';
+// Get the page from the query parameter, default to 'home'
+$page = isset($_GET['page']) ? $_GET['page'] : 'barangay_official';
 
-// // Ensure the page is valid to prevent security issues
-// $valid_pages = ['clearance', 'indigency', 'residency', 'business_permit', 'livestock_sale', 'land', 'vehicle']; // Add other valid pages here
+// Ensure the page is valid to prevent security issues
+$valid_pages = ['clearance', 'indigency', 'residency', 'business_permit', 'livestock_sale', 'land', 'vehicle']; // Add other valid pages here
 
-// if (!in_array($page, $valid_pages)) {
-//     $page = 'barangay_official'; // Fallback to 'home' if the page is invalid
-// }
+if (!in_array($page, $valid_pages)) {
+    $page = 'barangay_official'; // Fallback to 'home' if the page is invalid
+}
 
-// $treeView = $page;
+$treeView = $page;
 ?>
 
 <!DOCTYPE html>
@@ -45,10 +45,10 @@ $user = $_SESSION['user'];
 
         <!-- Main Content -->
         <main class="flex-1 p-6 overflow-y-auto mb-8">
-             <!-- <?php 
+             <?php 
             // Include the corresponding page content
-            include_once("../nx_pages/nx_barangay_certs/{$page}.php"); 
-            ?> -->
+            include_once("../nx_residentpage/nx_barangay_certs/{$page}.php"); 
+            ?>
         </main>
     </div>
 
