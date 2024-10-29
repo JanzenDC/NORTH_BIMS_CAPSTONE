@@ -66,7 +66,7 @@ $conn->close();
         </thead>
         <tbody>
         <?php foreach ($data as $official): ?> 
-            <tr data-id="<?= $official['id'] ?>">
+            <tr data-id="<?= $official['resident_id'] ?>">
                 <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
                 <td><?= htmlspecialchars($official['full_name']) ?>
             </td>

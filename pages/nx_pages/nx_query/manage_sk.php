@@ -4,7 +4,7 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
-
+session_start();
 require "../../db_connect.php"; // Ensure this file establishes a MySQLi connection
 
 $response = [
