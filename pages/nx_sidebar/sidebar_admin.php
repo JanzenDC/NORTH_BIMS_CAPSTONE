@@ -9,11 +9,7 @@
                     <i class="fa-solid fa-tachometer-alt"></i> Dashboard
                 </a>
             </li>
-            <li>
-                <a href="../nx_pages/user_profile.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'user_profile' ? 'active:bg-gray-400' : ''; ?>">
-                    <i class="fa-solid fa-user"></i> Profile
-                </a>
-            </li>
+
             <li>
                 <button onclick="toggleSettings('officials-menu', 'officials-icon')" class="flex justify-between w-full px-4 py-2 text-left hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'barangay_officials' ? 'active:bg-gray-400' : ''; ?>">
                     <div>
@@ -116,8 +112,8 @@
             </li>
 
             <li>
-                <a href="UserAccounts.php?page=useraccounts" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'users' ? 'active:bg-gray-400' : ''; ?>">
-                    <i class="fa-solid fa-user"></i> User Accounts
+                <a href="../nx_pages/BlotterPage.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'blotter' ? 'active:bg-gray-400' : ''; ?>">
+                    <i class="fa-solid fa-building-shield"></i> Blotter
                 </a>
             </li>
 
@@ -126,19 +122,30 @@
                     <i class="fa-regular fa-flag"></i> Reports
                 </a>
             </li>
+
+            <li>
+                <a href="UserAccounts.php?page=useraccounts" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'users' ? 'active:bg-gray-400' : ''; ?>">
+                    <i class="fa-solid fa-user"></i> User Accounts
+                </a>
+            </li>
+            
             <li>
                 <a href="../nx_pages/Activity.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'activity' ? 'active:bg-gray-400' : ''; ?>">
                     <i class="fa-solid fa-chart-line"></i> Activity
                 </a>
             </li>
-            <li>
-                <a href="../nx_pages/BlotterPage.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'blotter' ? 'active:bg-gray-400' : ''; ?>">
-                    <i class="fa-solid fa-building-shield"></i> Blotter
-                </a>
-            </li>
+
+
+
             <li>
                 <a href="../nx_pages/SystemLogs.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'logs' ? 'active:bg-gray-400' : ''; ?>">
                     <i class="fa-solid fa-shuffle"></i> Logs
+                </a>
+            </li>
+
+            <li>
+                <a href="../nx_pages/user_profile.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'user_profile' ? 'active:bg-gray-400' : ''; ?>">
+                    <i class="fa-solid fa-user"></i> Profile
                 </a>
             </li>
         </ul>
