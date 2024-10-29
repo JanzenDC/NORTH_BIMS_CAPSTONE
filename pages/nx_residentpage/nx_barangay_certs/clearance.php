@@ -93,7 +93,7 @@ $(document).ready(function() {
         autoOpen: false,
         modal: true,
         width: 300, // Set your desired width
-        title: "Add Certificate",
+        title: "Request",
         close: function() {
             $(this).dialog("close");
         }
@@ -222,7 +222,6 @@ function addRecord(event) {
         }
     });
 }
-
 </script>
 
 <div class="p-3 w-full bg-white">
@@ -230,7 +229,7 @@ function addRecord(event) {
     <hr>
 
     <div>
-        <button id="open-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Add Certificate</button>
+        <button id="open-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Request</button>
     </div>
     <!-- HTML for Tabs -->
     <div id="tabs" class="container mt-4">
@@ -250,10 +249,8 @@ function addRecord(event) {
                         <th>Name</th>
                         <th>Age</th>
                         <th>Status</th>
-                        <th>Amount</th>
-                        <th>BC No</th>
                         <th>Date Issued</th>
-                        <th>Actions</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -262,14 +259,7 @@ function addRecord(event) {
                         <td><?php echo htmlspecialchars($row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']); ?></td>
                         <td><?php echo htmlspecialchars($row['age']); ?></td>
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
-                        <td><?php echo htmlspecialchars($row['amount']); ?></td>
-                        <td><?php echo htmlspecialchars($row['bcNo']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
-                        <td>
-                            <a href='GenerateCertificate.php?page=generate_clearance&id=<?php echo $row['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($row['id']); ?>)">Done</button>
-
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -284,10 +274,8 @@ function addRecord(event) {
                         <th>Name</th>
                         <th>Age</th>
                         <th>Status</th>
-                        <th>Amount</th>
-                        <th>BC No</th>
                         <th>Date Issued</th>
-                        <th>Actions</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -296,13 +284,7 @@ function addRecord(event) {
                         <td><?php echo htmlspecialchars($row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']); ?></td>
                         <td><?php echo htmlspecialchars($row['age']); ?></td>
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
-                        <td><?php echo htmlspecialchars($row['amount']); ?></td>
-                        <td><?php echo htmlspecialchars($row['bcNo']); ?></td>
                         <td><?php echo htmlspecialchars($row['date_issued']); ?></td>
-                        <td>
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick="approveCert(<?php echo htmlspecialchars($row['id']); ?>)">Approve</button>
-                            <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-200" onclick="disapproveCert(<?php echo htmlspecialchars($row['id']); ?>)">Disapprove</button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -320,6 +302,7 @@ function addRecord(event) {
                         <th>Amount</th>
                         <th>BC No</th>
                         <th>Date Issued</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -346,7 +329,7 @@ function addRecord(event) {
                         <th>Age</th>
                         <th>Status</th>
                         <th>Note</th>
-                        <th>Actions</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -355,7 +338,7 @@ function addRecord(event) {
                         <td><?php echo htmlspecialchars($row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']); ?></td>
                         <td><?php echo htmlspecialchars($row['age']); ?></td>
                         <td><?php echo htmlspecialchars($row['status']); ?></td>
-
+                        <td><?php echo htmlspecialchars($row['note']); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -374,7 +357,7 @@ function addRecord(event) {
                         <th>BC No</th>
                         <th>Date Issued</th>
                         <th>Status</th>
-                        <!-- <th>Actions</th> -->
+                        <!--  -->
                     </tr>
                 </thead>
                 <tbody>
@@ -403,22 +386,19 @@ function addRecord(event) {
 
 <div id="dialog" style="display:none;">
     <form id="addCertificateForm" onsubmit="addRecord(event)">
-
-
         <input type="hidden" id="fname" name="fname">
         <input type="hidden" id="mname" name="mname">
         <input type="hidden" id="lname" name="lname">
 
-
-
         <div style="flex: 1;">
-            <label for="dateIssued">Date Issued:</label><br>
-            <input type="date" id="dateIssued" name="dateIssued" required style="border: 1px solid #ccc; padding: 8px; border-radius: 4px; width: 100%; margin-bottom: 30px">
+            <label for="pickupDate">Pick Up Date:</label><br>
+            <input type="date" id="pickupDate" name="pickupDate" required style="border: 1px solid #ccc; padding: 8px; border-radius: 4px; width: 100%; margin-bottom: 30px">
         </div>
 
         <input type="submit" value="Submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
     </form>
 </div>
+
 
 
 
