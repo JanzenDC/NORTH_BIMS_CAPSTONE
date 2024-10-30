@@ -45,30 +45,30 @@ $result = $conn->query($sql);
                         <div class="text-green-500 text-2xl"><i class="fa fa-check-circle"></i></div>
                         <p class="ml-2">Create an account and login.</p>
                     </div>
-                    <div class="flex items-center">
-                        <div class="text-gray-500"><i class="fas fa-arrow-right"></i></div>
-                        <div class="bg-blue-100 p-4 rounded shadow hover-scale transition-transform duration-300 flex items-center ml-2">
+                    <div class="flex items-center md:justify-between">
+                        <div class="hidden md:block text-gray-500"><i class="fas fa-arrow-right"></i></div>
+                        <div class="bg-blue-100 p-4 rounded shadow hover-scale transition-transform duration-300 flex items-center w-full">
                             <div class="text-blue-500 text-2xl"><i class="fa fa-file-text"></i></div>
                             <p class="ml-2">Choose the certificate type you want to request.</p>
                         </div>
                     </div>
-                    <div class="flex items-center">
-                        <div class="text-gray-500"><i class="fas fa-arrow-right"></i></div>
-                        <div class="bg-yellow-100 p-4 rounded shadow hover-scale transition-transform duration-300 flex items-center ml-2">
+                    <div class="flex items-center md:justify-between">
+                        <div class="hidden md:block text-gray-500"><i class="fas fa-arrow-right"></i></div>
+                        <div class="bg-yellow-100 p-4 rounded shadow hover-scale transition-transform duration-300 flex items-center w-full">
                             <div class="text-yellow-500 text-2xl"><i class="fa fa-pencil-square-o"></i></div>
                             <p class="ml-2">Fill up the needed information.</p>
                         </div>
                     </div>
-                    <div class="flex items-center">
-                        <div class="text-gray-500"><i class="fas fa-arrow-right"></i></div>
-                        <div class="bg-orange-100 p-4 rounded shadow hover-scale transition-transform duration-300 flex items-center ml-2">
+                    <div class="flex items-center md:justify-between">
+                        <div class="hidden md:block text-gray-500"><i class="fas fa-arrow-right"></i></div>
+                        <div class="bg-orange-100 p-4 rounded shadow hover-scale transition-transform duration-300 flex items-center w-full">
                             <div class="text-orange-500 text-2xl"><i class="fas fa-hourglass-half"></i></div>
                             <p class="ml-2">Wait for the approval of the admin.</p>
                         </div>
                     </div>
-                    <div class="flex items-center">
-                        <div class="text-gray-500"><i class="fas fa-arrow-right"></i></div>
-                        <div class="bg-purple-100 p-4 rounded shadow hover-scale transition-transform duration-300 flex items-center ml-2">
+                    <div class="flex items-center md:justify-between">
+                        <div class="hidden md:block text-gray-500"><i class="fas fa-arrow-right"></i></div>
+                        <div class="bg-purple-100 p-4 rounded shadow hover-scale transition-transform duration-300 flex items-center w-full">
                             <div class="text-purple-500 text-2xl"><i class="fa fa-handshake"></i></div>
                             <p class="ml-2">Pick up the certificate at Barangay Hall.</p>
                         </div>
