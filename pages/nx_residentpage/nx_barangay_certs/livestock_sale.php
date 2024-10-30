@@ -1,23 +1,24 @@
 <?php
+$userid = $_SESSION['user']['id'];
 // Fetch walk-in data from the database
-$sqlWalkin = "SELECT * FROM livestock_cert WHERE status = 'Walk-in'";
+$sqlWalkin = "SELECT * FROM livestock_cert WHERE status = 'Walk-in' AND created_by ='$userid'";
 $resultWalkin = $conn->query($sqlWalkin);
 $walkinData = $resultWalkin->fetch_all(MYSQLI_ASSOC);
 
 // Fetch other data as needed
-$sqlNew = "SELECT * FROM livestock_cert WHERE status = 'New'";
+$sqlNew = "SELECT * FROM livestock_cert WHERE status = 'New' AND created_by ='$userid'";
 $resultNew = $conn->query($sqlNew);
 $newData = $resultNew->fetch_all(MYSQLI_ASSOC);
 
-$sqlApproved = "SELECT * FROM livestock_cert WHERE status = 'Approved'";
+$sqlApproved = "SELECT * FROM livestock_cert WHERE status = 'Approved' AND created_by ='$userid'";
 $resultApproved = $conn->query($sqlApproved);
 $approvedData = $resultApproved->fetch_all(MYSQLI_ASSOC);
 
-$sqlDisapproved = "SELECT * FROM livestock_cert WHERE status = 'Disapproved'";
+$sqlDisapproved = "SELECT * FROM livestock_cert WHERE status = 'Disapproved' AND created_by ='$userid'";
 $resultDisapproved = $conn->query($sqlDisapproved);
 $disapprovedData = $resultDisapproved->fetch_all(MYSQLI_ASSOC);
 
-$sqlDone = "SELECT * FROM livestock_cert WHERE status = 'Done'";
+$sqlDone = "SELECT * FROM livestock_cert WHERE status = 'Done' AND created_by ='$userid'";
 $resultDone = $conn->query($sqlDone);
 $doneData = $resultDone->fetch_all(MYSQLI_ASSOC);
 ?>
@@ -239,7 +240,7 @@ function addRecord(event) {
         },
         complete: function() {
             // Re-enable the submit button after the request is complete
-            $('button[type="submit"]').prop('disabled', false).text('Add Certificate');
+            $('button[type="submit"]').prop('disabled', false).text('Request');
         }
     });
 }
@@ -362,7 +363,7 @@ function deleteDisapproved(id) {
     <h1 class="text-3xl font-bold">Livestock Sale Certificate</h1>
     <hr class="mb-3 mt-3">
     <div>
-        <button id="openDialogButton" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Add Certificate</button>
+        <button id="openDialogButton" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Request</button>
     </div>
     <div id="tabs" class="container mt-4">
         <ul>
@@ -393,7 +394,6 @@ function deleteDisapproved(id) {
                         <th>Transaction Date</th>
                         <th>Status</th>
                         <th>Certificate Amount</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -445,7 +445,6 @@ function deleteDisapproved(id) {
                         <th>Transaction Date</th>
                         <th>Status</th>
                         <th>Certificate Amount</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -467,10 +466,6 @@ function deleteDisapproved(id) {
                         <td><?php echo htmlspecialchars($data['transacDate']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick="approveCert(<?php echo htmlspecialchars($data['id']); ?>)">Approve</button>
-                            <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-200" onclick="disapproveCert(<?php echo htmlspecialchars($data['id']); ?>)">Disapprove</button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -497,7 +492,6 @@ function deleteDisapproved(id) {
                         <th>Transaction Date</th>
                         <th>Status</th>
                         <th>Certificate Amount</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -519,10 +513,6 @@ function deleteDisapproved(id) {
                         <td><?php echo htmlspecialchars($data['transacDate']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
-                            <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($data['id']); ?>)">Done</button>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -550,7 +540,6 @@ function deleteDisapproved(id) {
                         <th>Status</th>
                         <th>Certificate Amount</th>
                         <th>Note</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -573,12 +562,7 @@ function deleteDisapproved(id) {
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
                         <td><?php echo htmlspecialchars($data['note']); ?></td>
-                        <td class="flex space-x-2">
-                            <button class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition duration-200" 
-                            onclick="editDisapproved(<?php echo htmlspecialchars($data['id']); ?>)">Edit</button>
-                            <button class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-600 transition duration-200" 
-                            onclick="deleteDisapproved(<?php echo htmlspecialchars($data['id']); ?>)">Delete</button>
-                        </td>
+
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -644,9 +628,9 @@ function deleteDisapproved(id) {
 
 
     
-<div id="addCertificateDialog" title="Add Certificate" style="display:none;" class="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
+<div id="addCertificateDialog" title="Request" style="display:none;" class="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
     <form id="addCertificateForm" onsubmit="addRecord(event)">
-        <h2 class="text-xl font-bold mb-4">Add Certificate</h2>
+        <h2 class="text-xl font-bold mb-4">Request</h2>
 
         <!-- Page 1: Seller and Buyer Information -->
         <div id="page1" class="page">
@@ -741,7 +725,7 @@ function deleteDisapproved(id) {
             <button id="nextButton" type="button" class="bg-green-500 text-white hover:bg-green-600 rounded px-4 py-2">Next</button>
         </div>
 
-        <button type="submit" id="addCertificateButton" class="bg-green-500 text-white hover:bg-green-600 rounded w-full py-2 mt-4 hidden">Add Certificate</button>
+        <button type="submit" id="addCertificateButton" class="bg-green-500 text-white hover:bg-green-600 rounded w-full py-2 mt-4 hidden">Request</button>
     </form>
 </div>
 
