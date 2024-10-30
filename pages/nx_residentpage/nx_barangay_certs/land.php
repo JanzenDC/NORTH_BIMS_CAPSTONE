@@ -1,5 +1,6 @@
 <?php
-$sqlWalkin = "SELECT * FROM land_cert WHERE status = 'Walk-in'";
+$userid = $_SESSION['user']['id'];
+$sqlWalkin = "SELECT * FROM land_cert WHERE status = 'Walk-in' AND created_by ='$userid'";
 $resultWalkin = $conn->query($sqlWalkin);
 
 $walkinData = [];
@@ -9,7 +10,7 @@ if ($resultWalkin->num_rows > 0) {
     }
 }
 
-$sqlNew = "SELECT * FROM land_cert WHERE status = 'New'";
+$sqlNew = "SELECT * FROM land_cert WHERE status = 'New' AND created_by ='$userid'";
 $resultNew = $conn->query($sqlNew);
 
 $newData = [];
@@ -19,7 +20,7 @@ if ($resultNew->num_rows > 0) {
     }
 }
 
-$sqlApproved = "SELECT * FROM land_cert WHERE status = 'Approved'";
+$sqlApproved = "SELECT * FROM land_cert WHERE status = 'Approved' AND created_by ='$userid'";
 $resultApproved = $conn->query($sqlApproved);
 
 $approvedData = [];
@@ -29,7 +30,7 @@ if ($resultApproved->num_rows > 0) {
     }
 }
 
-$sqlDisApproved = "SELECT * FROM land_cert WHERE status = 'Dispproved'";
+$sqlDisApproved = "SELECT * FROM land_cert WHERE status = 'Dispproved' AND created_by ='$userid'";
 $resultDisApproved = $conn->query($sqlDisApproved);
 
 $disapprovedData = [];
@@ -39,7 +40,7 @@ if ($resultDisApproved->num_rows > 0) {
     }
 }
 
-$sqlDone = "SELECT * FROM land_cert WHERE status = 'Done'";
+$sqlDone = "SELECT * FROM land_cert WHERE status = 'Done' AND created_by ='$userid'";
 $resultDone = $conn->query($sqlDone);
 
 $doneData = [];
@@ -96,7 +97,7 @@ $(document).ready(function() {
         Submit: function(){
             submitCert();
         },
-        Ok: function() {
+        Close: function() {
           $( this ).dialog( "close" );
         }
       }
@@ -193,10 +194,16 @@ function submitCert() {
             }
         },
         error: function(xhr, status, error) {
-            console.error('AJAX error:', status, error);
-            swal("Error updating record", "Please check the console for more details.", {
-                icon: "error",
-            });
+            console.error('Server response:', xhr.responseText);
+            let errorMessage = "An error occurred while processing your request.";
+            try {
+                const result = JSON.parse(xhr.responseText);
+                errorMessage = result.message || errorMessage;
+            } catch (e) {
+                // If the response isn't JSON, use the raw response text
+                errorMessage = xhr.responseText || errorMessage;
+            }
+            swal("Error", errorMessage, "error");
         }
     });
 }
@@ -387,7 +394,7 @@ function doneCert(id) {
     <hr class="mb-3 mt-3">
     
     <div>
-        <button id="open-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick='AddCert()'>Add Certificate</button>
+        <button id="open-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick='AddCert()'>Request Certificate</button>
     </div>
     
     <div id="tabs" class="container mt-4">
@@ -407,7 +414,6 @@ function doneCert(id) {
                         <th>Seller Name</th>
                         <th>Buyer Name</th>
                         <th>Date of Pickup</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -420,12 +426,6 @@ function doneCert(id) {
                         <td class="flex space-x-2">
                             <div class="bg-yellow-300 rounded-lg p-2" title='View' onclick="ViewLand(<?php echo htmlspecialchars($row['id']);?>)">
                                 <i class="fa-solid fa-eye"></i>
-                            </div>
-                            <div class="bg-blue-400 rounded-lg p-2 " title='Edit'  onclick="editCert(<?php echo htmlspecialchars($row['id']);?>)">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </div>
-                            <div class="bg-green-400 rounded-lg p-2 " title='Generate'>
-                                <i class="fa-solid fa-arrows-rotate"></i>
                             </div>
                         </td>
                     </tr>
@@ -442,7 +442,6 @@ function doneCert(id) {
                         <th>Seller Name</th>
                         <th>Buyer Name</th>
                         <th>Date of Pickup</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -452,14 +451,6 @@ function doneCert(id) {
                         <td><?php echo htmlspecialchars($row['sellerName']);?></td>
                         <td><?php echo htmlspecialchars($row['buyerName']);?></td>
                         <td><?php echo htmlspecialchars($row['date_of_pickup']);?></td>
-                        <td class="flex space-x-2">
-                            <div class="bg-green-400 rounded-lg p-2 " title='Approve'  onclick="approveCert(<?php echo htmlspecialchars($row['id']);?>)">
-                               <i class="fa-solid fa-thumbs-up"></i>
-                            </div>
-                            <div class="bg-red-400 rounded-lg p-2 " title='Disapprove' onclick="disapproveCert(<?php echo htmlspecialchars($row['id']);?>)">
-                                <i class="fa-solid fa-thumbs-down"></i>
-                            </div>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -474,7 +465,6 @@ function doneCert(id) {
                         <th>Seller Name</th>
                         <th>Buyer Name</th>
                         <th>Date of Pickup</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -484,11 +474,6 @@ function doneCert(id) {
                         <td><?php echo htmlspecialchars($row['sellerName']);?></td>
                         <td><?php echo htmlspecialchars($row['buyerName']);?></td>
                         <td><?php echo htmlspecialchars($row['date_of_pickup']);?></td>
-                        <td class="flex space-x-2">
-                            <div class="bg-green-400 rounded-lg p-2 flex items-center gap-2" title='Mark as Done'  onclick="doneCert(<?php echo htmlspecialchars($row['id']);?>)">
-                               <i class="fa-solid fa-circle-check"></i> Done
-                            </div>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -503,7 +488,6 @@ function doneCert(id) {
                         <th>Seller Name</th>
                         <th>Buyer Name</th>
                         <th>Date of Pickup</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -513,11 +497,6 @@ function doneCert(id) {
                         <td><?php echo htmlspecialchars($row['sellerName']);?></td>
                         <td><?php echo htmlspecialchars($row['buyerName']);?></td>
                         <td><?php echo htmlspecialchars($row['date_of_pickup']);?></td>
-                        <td class="flex space-x-2">
-                            <div class="bg-green-400 rounded-lg p-2 flex items-center gap-2" title='Mark as Done'  onclick="doneCert(<?php echo htmlspecialchars($row['id']);?>)">
-                               <i class="fa-solid fa-circle-check"></i> Done
-                            </div>
-                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -668,9 +647,11 @@ function doneCert(id) {
     </div>
 </div>
 
-<!-- Add Certificate -->
-<div id="AddCertDialogOpen" title="Add Certificate" class="p-6 bg-white rounded-lg shadow-md">
+<!-- Request Certificate -->
+<div id="AddCertDialogOpen" title="Request Certificate" class="p-6 bg-white rounded-lg shadow-md">
     <div class="mb-4">
+        <input type="number" id="created_by" value="<?= $userid ?>" name="created_by" class="hidden mt-1 p-2 border rounded w-full" placeholder="Enter seller name">
+
         <label for="new_sellerName" class="block text-sm font-medium text-gray-700">Seller Name:</label>
         <input type="text" id="new_sellerName" name="new_sellerName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
     </div>
