@@ -94,111 +94,12 @@ $(document).ready(function() {
         width: 400,
     });
 });
-function approveCert(targetID) {
-    // Show confirmation dialog
-    swal({
-        title: "Are you sure?",
-        text: "Once you click 'Yes', this action cannot be undone.",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    })
-    .then((willProceed) => {
-        if (willProceed) {
-            // If the user confirms, prepare the data for the AJAX request
-            const formData = {
-                id: targetID, // Target the specific ID
-                // Include other necessary fields here if needed
-            };
 
-            $.ajax({
-                url: 'nx_query/certificate_livestock.php?action=setAsApprove', // Change to setAsApprove
-                type: 'POST',
-                data: formData,
-                success: function(response) {
-                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (jsonResponse.success) {
-                        swal("Record marked as done successfully!", {
-                            icon: "success",
-                        }).then(() => {
-                            location.reload(); 
-                        });
-                    } else {
-                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                            icon: "error",
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
-                    swal("Error marking record as done", "Please check the console for more details.", {
-                        icon: "error",
-                    });
-                }
-            });
-        } else {
-            // If the user cancels, you can show a message or simply do nothing
-            swal("Action canceled.", {
-                icon: "info",
-            });
-        }
-    });
-}
-function disapproveCert(targetID) {
-    // Show confirmation dialog
-    swal({
-        title: "Are you sure?",
-        text: "Once you click 'Yes', this action cannot be undone.",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    })
-    .then((willProceed) => {
-        if (willProceed) {
-            // If the user confirms, prepare the data for the AJAX request
-            const formData = {
-                id: targetID, // Target the specific ID
-                // Include other necessary fields here if needed
-            };
-
-            $.ajax({
-                url: 'nx_query/certificate_livestock.php?action=setDisapproved', // Change to setAsApprove
-                type: 'POST',
-                data: formData,
-                success: function(response) {
-                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (jsonResponse.success) {
-                        swal("Record marked as done successfully!", {
-                            icon: "success",
-                        }).then(() => {
-                            location.reload(); 
-                        });
-                    } else {
-                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                            icon: "error",
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
-                    swal("Error marking record as done", "Please check the console for more details.", {
-                        icon: "error",
-                    });
-                }
-            });
-        } else {
-            // If the user cancels, you can show a message or simply do nothing
-            swal("Action canceled.", {
-                icon: "info",
-            });
-        }
-    });
-}
 function addRecord(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault();
 
     const formData = new FormData(document.getElementById('addCertificateForm'));
-    console.log(formData)
+    
     $.ajax({
         url: 'nx_query/certificate_livestock.php?action=create',
         type: 'POST',
@@ -206,156 +107,44 @@ function addRecord(event) {
         processData: false,
         contentType: false,
         beforeSend: function() {
-            // Optionally disable the submit button to prevent multiple submissions
             $('button[type="submit"]').prop('disabled', true).text('Submitting...');
         },
         success: function(response) {
-            console.log('Full server response:', response);
             try {
-                const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                if (jsonResponse.success) {
-                    swal("Certificate added successfully!", {
-                        icon: "success",
-                    }).then(() => {
-                        location.reload(); // Reload the page or update the UI as needed
-                        $('#add-certificate-dialog').dialog("close"); // Close the dialog
-                    });
+                // First check if response is already an object
+                const result = typeof response === 'object' ? response : JSON.parse(response);
+                
+                if (result.success) {
+                    swal("Success", "Certificate added successfully!", "success")
+                        .then(() => {
+                            location.reload();
+                            $('#addCertificateDialog').dialog("close");
+                        });
                 } else {
-                    swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                        icon: "error",
-                    });
+                    swal("Error", result.message || "Failed to add certificate", "error");
                 }
             } catch (e) {
-                console.error('Error parsing server response:', e);
-                swal("Server Error", "The server encountered an error. Please check the server logs.", {
-                    icon: "error",
-                });
+                console.error('Parse error:', e);
+                // If we get here, the response wasn't valid JSON
+                swal("Error", "Server returned an invalid response", "error");
             }
         },
         error: function(xhr, status, error) {
-            console.error('AJAX error:', status, error);
-            swal("Error adding record", "Please check the console for more details.", {
-                icon: "error",
-            });
+            console.error('Server response:', xhr.responseText);
+            let errorMessage = "An error occurred while processing your request.";
+            try {
+                const result = JSON.parse(xhr.responseText);
+                errorMessage = result.message || errorMessage;
+            } catch (e) {
+                // If the response isn't JSON, use the raw response text
+                errorMessage = xhr.responseText || errorMessage;
+            }
+            swal("Error", errorMessage, "error");
         },
         complete: function() {
-            // Re-enable the submit button after the request is complete
             $('button[type="submit"]').prop('disabled', false).text('Request');
         }
     });
-}
-function doneCert(id) {
-    if (confirm('Are you sure you want to mark this certificate as done?')) {
-        // Send AJAX request to the server
-        $.ajax({
-            url: 'nx_query/certificate_livestock.php?action=mark_done',
-            type: 'POST',
-            data: { id: id },
-            success: function(response) {
-                console.log('Full server response:', response);
-                try {
-                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (jsonResponse.success) {
-                        swal("Certificate marked as done successfully!", {
-                            icon: "success",
-                        }).then(() => {
-                            location.reload(); // Reload the page or update the UI as needed
-                        });
-                    } else {
-                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                            icon: "error",
-                        });
-                    }
-                } catch (e) {
-                    console.error('Error parsing server response:', e);
-                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
-                        icon: "error",
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-                swal("Error marking record as done", "Please check the console for more details.", {
-                    icon: "error",
-                });
-            }
-        });
-    }
-}
-function editDisapproved(id) {
-    console.log(id);
-    document.getElementById('editIDs').value = id;
-
-    // Fetch current note from the server
-    $.ajax({
-        url: 'nx_query/certificate_livestock.php?action=get',
-        type: 'GET',
-        data: { id: id },
-        success: function(response) {
-            const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-
-            if (jsonResponse.success) {
-                // Populate the note field with the current note
-                document.getElementById('editNote').value = jsonResponse.data.note || ''; // Default to empty if no note
-            } else {
-                console.error("Error fetching current note: " + jsonResponse.message);
-                document.getElementById('editNote').value = ''; // Clear if there's an error
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX error fetching note:', status, error);
-            document.getElementById('editNote').value = ''; // Clear on error
-        }
-    });
-
-    $('#editDialog').dialog({
-        title: "Edit Certificate Notes",
-        modal: true,
-        width: 400,
-        buttons: {
-            "Cancel": function() {
-                $(this).dialog("close");
-            }
-        }
-    });
-}
-function deleteDisapproved(id) {
-    if (confirm('Are you sure you want to remove this certificate?')) {
-        // Send AJAX request to the server
-        $.ajax({
-            url: 'nx_query/certificate_livestock.php?action=delete',
-            type: 'POST',
-            data: { id: id },
-            success: function(response) {
-                console.log('Full server response:', response);
-                try {
-                    const jsonResponse = typeof response === 'string' ? JSON.parse(response) : response;
-                    if (jsonResponse.success) {
-                        swal("Certificate marked as done successfully!", {
-                            icon: "success",
-                        }).then(() => {
-                            location.reload(); // Reload the page or update the UI as needed
-                        });
-                    } else {
-                        swal("Error: " + (jsonResponse.message || "Unknown error occurred"), {
-                            icon: "error",
-                        });
-                    }
-                } catch (e) {
-                    console.error('Error parsing server response:', e);
-                    swal("Server Error", "The server encountered an error. Please check the server logs.", {
-                        icon: "error",
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-                swal("Error marking record as done", "Please check the console for more details.", {
-                    icon: "error",
-                });
-            }
-        });
-    }
 }
 </script>
 
@@ -631,7 +420,7 @@ function deleteDisapproved(id) {
 <div id="addCertificateDialog" title="Request" style="display:none;" class="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
     <form id="addCertificateForm" onsubmit="addRecord(event)">
         <h2 class="text-xl font-bold mb-4">Request</h2>
-
+        <input type="hidden" id="created_by" value="<?= $userid ?>" name="created_by" class="mt-1 p-2 border rounded w-full" placeholder="Enter seller name" required>
         <!-- Page 1: Seller and Buyer Information -->
         <div id="page1" class="page">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

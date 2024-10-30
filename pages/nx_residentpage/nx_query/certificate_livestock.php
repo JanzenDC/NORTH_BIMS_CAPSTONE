@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
 
-require "../../db_connect.php"; // Ensure this file establishes a MySQLi connection
+require "../../db_connect.php";
 session_start();
 $response = [
     'success' => false,
@@ -13,7 +13,6 @@ $response = [
     'data' => null,
 ];
 
-// Function to log actions
 function logAction($conn, $action, $user) {
     $logdate = date('Y-m-d H:i:s');
     $sql = "INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)";
@@ -23,17 +22,15 @@ function logAction($conn, $action, $user) {
 }
 
 $action = $_GET['action'] ?? '';
-$userid = $_SESSION['user']['id'];
-
 switch ($action) {
-
-    case 'create':
-        // Get data from the POST request
+case 'create':
+    try {
+        $userid = $_POST['created_by'] ?? '';
         $sellerName = $_POST['sellerName'] ?? '';
         $sellerAddress = $_POST['sellerAddress'] ?? '';
         $buyerName = $_POST['buyerName'] ?? '';
         $buyerAddress = $_POST['buyerAddress'] ?? '';
-        $itemSold = $_POST['itemSold'] ?? '';
+        $itemSold = $_POST['kindOfAnimal'] ?? ''; // Changed from itemSold to kindOfAnimal
         $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 0;
         $age = $_POST['ageOfAnimal'] ?? '';
         $sex = $_POST['sexOfAnimal'] ?? '';
@@ -45,43 +42,70 @@ switch ($action) {
         $brandOfOwner = $_POST['brandOfOwner'] ?? '';
         $certificateAmount = isset($_POST['certificateAmount']) ? (float)$_POST['certificateAmount'] : 0.0;
         $dateOfPickup = $_POST['dateOfPickup'] ?? '';
-        $note = $_POST['note'] ?? '';
-
-        // Default status to "Walk-In" if not provided
         $status = "New";
+        
+        // Debug the values
+        error_log("Values to be inserted: " . print_r($_POST, true));
 
-        // Construct the SQL query to insert the new record
         $query = "INSERT INTO livestock_cert 
             (sellerName, sellerAddress, buyerName, buyerAddress, itemSold, 
             quantity, age, sex, amount, amount_words, transacDate, cowlicks, 
-            brandMun, brandOwn, cert_amount, date_of_pickup, status, note, created_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            brandMun, brandOwn, cert_amount, date_of_pickup, status, created_by) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssssiisssssssssdsssi", $sellerName, $sellerAddress, $buyerName, $buyerAddress, 
-            $itemSold, $quantity, $age, $sex, $amount, $amountInWords, 
-            $transactionDate, $cowlicks, $brandOfMunicipality, $brandOfOwner, 
-            $certificateAmount, $dateOfPickup, $status, $note, $userid);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+
+        // Note: We removed 'note' from the binding as it wasn't in the SQL query
+        $stmt->bind_param("sssssissdsssssdssi",
+            $sellerName,
+            $sellerAddress, 
+            $buyerName,
+            $buyerAddress,
+            $itemSold,
+            $quantity,
+            $age,
+            $sex,
+            $amount,
+            $amountInWords,
+            $transactionDate,
+            $cowlicks,
+            $brandOfMunicipality,
+            $brandOfOwner,
+            $certificateAmount,
+            $dateOfPickup,
+            $status,
+            $userid
+        );
 
         if ($stmt->execute()) {
             $response['success'] = true;
             $response['message'] = "Record created successfully.";
             $response['data'] = [
-                'id' => mysqli_insert_id($conn),
+                'id' => $stmt->insert_id,
                 'sellerName' => $sellerName,
                 'buyerName' => $buyerName
             ];
             logAction($conn, "Created livestock certificate for seller: $sellerName", $_SESSION['user']['username']);
         } else {
-            $response['message'] = "Error: " . $stmt->error;
+            throw new Exception($stmt->error);
         }
-        break;
+
+        $stmt->close();
+
+    } catch (Exception $e) {
+        $response['success'] = false;
+        $response['message'] = "Error: " . $e->getMessage();
+        error_log("Error in certificate creation: " . $e->getMessage());
+    }
+    break;
 
     default:
         $response['message'] = "Invalid action.";
 }
 
-// Return JSON response
 echo json_encode($response);
 mysqli_close($conn);
 ?>
