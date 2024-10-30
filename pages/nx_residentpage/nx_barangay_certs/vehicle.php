@@ -390,7 +390,7 @@ function doneCert(id) {
     <hr class="mb-3 mt-3">
     
     <div>
-        <button id="open-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick="AddCert()">Add Certificate</button>
+        <button id="open-dialog" class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" onclick="AddCert()">Request Certificate</button>
     </div>
     
     <div id="tabs" class="container mt-4">
@@ -536,8 +536,8 @@ function doneCert(id) {
 
 
 
-<!-- Add Certificate -->
-<div id="AddCertDialogOpen" title="Add Certificate" class="p-6 bg-white rounded-lg shadow-md">
+<!-- Request Certificate -->
+<div id="AddCertDialogOpen" title="Request Certificate" class="p-6 bg-white rounded-lg shadow-md">
     <div class="mb-4">
         <label for="New_sellerName" class="block font-medium">Seller Name:</label>
         <input type="text" id="New_sellerName" name="sellerName" class="border rounded p-2 w-full" required>
