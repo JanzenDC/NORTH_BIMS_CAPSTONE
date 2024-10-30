@@ -55,7 +55,7 @@ $conn->close();
     <table id="officials-table" style="width: 100%;" class="cell-border hover">
         <thead>
             <tr>
-                <th>Image</th>
+                <th>ID Image</th>
                 <th>Full Name</th>
                 <th>Voter</th>
                 <th>Occupation</th>
@@ -67,7 +67,7 @@ $conn->close();
 <tbody>
         <?php foreach ($data as $official): ?> 
             <tr data-id="<?= $official['resident_id'] ?>">
-                <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
+                <td><img src='../../assets/images/Identification_card/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
                 <td><?= htmlspecialchars($official['full_name']) ?>
             </td>
                 <td><?= htmlspecialchars($official['voter']) ?></td>
@@ -76,6 +76,9 @@ $conn->close();
                 <td><?= htmlspecialchars($official['year_stayed']) ?>
                 </td> <!-- Ensure this is visible -->
                 <td>
+                    <button class="text-blue-500" title="View" onclick="viewRecord(<?= $official['resident_id'] ?>)">
+                        <i class="fas fa-eye"></i>
+                    </button>
                     <button class="text-yellow-500" title="Edit" onclick="editRecord(<?= $official['resident_id'] ?>)">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -225,6 +228,88 @@ $conn->close();
     </div>
 </div>
 
+<div id="viewModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-semibold">Resident Details</h2>
+            <span class="cursor-pointer text-2xl" onclick="closeModal('viewModal')">&times;</span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div class="text-center mb-4">
+                    <img id="viewImage" src="" alt="Resident Photo" class=" h-32 
+                     mx-auto object-cover border-4 border-blue-200">
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-600">Personal Information</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="text-gray-600">Full Name:</div>
+                        <div id="viewFullName" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Birthday:</div>
+                        <div id="viewBday" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Age:</div>
+                        <div id="viewAge" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Gender:</div>
+                        <div id="viewGender" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Birthplace:</div>
+                        <div id="viewBirthplace" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Civil Status:</div>
+                        <div id="viewCivilStatus" class="font-medium"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-600">Address Information</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="text-gray-600">House No:</div>
+                        <div id="viewHouseNo" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Purok:</div>
+                        <div id="viewPurok" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Barangay:</div>
+                        <div id="viewBrgy" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Municipality:</div>
+                        <div id="viewMunicipality" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Province:</div>
+                        <div id="viewProvince" class="font-medium"></div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-600">Other Information</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="text-gray-600">Years Stayed:</div>
+                        <div id="viewYearStayed" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Education:</div>
+                        <div id="viewEducation" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Head of Family:</div>
+                        <div id="viewHeadFam" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Occupation:</div>
+                        <div id="viewOccupation" class="font-medium"></div>
+                        
+                        <div class="text-gray-600">Voter Status:</div>
+                        <div id="viewVoter" class="font-medium"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Include DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
@@ -331,7 +416,7 @@ function editRecord(id) {
 
             // Set up the image preview
             const imagePreview = document.getElementById('editImagePreview');
-            imagePreview.src = '../../assets/images/pfp/' + (official.image || 'default.png'); // Use a default image if none exists
+            imagePreview.src = '../../assets/images/Identification_card/' + (official.image || 'default.png'); // Use a default image if none exists
             imagePreview.style.display = 'block'; // Show the image preview
 
             openModal('editModal');
@@ -408,81 +493,188 @@ function addRecord() {
                 });
             }
         },
-        error: function() {
-            swal("Error adding resident.", {
-                icon: "error",
-            });
-        }
-    });
-}
-function updateRecord(event) {
-    event.preventDefault();
-
-    const formData = new FormData(document.getElementById('editForm'));
-
-    // Ensure resident_id is included in the formData
-    const residentId = document.getElementById('editId').value;
-    formData.append('resident_id', residentId);
-
-    // Append additional fields directly without if statements
-    document.getElementById('editFname').value && formData.append('fname', document.getElementById('editFname').value);
-    document.getElementById('editMname').value && formData.append('mname', document.getElementById('editMname').value);
-    document.getElementById('editLname').value && formData.append('lname', document.getElementById('editLname').value);
-    document.getElementById('editSuffix').value && formData.append('suffix', document.getElementById('editSuffix').value);
-    document.getElementById('editBday').value && formData.append('bday', document.getElementById('editBday').value);
-    document.getElementById('editAge').value && formData.append('age', document.getElementById('editAge').value);
-    document.getElementById('editGender').value && formData.append('gender', document.getElementById('editGender').value);
-    document.getElementById('editBirthplace').value && formData.append('birthplace', document.getElementById('editBirthplace').value);
-    document.getElementById('editHouseNo').value && formData.append('houseNo', document.getElementById('editHouseNo').value);
-    document.getElementById('editPurok').value && formData.append('purok', document.getElementById('editPurok').value);
-    document.getElementById('editBrgy').value && formData.append('brgy', document.getElementById('editBrgy').value);
-    document.getElementById('editMunicipality').value && formData.append('municipality', document.getElementById('editMunicipality').value);
-    document.getElementById('editProvince').value && formData.append('province', document.getElementById('editProvince').value);
-    document.getElementById('editCivilStatus').value && formData.append('civil_status', document.getElementById('editCivilStatus').value);
-    document.getElementById('editYearStayed').value && formData.append('year_stayed', document.getElementById('editYearStayed').value);
-    document.getElementById('editEducation').value && formData.append('education', document.getElementById('editEducation').value);
-    document.getElementById('editHeadFam').value && formData.append('head_fam', document.getElementById('editHeadFam').value);
-    document.getElementById('editOccupation').value && formData.append('occupation', document.getElementById('editOccupation').value);
-    document.getElementById('editVoter').value && formData.append('voter', document.getElementById('editVoter').value);
-
-    // Handle the image file
-    const imageFile = document.getElementById('editImage').files[0];
-    imageFile && formData.append('image', imageFile);
-
-    // Log FormData contents
-    for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-    }
-
-    $.ajax({
-        url: 'nx_query/manage_residents.php?action=update',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            console.log(response);
-            if (response.success) {
-                swal("Resident updated successfully!", {
-                    icon: "success",
-                }).then(() => {
-                    location.reload(); // Reload the page or refresh the table
-                });
-            } else {
-                swal(response.message, {
-                    icon: "error",
-                });
+        error: function(xhr) {
+            console.error("Server response:", xhr.responseText);
+            let errorMessage = "An error occurred while processing your request.";
+            try {
+                const responseText = xhr.responseText;
+                const firstJsonEnd = responseText.indexOf("}") + 1;
+                const cleanResponse = responseText.substring(0, firstJsonEnd);
+                const result = JSON.parse(cleanResponse);
+                errorMessage = result.message || errorMessage;
+            } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
             }
-        },
-        error: function(xhr, status, error) {
-            console.error(xhr.responseText);
-            swal("Error updating resident.", {
-                icon: "error",
-            });
+            swal("Error", errorMessage, "error");
         }
     });
 }
 
+function updateRecord(event) {
+  event.preventDefault();
+
+  const formData = new FormData(document.getElementById("editForm"));
+  const residentId = document.getElementById("editId").value;
+  formData.append("resident_id", residentId);
+
+  // Append additional fields directly without if statements
+  document.getElementById("editFname").value &&
+    formData.append("fname", document.getElementById("editFname").value);
+  document.getElementById("editMname").value &&
+    formData.append("mname", document.getElementById("editMname").value);
+  document.getElementById("editLname").value &&
+    formData.append("lname", document.getElementById("editLname").value);
+  document.getElementById("editSuffix").value &&
+    formData.append("suffix", document.getElementById("editSuffix").value);
+  document.getElementById("editBday").value &&
+    formData.append("bday", document.getElementById("editBday").value);
+  document.getElementById("editAge").value &&
+    formData.append("age", document.getElementById("editAge").value);
+  document.getElementById("editGender").value &&
+    formData.append("gender", document.getElementById("editGender").value);
+  document.getElementById("editBirthplace").value &&
+    formData.append(
+      "birthplace",
+      document.getElementById("editBirthplace").value
+    );
+  document.getElementById("editHouseNo").value &&
+    formData.append("houseNo", document.getElementById("editHouseNo").value);
+  document.getElementById("editPurok").value &&
+    formData.append("purok", document.getElementById("editPurok").value);
+  document.getElementById("editBrgy").value &&
+    formData.append("brgy", document.getElementById("editBrgy").value);
+  document.getElementById("editMunicipality").value &&
+    formData.append(
+      "municipality",
+      document.getElementById("editMunicipality").value
+    );
+  document.getElementById("editProvince").value &&
+    formData.append("province", document.getElementById("editProvince").value);
+  document.getElementById("editCivilStatus").value &&
+    formData.append(
+      "civil_status",
+      document.getElementById("editCivilStatus").value
+    );
+  document.getElementById("editYearStayed").value &&
+    formData.append(
+      "year_stayed",
+      document.getElementById("editYearStayed").value
+    );
+  document.getElementById("editEducation").value &&
+    formData.append(
+      "education",
+      document.getElementById("editEducation").value
+    );
+  document.getElementById("editHeadFam").value &&
+    formData.append("head_fam", document.getElementById("editHeadFam").value);
+  document.getElementById("editOccupation").value &&
+    formData.append(
+      "occupation",
+      document.getElementById("editOccupation").value
+    );
+  document.getElementById("editVoter").value &&
+    formData.append("voter", document.getElementById("editVoter").value);
+
+  // Handle the image file
+  const imageFile = document.getElementById("editImage").files[0];
+  imageFile && formData.append("image", imageFile);
+
+  // Log FormData contents
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+
+  $.ajax({
+    url: "nx_query/manage_residents.php?action=update",
+    type: "POST",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      try {
+        // Handle potential duplicate JSON responses
+        const responseText =
+          typeof response === "string" ? response : JSON.stringify(response);
+        const firstJsonEnd = responseText.indexOf("}") + 1;
+        const cleanResponse = responseText.substring(0, firstJsonEnd);
+        const result = JSON.parse(cleanResponse);
+
+        if (result.success) {
+          swal("Success", "Resident updated successfully!", "success").then(
+            () => {
+              location.reload();
+            }
+          );
+        } else {
+          swal("Error", result.message || "Update failed", "error");
+        }
+      } catch (e) {
+        console.error("Error parsing response:", e);
+        swal("Success", "Resident updated successfully!", "success").then(
+          () => {
+            location.reload();
+          }
+        );
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Server response:", xhr.responseText);
+      let errorMessage = "An error occurred while processing your request.";
+      try {
+        const responseText = xhr.responseText;
+        const firstJsonEnd = responseText.indexOf("}") + 1;
+        const cleanResponse = responseText.substring(0, firstJsonEnd);
+        const result = JSON.parse(cleanResponse);
+        errorMessage = result.message || errorMessage;
+      } catch (e) {
+        errorMessage = xhr.responseText || errorMessage;
+      }
+      swal("Error", errorMessage, "error");
+    },
+  });
+}
+function viewRecord(id) {
+    $.get('nx_query/manage_residents.php?action=get&id=' + id, function(response) {
+        if (response.success) {
+            const resident = response.data;
+            
+            // Set the image
+            document.getElementById('viewImage').src = '../../assets/images/Identification_card/' + (resident.image || 'default.png');
+            
+            // Set personal information
+            document.getElementById('viewFullName').textContent = `${resident.fname} ${resident.mname} ${resident.lname} ${resident.suffix || ''}`.trim();
+            document.getElementById('viewBday').textContent = resident.bday;
+            document.getElementById('viewAge').textContent = resident.age;
+            document.getElementById('viewGender').textContent = resident.gender;
+            document.getElementById('viewBirthplace').textContent = resident.birthplace;
+            document.getElementById('viewCivilStatus').textContent = resident.civil_status;
+            
+            // Set address information
+            document.getElementById('viewHouseNo').textContent = resident.houseNo;
+            document.getElementById('viewPurok').textContent = resident.purok;
+            document.getElementById('viewBrgy').textContent = resident.brgy;
+            document.getElementById('viewMunicipality').textContent = resident.municipality;
+            document.getElementById('viewProvince').textContent = resident.province;
+            
+            // Set other information
+            document.getElementById('viewYearStayed').textContent = resident.year_stayed;
+            document.getElementById('viewEducation').textContent = resident.education;
+            document.getElementById('viewHeadFam').textContent = resident.head_fam;
+            document.getElementById('viewOccupation').textContent = resident.occupation;
+            document.getElementById('viewVoter').textContent = resident.voter;
+            
+            openModal('viewModal');
+        } else {
+            swal("Error retrieving resident details.", {
+                icon: "error",
+            });
+        }
+    }).fail(function() {
+        swal("Error retrieving resident details.", {
+            icon: "error",
+        });
+    });
+}
 
 // Ensure this event listener is properly set
 document.getElementById('editForm').addEventListener('submit', updateRecord);

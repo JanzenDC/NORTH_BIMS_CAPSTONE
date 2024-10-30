@@ -41,56 +41,66 @@ switch ($action) {
         break;
 
     case 'create':
-        // Create a new resident
-        $data = $_POST; // Get the JSON payload
+        $data = $_POST;
 
         // Validate required fields
         $requiredFields = ['fname', 'mname', 'lname', 'suffix', 'bday', 'age', 'houseNo', 
-                           'purok', 'municipality', 'province', 'civil_status', 
-                           'year_stayed', 'education', 'gender', 'birthplace', 
-                           'head_fam', 'occupation', 'voter'];
+                        'purok', 'civil_status', 'year_stayed', 'education', 'gender', 
+                        'birthplace', 'head_fam', 'occupation', 'voter', 'image'];
 
         foreach ($requiredFields as $field) {
-            if (!isset($data[$field])) {
+            if (empty($data[$field])) {
                 $response['message'] = "Field '$field' is required.";
                 logAction($conn, "Failed to create resident: $response[message]", $user);
-                echo json_encode($response);
+                                echo json_encode($response);
                 exit;
             }
         }
 
+        $brgy = isset($data['brgy']) ? mysqli_real_escape_string($conn, $data['brgy']) : 'North Poblacion';
+        $municipality = isset($data['municipality']) ? mysqli_real_escape_string($conn, $data['municipality']) : 'Gabaldon';
+        $province = isset($data['province']) ? mysqli_real_escape_string($conn, $data['province']) : 'Nueva Ecija';
+
         // Handle image upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $imageName = basename($_FILES['image']['name']);
-            $targetDir = "../../../assets/images/pfp/";
+            $targetDir = "../../../assets/images/Identification_card/";
             $targetFile = $targetDir . $imageName;
 
             // Move the uploaded file to the target directory
             if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
                 $response['message'] = "Error uploading image.";
-                logAction($conn, "Failed to create resident: $response[message]", $user);
-                echo json_encode($response);
-                exit;
             }
-        } else {
-            $response['message'] = "Image file is required.";
-            logAction($conn, "Failed to create resident: $response[message]", $user);
-            echo json_encode($response);
-            exit;
         }
 
         // Sanitize input data
-        // (Sanitization code remains unchanged)
+        $fname = mysqli_real_escape_string($conn, $data['fname']);
+        $mname = mysqli_real_escape_string($conn, $data['mname']);
+        $lname = mysqli_real_escape_string($conn, $data['lname']);
+        $suffix = mysqli_real_escape_string($conn, $data['suffix']);
+        $bday = mysqli_real_escape_string($conn, $data['bday']);
+        $age = (int) $data['age'];
+        $houseNo = mysqli_real_escape_string($conn, $data['houseNo']);
+        $purok = mysqli_real_escape_string($conn, $data['purok']);
+        // Use the set default values above
+        $civil_status = mysqli_real_escape_string($conn, $data['civil_status']);
+        $year_stayed = mysqli_real_escape_string($conn, $data['year_stayed']);
+        $education = mysqli_real_escape_string($conn, $data['education']);
+        $gender = mysqli_real_escape_string($conn, $data['gender']);
+        $birthplace = mysqli_real_escape_string($conn, $data['birthplace']);
+        $head_fam = mysqli_real_escape_string($conn, $data['head_fam']);
+        $occupation = mysqli_real_escape_string($conn, $data['occupation']);
+        $voter = mysqli_real_escape_string($conn, $data['voter']);
 
         // Prepare and execute the insert query
         $query = "INSERT INTO tblresident (fname, mname, lname, suffix, bday, age, houseNo, 
                                             purok, brgy, municipality, province, civil_status, 
                                             year_stayed, education, gender, birthplace, 
                                             head_fam, occupation, voter, image) 
-                  VALUES ('$fname', '$mname', '$lname', '$suffix', '$bday', $age, $houseNo, 
-                          '$purok', '$brgy', '$municipality', '$province', '$civil_status', 
-                          '$year_stayed', '$education', '$gender', '$birthplace', 
-                          '$head_fam', '$occupation', '$voter', '$imageName')";
+                VALUES ('$fname', '$mname', '$lname', '$suffix', '$bday', $age, '$houseNo', 
+                        '$purok', '$brgy', '$municipality', '$province', '$civil_status', 
+                        '$year_stayed', '$education', '$gender', '$birthplace', 
+                        '$head_fam', '$occupation', '$voter', '$imageName')";
 
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
@@ -99,9 +109,9 @@ switch ($action) {
             logAction($conn, "Created resident ID " . $response['data']['id'], $user);
         } else {
             $response['message'] = "Error creating Resident: " . mysqli_error($conn);
-            logAction($conn, "Failed to create resident: $response[message]", $user);
         }
         break;
+
 
     case 'update':
         // Update an existing resident
@@ -109,9 +119,9 @@ switch ($action) {
 
         // Validate required fields
         $requiredFields = ['resident_id', 'fname', 'mname', 'lname', 'suffix', 'bday', 
-                           'age', 'houseNo', 'purok', 'brgy', 'municipality', 
-                           'province', 'civil_status', 'year_stayed', 'education', 
-                           'gender', 'birthplace', 'head_fam', 'occupation', 'voter'];
+                        'age', 'houseNo', 'purok', 'brgy', 'municipality', 
+                        'province', 'civil_status', 'year_stayed', 'education', 
+                        'gender', 'birthplace', 'head_fam', 'occupation', 'voter'];
 
         foreach ($requiredFields as $field) {
             if (!isset($data[$field])) {
@@ -123,14 +133,89 @@ switch ($action) {
         }
 
         // Sanitize input data
-        // (Sanitization code remains unchanged)
+        $id = mysqli_real_escape_string($conn, $data['resident_id']);
+        $fname = mysqli_real_escape_string($conn, $data['fname']);
+        $mname = mysqli_real_escape_string($conn, $data['mname']);
+        $lname = mysqli_real_escape_string($conn, $data['lname']);
+        $suffix = mysqli_real_escape_string($conn, $data['suffix']);
+        $bday = mysqli_real_escape_string($conn, $data['bday']);
+        $age = mysqli_real_escape_string($conn, $data['age']);
+        $houseNo = mysqli_real_escape_string($conn, $data['houseNo']);
+        $purok = mysqli_real_escape_string($conn, $data['purok']);
+        $brgy = mysqli_real_escape_string($conn, $data['brgy']);
+        $municipality = mysqli_real_escape_string($conn, $data['municipality']);
+        $province = mysqli_real_escape_string($conn, $data['province']);
+        $civil_status = mysqli_real_escape_string($conn, $data['civil_status']);
+        $year_stayed = mysqli_real_escape_string($conn, $data['year_stayed']);
+        $education = mysqli_real_escape_string($conn, $data['education']);
+        $gender = mysqli_real_escape_string($conn, $data['gender']);
+        $birthplace = mysqli_real_escape_string($conn, $data['birthplace']);
+        $head_fam = mysqli_real_escape_string($conn, $data['head_fam']);
+        $occupation = mysqli_real_escape_string($conn, $data['occupation']);
+        $voter = mysqli_real_escape_string($conn, $data['voter']);
 
         // Handle optional image upload
-        // (Image upload handling code remains unchanged)
+        $newFileName = null; // Initialize variable for new file name
+        if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['image']['tmp_name'];
+            $fileName = $_FILES['image']['name'];
+            $fileSize = $_FILES['image']['size'];
+            $fileType = $_FILES['image']['type'];
+            $fileNameCmps = explode(".", $fileName);
+            $fileExtension = strtolower(end($fileNameCmps));
+
+            // Specify the allowed file types
+            $allowedfileExtensions = ['jpg', 'gif', 'png', 'jpeg'];
+
+            if (in_array($fileExtension, $allowedfileExtensions)) {
+                // Create a unique name for the file
+                $newFileName = uniqid('', true) . '.' . $fileExtension;
+                $uploadFileDir = '../../../assets/images/Identification_card/';
+                $dest_path = $uploadFileDir . $newFileName;
+
+                // Move the file to the desired directory
+                if (!move_uploaded_file($fileTmpPath, $dest_path)) {
+                    $response['message'] = "Error moving the uploaded file.";
+                    echo json_encode($response);
+                    exit;
+                }
+            } else {
+                $response['message'] = "Upload failed. Allowed file types: " . implode(', ', $allowedfileExtensions);
+                echo json_encode($response);
+                exit;
+            }
+        }
 
         // Prepare the update query
-        // (Query preparation code remains unchanged)
+        $query = "UPDATE tblresident SET 
+                    fname = '$fname', 
+                    mname = '$mname', 
+                    lname = '$lname', 
+                    suffix = '$suffix', 
+                    bday = '$bday', 
+                    age = '$age', 
+                    houseNo = '$houseNo', 
+                    purok = '$purok', 
+                    brgy = '$brgy', 
+                    municipality = '$municipality', 
+                    province = '$province', 
+                    civil_status = '$civil_status', 
+                    year_stayed = '$year_stayed', 
+                    education = '$education', 
+                    gender = '$gender', 
+                    birthplace = '$birthplace', 
+                    head_fam = '$head_fam', 
+                    occupation = '$occupation', 
+                    voter = '$voter'";
 
+        // Include image filename in query if uploaded
+        if ($newFileName) {
+            $query .= ", image = '$newFileName'";
+        }
+
+        $query .= " WHERE resident_id = '$id'";
+
+        // Execute the query
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Resident updated successfully.";
@@ -140,6 +225,7 @@ switch ($action) {
             logAction($conn, "Failed to update resident ID $id: $response[message]", $user);
         }
         break;
+
 
     case 'delete':
         // Delete a resident by ID
