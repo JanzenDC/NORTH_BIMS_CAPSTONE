@@ -1,119 +1,197 @@
 <?php
-$treeView = 'headofthefamily'; // Change this value based on the current page
 
-// Change this query to get the head of the family along with the total members in each house
 $sqls = "SELECT 
-            houseNo, 
-            COUNT(*) as total_members,
-            MAX(CONCAT(fname, ' ', lname)) as head_of_family
-        FROM 
-            tblresident
-        WHERE 
-            head_fam = 'yes'
-        GROUP BY 
-            houseNo
-        ORDER BY 
-            houseNo ASC";
+    h.houseNo,
+    h.fname,
+    h.lname,
+    h.purok,
+    h.brgy,
+    h.province,
+    h.municipality,
+    CONCAT(h.fname, ' ', h.lname) as head_of_family,
+    (SELECT COUNT(*) 
+     FROM tblresident m 
+     WHERE m.houseNo = h.houseNo) as total_members
+FROM tblresident h
+WHERE h.head_fam = 'yes'
+ORDER BY h.houseNo ASC";
 
-$resuktSqks = $conn->query($sqls);
+$resultSqls = $conn->query($sqls);
 
-// Initialize an array to hold the data
+// Initialize data array
 $data = [];
 
-if ($resuktSqks->num_rows > 0) {
-    // Fetch each row and append it to the data array
-    while ($row = $resuktSqks->fetch_assoc()) {
+if ($resultSqls->num_rows > 0) {
+    while ($row = $resultSqls->fetch_assoc()) {
         $data[] = $row;
     }
-} else {
-    echo "No records found.";
 }
 
+// Function to get family members
+function getFamilyMembers($houseNo) {
+    global $conn;
+    $sql_members = "SELECT 
+        fname,
+        lname,
+        head_fam,
+        CONCAT(fname, ' ', lname) as full_name
+    FROM tblresident 
+    WHERE houseNo = ?
+    ORDER BY head_fam DESC, fname ASC";
+    
+    $stmt = $conn->prepare($sql_members);
+    $stmt->bind_param("s", $houseNo);
+    $stmt->execute();
+    return $stmt->get_result();
+}
 ?>
 
-<div class="p-3 w-full bg-white">
-    <p class="text-3xl mb-3">HEAD OF FAMILY LIST</p>
-    <hr class="mt-3 mb-3">
-    <table id="officials-table" style="width: 100%;" class="cell-border hover">
-        <thead>
-            <tr>
-                <th>House Number</th>
-                <th>Total Members</th>
-                <th>Head of Family</th>
-                <!-- Add more headers as needed -->
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($data as $resident): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($resident['houseNo']); ?></td>
-                    <td>
-                        <?php echo htmlspecialchars($resident['total_members']); ?>
-                        <button class=" hover:text-blue-700 text-blue-500 font-bold rounded" onclick="showModal(<?php echo $resident['houseNo']; ?>)"><i title="View" class="fa-regular fa-eye"></i></button>
-                    </td>
-                    <td><?php echo htmlspecialchars($resident['head_of_family']); ?></td>
-                    <!-- Add more cells as needed -->
+
+    <div class="p-3 w-full bg-white shadow-lg rounded-lg">
+        <p class="text-3xl mb-3 font-bold text-gray-800">HEAD OF FAMILY LIST</p>
+        <hr class="mt-3 mb-3">
+        
+        <table id="officials-table" class="cell-border hover" style='width: 100%;'>
+            <thead>
+                <tr class="bg-gray-50">
+                    <th class="px-4 py-2">Name</th>
+                    <th class="px-4 py-2">House No.</th>
+                    <th class="px-4 py-2">Street</th>
+                    <th class="px-4 py-2">Total Members & Family Members</th>
                 </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($data as $resident): ?>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-2"><?php echo htmlspecialchars($resident['head_of_family']); ?></td>
+                        <td class="px-4 py-2"><?php echo htmlspecialchars($resident['houseNo']); ?></td>
+                        <td class="px-4 py-2">
+                            <?php 
+                            echo htmlspecialchars($resident['purok']) . ', ' .
+                                 htmlspecialchars($resident['brgy']) . ', ' .
+                                 htmlspecialchars($resident['municipality']) . ', ' .
+                                 htmlspecialchars($resident['province']);
+                            ?>
+                        </td>
+                        <td class="px-4 py-2">
+                            <?php echo htmlspecialchars($resident['total_members']); ?>
+                            <button class="ml-2 hover:text-blue-700 text-blue-500 font-bold rounded" 
+                                    onclick="showModal(<?php echo htmlspecialchars($resident['houseNo']); ?>)">
+                                <i title="View Members" class="fa-regular fa-eye"></i>
+                            </button>
+                        </td>
 
-                <!-- Modal for displaying members assigned to each head of family -->
-                <div id="modal-<?php echo $resident['houseNo']; ?>" class="hidden fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-headline" role="dialog" aria-modal="true">
-                    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                        </div>
-                        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div class="sm:flex sm:items-start">
-                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">Members assigned to <?php echo htmlspecialchars($resident['head_of_family']); ?></h3>
-                                        <div class="mt-2">
-                                            <?php
-                                            $conn = new mysqli('localhost', 'root', '', 'north');
 
-                                            $sql_members = "SELECT * FROM tblresident WHERE houseNo = '" . $resident['houseNo'] . "'";
-                                            $result_members = $conn->query($sql_members);
-                                            if ($result_members->num_rows > 0) {
-                                                while ($member = $result_members->fetch_assoc()) {
-                                                    echo "<p>" . htmlspecialchars($member['fname'] . ' ' . $member['lname']) . "</p>";
+                    </tr>
+
+                    <!-- Modal for family members -->
+                    <div id="modal-<?php echo htmlspecialchars($resident['houseNo']); ?>" 
+                         class="hidden fixed z-50 inset-0 overflow-y-auto" 
+                         aria-labelledby="modal-title" 
+                         role="dialog" 
+                         aria-modal="true">
+                        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                            <!-- Background overlay -->
+                            <div class="fixed inset-0  bg-opacity-75 transition-opacity" 
+                                 aria-hidden="true"></div>
+
+                            <!-- Modal panel -->
+                            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                    <div class="sm:flex sm:items-start">
+                                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                                Members of House #<?php echo htmlspecialchars($resident['houseNo']); ?>
+                                            </h3>
+                                            <div class="mt-4 space-y-2">
+                                                <?php
+                                                $result_members = getFamilyMembers($resident['houseNo']);
+                                                if ($result_members->num_rows > 0) {
+                                                    while ($member = $result_members->fetch_assoc()) {
+                                                        $memberName = htmlspecialchars($member['full_name']);
+                                                        $isHead = $member['head_fam'] === 'yes' 
+                                                            ? '<span class="text-blue-600 ml-2">(Head of Family)</span>' 
+                                                            : '';
+                                                        echo "<p class='py-1 border-b border-gray-200'>" . 
+                                                             $memberName . $isHead . "</p>";
+                                                    }
+                                                } else {
+                                                    echo "<p class='text-gray-500'>No members found.</p>";
                                                 }
-                                            } else {
-                                                echo "No members found.";
-                                            }
-                                            $conn->close();
-                                            ?>
+                                                ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="hideModal(<?php echo $resident['houseNo']; ?>)">Close</button>
+                                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                    <button type="button" 
+                                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                            onclick="hideModal(<?php echo htmlspecialchars($resident['houseNo']); ?>)">
+                                        Close
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 
-            <?php endforeach; ?>
- </tbody>
-    </table>
-</div>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"> -->
-<script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
-<script>
-$(document).ready(function() {
-    const table = $('#officials-table').DataTable({
-        pageLength: 5,
-        lengthMenu: [5, 10, 25, 50],
-        scrollX: true
-    });
-});
-    function showModal(houseNo) {
-        document.getElementById('modal-' + houseNo).classList.remove('hidden');
-    }
+    <script>
+        $(document).ready(function() {
+            $('#officials-table').DataTable({
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50],
+                scrollX: true,
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                initComplete: function() {
+                    // Add custom styling to DataTables elements
+                    $('.dataTables_length select').addClass('border rounded px-2 py-1');
+                    $('.dataTables_filter input').addClass('border rounded px-2 py-1');
+                }
+            });
+        });
 
-    function hideModal(houseNo) {
-        document.getElementById('modal-' + houseNo).classList.add('hidden');
-    }
-</script>
+        function showModal(houseNo) {
+            document.getElementById('modal-' + houseNo).classList.remove('hidden');
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal(houseNo) {
+            document.getElementById('modal-' + houseNo).classList.add('hidden');
+            // Restore body scrolling when modal is closed
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('fixed')) {
+                const modalId = event.target.closest('[id^="modal-"]').id;
+                const houseNo = modalId.replace('modal-', '');
+                hideModal(houseNo);
+            }
+        }
+
+        // Close modal on escape key press
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const openModal = document.querySelector('[id^="modal-"]:not(.hidden)');
+                if (openModal) {
+                    const houseNo = openModal.id.replace('modal-', '');
+                    hideModal(houseNo);
+                }
+            }
+        });
+    </script>
