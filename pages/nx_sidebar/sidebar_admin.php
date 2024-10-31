@@ -135,6 +135,13 @@
                 </a>
             </li>
 
+            <?php if ($_SESSION['user']['isAdmin'] == '2'): ?>
+                <li>
+                    <a href="../nx_pages/BackupPage.php" class="block px-4 py-2 hover:bg-gray-200 hover:text-black <?php echo $currentPage == 'backup' ? 'active:bg-gray-400' : ''; ?>">
+                        <i class="fa-solid fa-business-time"></i> Backup
+                    </a>
+                </li>
+            <?php endif; ?>
 
 
             <li>

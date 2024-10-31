@@ -6,12 +6,8 @@ require '../db_connect.php';
 $account_type = $_SESSION['user']['account_type']; // 0 - non-resident, 1 - resident
 $isAdmin = $_SESSION['user']['isAdmin']; // 0 - normal user, 1 - admin, 2 - superadmin
 
-// Dynamically include sidebar based on account type and admin status
-if ($isAdmin == '2') {
-    // Superadmin: has access to all pages
-    include 'sidebar_superadmin.php';
-} elseif ($isAdmin == '1') {
-    // Admin: has access to all pages
+if ($isAdmin == '1' || $isAdmin == '2') {
+
     include 'sidebar_admin.php';
 } else {
     // Normal user: show sidebar based on account type
