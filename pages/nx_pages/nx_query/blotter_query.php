@@ -76,6 +76,22 @@ switch ($action) {
             $response['message'] = 'No ID provided.';
         }
         break;
+    case 'reffered':
+        if (isset($_POST['id'])) {
+            $id = intval($_POST['id']); // Get the ID from POST data
+
+            // Update the status in the database
+            $sql = "UPDATE tblblotter SET status = 'Referred' WHERE id = $id";
+            if ($conn->query($sql) === TRUE) {
+                $response['success'] = true;
+                $response['message'] = 'Case Referred successfully.';
+            } else {
+                $response['message'] = 'Error dismissing case: ' . $conn->error;
+            }
+        } else {
+            $response['message'] = 'No ID provided.';
+        }
+        break;
     case 'edit':
         if (isset($_POST['id'])) {
             $id = intval($_POST['id']);

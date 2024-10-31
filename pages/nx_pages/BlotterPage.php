@@ -432,7 +432,6 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                 autoOpen: false,
                 modal: true,
                 width: 400,
-                
             });
 
             $("#addBlotterDialog").dialog({
@@ -459,6 +458,7 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                 autoOpen: false,
                 modal: true,
                 width: 500,
+                height: 650,
                 buttons: {
                     "Save Changes": function() {
                         const formData = new FormData();
@@ -619,6 +619,38 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                     });
                 }
             });
+        }
+        function setReferred(id) {
+          swal({
+            title: "Are you sure?",
+            text: "Once Referred, you will not be able to recover this case!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          }).then((willReferred) => {
+            if (willReferred) {
+              $.ajax({
+                url: "nx_query/blotter_query.php?action=reffered", 
+                type: "POST",
+                data: { id: id }, // Send the ID of the case to dismiss
+                success: function (response) {
+                  if (response.success) {
+                    swal("Case set Reffered successfully!", {
+                      icon: "success",
+                    }).then(() => {
+                      location.reload(); // Reload the page to see the updated list
+                    });
+                  } else {
+                    swal("Error!", response.message, "error");
+                  }
+                },
+                error: function (xhr, status, error) {
+                  console.error("AJAX error:", status, error);
+                  swal("Error!", "Failed to dismiss the case.", "error");
+                },
+              });
+            }
+          });
         }
         function openEditDialog(id) {
             // Fetch the existing data for the case to be edited
