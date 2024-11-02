@@ -143,9 +143,10 @@ $conn->close();
                 <div class="grid grid-cols-2 gap-4">
                     <label for="addHouseNo">House Number</label>
                     <input type="number" name="houseNo" id="addHouseNo" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="addPurok">Purok</label>
                     <input type="text" name="purok" id="addPurok" class="block w-full mb-2 p-2 border rounded">
+                    <!-- <label for="addStreet">Street</label>
+                    <input type="text" name="street" id="addStreet" class="block w-full mb-2 p-2 border rounded"> -->
 
                     <label for="addBrgy">Barangay</label>
                     <input type="text" name="brgy" id="addBrgy" disabled value="North Poblacion" class="block w-full mb-2 p-2 border rounded">
@@ -172,8 +173,20 @@ $conn->close();
                     <label for="addYearStayed">Years Stayed</label>
                     <input type="text" name="year_stayed" id="addYearStayed" class="block w-full mb-2 p-2 border rounded">
 
-                    <label for="addEducation">Education</label>
+                    <label for="addEmploymentStatus">Employment Status</label>
+                    <select name="employment_status" id="addEmploymentStatus" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Employment Status</option>
+                        <option value="Employed">Employed</option>
+                        <option value="Unemployed">Unemployed</option>
+                        <option value="Self-employed">Self-employed</option>
+                        <option value="Student">Student</option>
+                    </select>
+
+                    <label for="addEducation">Educational Attainment</label>
                     <input type="text" name="education" id="addEducation" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addOccupation">Occupation</label>
+                    <input type="text" name="occupation" id="addOccupation" class="block w-full mb-2 p-2 border rounded">
 
                     <label for="addHeadFam">Head of Family?</label>
                     <select name="head_fam" id="addHeadFam" class="block w-full mb-2 p-2 border rounded">
@@ -182,9 +195,6 @@ $conn->close();
                         <option value="No">No</option>
                     </select>
 
-                    <label for="addOccupation">Occupation</label>
-                    <input type="text" name="occupation" id="addOccupation" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="addVoter">Voter?</label>
                     <select name="voter" id="addVoter" class="block w-full mb-2 p-2 border rounded">
                         <option value="" disabled selected>Voter?</option>
@@ -192,7 +202,9 @@ $conn->close();
                         <option value="No">No</option>
                     </select>
 
-                    <label for="addImage">Upload Image</label>
+                    <label for="addRelation">Relation to Head of Family</label>
+                    <input type="text" name="relation" id="addRelation" class="block w-full mb-2 p-2 border rounded">
+                    <label for="addRelation">ID image:</label>
                     <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded">
                 </div>
             </div>
@@ -235,7 +247,7 @@ $conn->close();
                     <input type="date" id="editBday" name="bday" class="block w-full mb-2 p-2 border rounded">
 
                     <label for="editAge">Age</label>
-                    <input type="number" id="editAge" name="age" class="block w-full mb-2 p-2 border rounded">
+                    <input type="number" id="editAge" name="age" class="block w-full mb-2 p-2 border rounded" readonly>
 
                     <label for="editGender">Gender</label>
                     <select id="editGender" name="gender" class="block w-full mb-2 p-2 border rounded">
@@ -252,20 +264,23 @@ $conn->close();
 
             <div id="editAddressInfo" class="tab-content hidden">
                 <div class="grid grid-cols-2 gap-4">
-                    <label for="editHouseNo">House No.</label>
+                    <label for="editHouseNo">House Number</label>
                     <input type="number" id="editHouseNo" name="houseNo" class="block w-full mb-2 p-2 border rounded">
 
                     <label for="editPurok">Purok</label>
                     <input type="text" id="editPurok" name="purok" class="block w-full mb-2 p-2 border rounded">
 
+                    <!-- <label for="editStreet">Street</label>
+                    <input type="text" id="editStreet" name="street" class="block w-full mb-2 p-2 border rounded"> -->
+
                     <label for="editBrgy">Barangay</label>
-                    <input type="text" id="editBrgy" name="brgy" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" id="editBrgy" name="brgy" disabled value="North Poblacion" class="block w-full mb-2 p-2 border rounded">
 
                     <label for="editMunicipality">Municipality</label>
-                    <input type="text" id="editMunicipality" name="municipality" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" id="editMunicipality" name="municipality" disabled value="Gabaldon" class="block w-full mb-2 p-2 border rounded">
 
                     <label for="editProvince">Province</label>
-                    <input type="text" id="editProvince" name="province" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" id="editProvince" name="province" disabled value="Nueva Ecija" class="block w-full mb-2 p-2 border rounded">
                 </div>
             </div>
 
@@ -273,7 +288,7 @@ $conn->close();
                 <div class="grid grid-cols-2 gap-4">
                     <label for="editCivilStatus">Civil Status</label>
                     <select id="editCivilStatus" name="civil_status" class="block w-full mb-2 p-2 border rounded">
-                        <option value="" disabled selected>Civil Status</option>
+                        <option value="" disabled>Civil Status</option>
                         <option value="Single">Single</option>
                         <option value="Married">Married</option>
                         <option value="Widowed">Widowed</option>
@@ -283,8 +298,20 @@ $conn->close();
                     <label for="editYearStayed">Years Stayed</label>
                     <input type="text" id="editYearStayed" name="year_stayed" class="block w-full mb-2 p-2 border rounded">
 
-                    <label for="editEducation">Education</label>
+                    <label for="editEmploymentStatus">Employment Status</label>
+                    <select id="editEmploymentStatus" name="employment_status" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Employment Status</option>
+                        <option value="Employed">Employed</option>
+                        <option value="Unemployed">Unemployed</option>
+                        <option value="Self-employed">Self-employed</option>
+                        <option value="Student">Student</option>
+                    </select>
+
+                    <label for="editEducation">Educational Attainment</label>
                     <input type="text" id="editEducation" name="education" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editOccupation">Occupation</label>
+                    <input type="text" id="editOccupation" name="occupation" class="block w-full mb-2 p-2 border rounded">
 
                     <label for="editHeadFam">Head of Family?</label>
                     <select id="editHeadFam" name="head_fam" class="block w-full mb-2 p-2 border rounded">
@@ -293,9 +320,6 @@ $conn->close();
                         <option value="No">No</option>
                     </select>
 
-                    <label for="editOccupation">Occupation</label>
-                    <input type="text" id="editOccupation" name="occupation" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editVoter">Voter?</label>
                     <select id="editVoter" name="voter" class="block w-full mb-2 p-2 border rounded">
                         <option value="" disabled selected>Voter?</option>
@@ -303,7 +327,10 @@ $conn->close();
                         <option value="No">No</option>
                     </select>
 
-                    <label for="editImage">Upload Image</label>
+                    <label for="editRelation">Relation to Head of Family</label>
+                    <input type="text" id="editRelation" name="relation" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editImage">ID Image</label>
                     <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
                     <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100%; max-width:100px; height:auto;">
                 </div>
@@ -313,7 +340,6 @@ $conn->close();
         </form>
     </div>
 </div>
-
 
 <div id="viewModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full mx-4">
@@ -473,38 +499,58 @@ function editRecord(id) {
         if (response.success) {
             const official = response.data;
             console.log(official);
-            // Set form fields with values from the official object
+            
+            // Personal Info
             document.getElementById('editId').value = official.resident_id;
             document.getElementById('editFname').value = official.fname || '';
             document.getElementById('editMname').value = official.mname || '';
             document.getElementById('editLname').value = official.lname || '';
             document.getElementById('editSuffix').value = official.suffix || '';
             document.getElementById('editBday').value = official.bday || '';
-            document.getElementById('editGender').value = official.gender || ''; // Handle user-defined values
-            document.getElementById('editYearStayed').value = official.year_stayed;
-            document.getElementById('editAge').value = official.age || ''; 
+            document.getElementById('editAge').value = official.age || '';
+            document.getElementById('editGender').value = official.gender || '';
+            document.getElementById('editBirthplace').value = official.birthplace || '';
+            
+            // Address Info
             document.getElementById('editHouseNo').value = official.houseNo || '';
             document.getElementById('editPurok').value = official.purok || '';
-            document.getElementById('editBrgy').value = official.brgy || '';
-            document.getElementById('editMunicipality').value = official.municipality || '';
-            document.getElementById('editProvince').value = official.province || '';
+            // document.getElementById('editStreet').value = official.street || '';
+            document.getElementById('editBrgy').value = official.brgy || 'North Poblacion';
+            document.getElementById('editMunicipality').value = official.municipality || 'Gabaldon';
+            document.getElementById('editProvince').value = official.province || 'Nueva Ecija';
+            
+            // Other Info
             document.getElementById('editCivilStatus').value = official.civil_status || '';
+            document.getElementById('editYearStayed').value = official.year_stayed || '';
+            document.getElementById('editEmploymentStatus').value = official.employment_status || '';
             document.getElementById('editEducation').value = official.education || '';
             document.getElementById('editOccupation').value = official.occupation || '';
-            document.getElementById('editBirthplace').value = official.birthplace || '';
+            document.getElementById('editHeadFam').value = official.head_fam || '';
+            document.getElementById('editVoter').value = official.voter || '';
+            document.getElementById('editRelation').value = official.relation || '';
 
-            // Set Voter status dropdown
-            const voterSelect = document.getElementById('editVoter');
-            voterSelect.value = official.voter || '';
-
-            // Set Head of Family dropdown
-            const headFamSelect = document.getElementById('editHeadFam');
-            headFamSelect.value = official.head_fam || '';
-
-            // Set up the image preview
+            // Handle Image Preview
             const imagePreview = document.getElementById('editImagePreview');
-            imagePreview.src = '../../assets/images/Identification_card/' + (official.image || 'default.png'); // Use a default image if none exists
-            imagePreview.style.display = 'block'; // Show the image preview
+            if (official.image) {
+                imagePreview.src = '../../assets/images/Identification_card/' + official.image;
+                imagePreview.style.display = 'block';
+            } else {
+                imagePreview.src = '../../assets/images/Identification_card/default.png';
+                imagePreview.style.display = 'block';
+            }
+
+            // Calculate age if birthday is set
+            if (official.bday) {
+                const birthDate = new Date(official.bday);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                document.getElementById('editAge').value = age;
+            }
 
             openModal('editModal');
         } else {
@@ -518,7 +564,6 @@ function editRecord(id) {
         });
     });
 }
-
 
 function deleteRecord(id) {
     swal({
@@ -598,128 +643,88 @@ function addRecord() {
 }
 
 function updateRecord(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  const formData = new FormData(document.getElementById("editForm"));
-  const residentId = document.getElementById("editId").value;
-  formData.append("resident_id", residentId);
+    const formData = new FormData(document.getElementById("editForm"));
+    const residentId = document.getElementById("editId").value;
+    formData.append("resident_id", residentId);
 
-  // Append additional fields directly without if statements
-  document.getElementById("editFname").value &&
-    formData.append("fname", document.getElementById("editFname").value);
-  document.getElementById("editMname").value &&
-    formData.append("mname", document.getElementById("editMname").value);
-  document.getElementById("editLname").value &&
-    formData.append("lname", document.getElementById("editLname").value);
-  document.getElementById("editSuffix").value &&
-    formData.append("suffix", document.getElementById("editSuffix").value);
-  document.getElementById("editBday").value &&
-    formData.append("bday", document.getElementById("editBday").value);
-  document.getElementById("editAge").value &&
-    formData.append("age", document.getElementById("editAge").value);
-  document.getElementById("editGender").value &&
-    formData.append("gender", document.getElementById("editGender").value);
-  document.getElementById("editBirthplace").value &&
-    formData.append(
-      "birthplace",
-      document.getElementById("editBirthplace").value
-    );
-  document.getElementById("editHouseNo").value &&
-    formData.append("houseNo", document.getElementById("editHouseNo").value);
-  document.getElementById("editPurok").value &&
-    formData.append("purok", document.getElementById("editPurok").value);
-  document.getElementById("editBrgy").value &&
-    formData.append("brgy", document.getElementById("editBrgy").value);
-  document.getElementById("editMunicipality").value &&
-    formData.append(
-      "municipality",
-      document.getElementById("editMunicipality").value
-    );
-  document.getElementById("editProvince").value &&
-    formData.append("province", document.getElementById("editProvince").value);
-  document.getElementById("editCivilStatus").value &&
-    formData.append(
-      "civil_status",
-      document.getElementById("editCivilStatus").value
-    );
-  document.getElementById("editYearStayed").value &&
-    formData.append(
-      "year_stayed",
-      document.getElementById("editYearStayed").value
-    );
-  document.getElementById("editEducation").value &&
-    formData.append(
-      "education",
-      document.getElementById("editEducation").value
-    );
-  document.getElementById("editHeadFam").value &&
-    formData.append("head_fam", document.getElementById("editHeadFam").value);
-  document.getElementById("editOccupation").value &&
-    formData.append(
-      "occupation",
-      document.getElementById("editOccupation").value
-    );
-  document.getElementById("editVoter").value &&
-    formData.append("voter", document.getElementById("editVoter").value);
+    // Collect data from the form without required fields check
+    const fieldIds = [
+        'editFname', 'editMname', 'editLname', 'editSuffix',
+        'editBday', 'editAge', 'editGender', 'editBirthplace',
+        'editHouseNo', 'editPurok', 'editBrgy',
+        'editMunicipality', 'editProvince', 'editCivilStatus',
+        'editYearStayed', 'editEmploymentStatus', 'editEducation',
+        'editOccupation', 'editHeadFam', 'editVoter', 'editRelation'
+    ];
 
-  // Handle the image file
-  const imageFile = document.getElementById("editImage").files[0];
-  imageFile && formData.append("image", imageFile);
-
-  // Log FormData contents
-  for (let [key, value] of formData.entries()) {
-    console.log(key, value);
-  }
-
-  $.ajax({
-    url: "nx_query/manage_residents.php?action=update",
-    type: "POST",
-    data: formData,
-    processData: false,
-    contentType: false,
-    success: function (response) {
-      try {
-        // Handle potential duplicate JSON responses
-        const responseText =
-          typeof response === "string" ? response : JSON.stringify(response);
-        const firstJsonEnd = responseText.indexOf("}") + 1;
-        const cleanResponse = responseText.substring(0, firstJsonEnd);
-        const result = JSON.parse(cleanResponse);
-
-        if (result.success) {
-          swal("Success", "Resident updated successfully!", "success").then(
-            () => {
-              location.reload();
-            }
-          );
-        } else {
-          swal("Error", result.message || "Update failed", "error");
+    fieldIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element && element.value) {
+            formData.append(id.replace('edit', '').toLowerCase(), element.value);
         }
-      } catch (e) {
-        console.error("Error parsing response:", e);
-        swal("Success", "Resident updated successfully!", "success").then(
-          () => {
-            location.reload();
-          }
-        );
-      }
-    },
-    error: function (xhr, status, error) {
-      console.error("Server response:", xhr.responseText);
-      let errorMessage = "An error occurred while processing your request.";
-      try {
-        const responseText = xhr.responseText;
-        const firstJsonEnd = responseText.indexOf("}") + 1;
-        const cleanResponse = responseText.substring(0, firstJsonEnd);
-        const result = JSON.parse(cleanResponse);
-        errorMessage = result.message || errorMessage;
-      } catch (e) {
-        errorMessage = xhr.responseText || errorMessage;
-      }
-      swal("Error", errorMessage, "error");
-    },
-  });
+    });
+
+    // Handle the image file
+    const imageFile = document.getElementById("editImage").files[0];
+    if (imageFile) {
+        formData.append("image", imageFile);
+    }
+
+    // Log FormData contents for debugging
+    for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+    }
+
+    $.ajax({
+        url: "nx_query/manage_residents.php?action=update",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            try {
+                // Handle potential duplicate JSON responses
+                const responseText = typeof response === 'string' ? response : JSON.stringify(response);
+                const firstJsonEnd = responseText.indexOf('}') + 1;
+                const cleanResponse = responseText.substring(0, firstJsonEnd);
+                const result = JSON.parse(cleanResponse);
+
+                if (result.success) {
+                    swal("Success", "Resident updated successfully!", "success")
+                        .then(() => {
+                            location.reload();
+                        });
+                } else {
+                    swal("Error", result.message || "Update failed", "error");
+                }
+            } catch (e) {
+                console.error("Error parsing response:", e);
+                // Fallback success message if response parsing fails but operation succeeded
+                swal("Success", "Resident updated successfully!", "success")
+                    .then(() => {
+                        location.reload();
+                    });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Server response:", xhr.responseText);
+            let errorMessage = "An error occurred while processing your request.";
+            try {
+                const responseText = xhr.responseText;
+                const firstJsonEnd = responseText.indexOf('}') + 1;
+                const cleanResponse = responseText.substring(0, firstJsonEnd);
+                const result = JSON.parse(cleanResponse);
+                errorMessage = result.message || errorMessage;
+            } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+            }
+            swal("Error", errorMessage, "error");
+        }
+    });
 }
+
 function viewRecord(id) {
     $.get('nx_query/manage_residents.php?action=get&id=' + id, function(response) {
         if (response.success) {
