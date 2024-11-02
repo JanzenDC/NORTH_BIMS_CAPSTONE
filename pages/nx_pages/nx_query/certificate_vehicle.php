@@ -54,16 +54,61 @@ switch ($action) {
             break;
         }
 
-        $stmt = $conn->prepare("UPDATE vehicle_cert SET status = 'Approved' WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        if ($stmt->execute()) {
-            $response['success'] = true;
-            $response['message'] = "Record marked as Approved successfully.";
-            logAction($conn, "Approved record with ID: $id", $user);
+        $sellerQuery = "SELECT sellerid FROM vehicle_cert WHERE id = $id";
+        $sellerResult = mysqli_query($conn, $sellerQuery);
+
+        if ($sellerResult && mysqli_num_rows($sellerResult) > 0) {
+            $sellerData = mysqli_fetch_assoc($sellerResult);
+            $sellerid = $sellerData['sellerid'];
+
+            if ($sellerid != 0) {
+                $contactQuery = "SELECT resident_id, contact FROM tblregistered_account WHERE id = $sellerid";
+                $contactResult = mysqli_query($conn, $contactQuery);
+
+                if ($contactResult && mysqli_num_rows($contactResult) > 0) {
+                    $contactData = mysqli_fetch_assoc($contactResult);
+                    $contactNumber = $contactData['contact'];
+
+                    $updateQuery = "UPDATE vehicle_cert SET status = 'Approved' WHERE id = $id";
+                    if (mysqli_query($conn, $updateQuery)) {
+                        $response['success'] = true;
+                        $response['message'] = "Record marked as Approved successfully.";
+                        logAction($conn, "Approved record with ID: $id", $_SESSION['user']['username']);
+
+                        $api_key = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
+                        $project_id = 'PJ3d74c709991602b6';
+                        $message = "Your vehicle certification has been approved.";
+
+                        $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
+                        $data = [
+                            'to_number' => $contactNumber,
+                            'content' => $message,
+                        ];
+
+                        $ch = curl_init($url);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                            "X-Telerivet-API-Key: $api_key",
+                            "Content-Type: application/json"
+                        ]);
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        $telerivet_response = curl_exec($ch);
+                        curl_close($ch);
+                    } else {
+                        $response['message'] = "Error updating record: " . mysqli_error($conn);
+                    }
+                } else {
+                    $response['message'] = "No contact found for seller ID $sellerid.";
+                }
+            } else {
+                $response['message'] = "Seller ID is zero, not sending Telerivet message.";
+            }
         } else {
-            $response['message'] = "Error: " . $stmt->error;
+            $response['message'] = "No seller found for certificate ID $id.";
         }
         break;
+
 
     case 'setDisapproved':
         $id = (int)$_POST['id'] ?? 0;

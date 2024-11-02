@@ -100,16 +100,69 @@ switch ($action) {
             break;
         }
 
-        // Construct the SQL query to update the status to "Approved"
-        $query = "UPDATE business_cert SET status = 'Approved' WHERE id = $id";
+        // Retrieve the ownerid from business_cert
+        $ownerQuery = "SELECT ownerid FROM business_cert WHERE id = $id";
+        $ownerResult = mysqli_query($conn, $ownerQuery);
 
-        // Execute the query
-        if (mysqli_query($conn, $query)) {
-            $response['success'] = true;
-            $response['message'] = "Record marked as Approved successfully.";
-            logAction($conn, "Approved certificate ID $id", $_SESSION['user']['username']);
+        if ($ownerResult && mysqli_num_rows($ownerResult) > 0) {
+            $ownerData = mysqli_fetch_assoc($ownerResult);
+            $ownerid = $ownerData['ownerid'];
+
+            // Check if the ownerid is valid (not zero)
+            if ($ownerid != 0) {
+                // Fetch the resident_id and contact from tblregistered_account
+                $contactQuery = "SELECT resident_id, contact FROM tblregistered_account WHERE id = $ownerid";
+                $contactResult = mysqli_query($conn, $contactQuery);
+
+                if ($contactResult && mysqli_num_rows($contactResult) > 0) {
+                    $contactData = mysqli_fetch_assoc($contactResult);
+                    $contactNumber = $contactData['contact'];
+
+                    // Construct the SQL query to update the status to "Approved"
+                    $query = "UPDATE business_cert SET status = 'Approved' WHERE id = $id";
+
+                    // Execute the query
+                    if (mysqli_query($conn, $query)) {
+                        $response['success'] = true;
+                        $response['message'] = "Record marked as Approved successfully.";
+                        logAction($conn, "Approved certificate ID $id", $_SESSION['user']['username']);
+
+                        // Create the message
+                        $message = "Your certificate has been approved."; // Updated message
+
+                        // Send the message using Telerivet API
+                        $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
+                        $data = [
+                            'to_number' => $contactNumber, // Use the retrieved contact number
+                            'content' => $message,
+                        ];
+
+                        // Use cURL to send the request
+                        $ch = curl_init($url);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                            "X-Telerivet-API-Key: $api_key",
+                            "Content-Type: application/json"
+                        ]);
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        
+                        // Execute and close the cURL session
+                        $telerivet_response = curl_exec($ch);
+                        curl_close($ch);
+
+                        // Optionally, log the Telerivet response
+                    } else {
+                        $response['message'] = "Error updating record: " . mysqli_error($conn);
+                    }
+                } else {
+                    $response['message'] = "No contact found for owner ID $ownerid.";
+                }
+            } else {
+                $response['message'] = "Owner ID is zero, not sending Telerivet message.";
+            }
         } else {
-            $response['message'] = "Error: " . mysqli_error($conn);
+            $response['message'] = "No owner found for certificate ID $id.";
         }
         break;
 
