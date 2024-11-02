@@ -63,26 +63,26 @@ $conn->close();
         ?>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6 max-h-screen">
+        <main class="flex-1 p-6 max-h-screen overflow-y-auto mb-24">
             <div class="md:flex md:gap-4 md:h-screen">
-            <div class="w-full md:w-1/4 h-full bg-white drop-shadow-md rounded-md p-6 relative">
-                <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
-                <img class="w-[130px] rounded-full border-2 border-gray-300 mx-auto cursor-pointer" 
-                    src="../../assets/images/pfp/<?= htmlspecialchars($userData['image']) ?>" 
-                    alt="Profile Photo" 
-                    onclick="document.getElementById('profileImageInput').click();">
-                <div class="text-center"><?= htmlspecialchars($userData['fname']) ?> <?= htmlspecialchars($userData['mname']) ?> <?= htmlspecialchars($userData['lname']) ?></div>
-                <p class="text-center"><strong>Your Profile</strong></p>
-                <div class="p-2 flex gap-2 items-center justify-center">
-                    <div class="bg-green-600 text-white p-2 rounded-lg cursor-pointer" onclick="openModal()">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+                <div class="w-full md:w-1/4 h-full bg-white drop-shadow-md rounded-md p-6 relative">
+                    <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                    <img class="w-[130px] rounded-full border-2 border-gray-300 mx-auto cursor-pointer" 
+                        src="../../assets/images/pfp/<?= !empty($userData['image']) ? htmlspecialchars($userData['image']) : '../../assets/images/pfp/default.png' ?>" 
+                        alt="Profile Photo" 
+                        onclick="document.getElementById('profileImageInput').click();">
+                    <div class="text-center"><?= htmlspecialchars($userData['fname']) ?> <?= htmlspecialchars($userData['mname']) ?> <?= htmlspecialchars($userData['lname']) ?></div>
+                    <p class="text-center"><strong>Your Profile</strong></p>
+                    <div class="p-2 flex gap-2 items-center justify-center">
+                        <div class="bg-green-600 text-white p-2 rounded-lg cursor-pointer" onclick="openModal()">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+                        </div>
+
                     </div>
-
                 </div>
-            </div>
 
 
-                <div class="w-full md:w-3/4 h-full">
+                <div class="w-full md:w-3/4 h-full  ">
                     <!-- Personal Information Card -->
                     <div class="w-full bg-white shadow-lg md:rounded-lg overflow-hidden  grid grid-cols-[auto,1fr]">
 
@@ -117,6 +117,18 @@ $conn->close();
                             <p><strong>Province:</strong> <?= htmlspecialchars($userData['province']) ?></p>
                         </div>
                     </div>
+
+                    <div class="bg-white shadow-lg md:rounded-lg overflow-hidden md:my-6 grid grid-cols-[auto,1fr]">
+                        <div class="p-6">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">Identification Card</h2>
+                            <input type="file" id="IDimageinput" accept="image/*" class="hidden" onchange="handleIDinput(event)">
+                            <img class="w-full border-2 border-gray-300 mx-auto cursor-pointer" 
+                                src="../../assets/images/id/<?= !empty($userData['id_file']) ? htmlspecialchars($userData['id_file']) : '../../assets/images/id/default.png' ?>"  
+                                alt="ID Photo" 
+                                onclick="document.getElementById('IDimageinput').click();">
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </main>
@@ -210,10 +222,8 @@ $conn->close();
                     <label for="id_type" class="block text-sm font-medium text-gray-700">ID Type</label>
                     <input type="text" id="id_type" name="id_type" value="<?= htmlspecialchars($userData['id_type']) ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                 </div>
-                <div class="mb-4">
-                    <label for="id_file" class="block text-sm font-medium text-gray-700">ID File</label>
-                    <input type="file" id="id_file" name="id_file" value="<?= htmlspecialchars($userData['id_file']) ?>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
+
+
             </div>
 
             <div class="flex justify-end">
@@ -356,6 +366,56 @@ function handleImageUpload(event) {
         });
     }
 }
+function handleIDinput(event) {
+    const file = event.target.files[0];
+    if (file) {
+        swal({
+            title: "Confirm Upload",
+            text: "Are you sure you want to upload this ID image?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willUpload) => {
+            if (willUpload) {
+                const formData = new FormData();
+                formData.append('id_image', file); // Adjusted to 'id_image'
+
+                // Send the image data to the server
+                fetch('nx_query/profile_page/update_id_image.php', { // Adjusted endpoint
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok.");
+                    }
+                    return response.json(); // Parse JSON response
+                })
+                .then(data => {
+                    // Handle the data returned from the server
+                    if (data.status === "success") {
+                        swal("ID image uploaded successfully!", {
+                            icon: "success",
+                        });
+                        location.reload(); // Reload the page after success
+                    } else {
+                        throw new Error(data.message || "ID image upload failed.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    swal("An error occurred. Please try again.", {
+                        icon: "error",
+                    });
+                });
+            } else {
+                swal("Upload canceled.");
+            }
+        });
+    }
+}
+
 </script>
 </body>
 </html>

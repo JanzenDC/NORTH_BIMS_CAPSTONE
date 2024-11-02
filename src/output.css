@@ -771,6 +771,10 @@ video {
   margin-top: 250px;
 }
 
+.mb-96 {
+  margin-bottom: 24rem;
+}
+
 .block {
   display: block;
 }
