@@ -122,7 +122,14 @@ switch ($action) {
             }
 
             // Update the blotter entry
-            $sql = "UPDATE tblblotter SET complainant='$complainant', caddress='$cAddress', personToComplaint='$personToComplaint', paddress='$pAddress', complaint='$complaint', action='$action', status='$status'";
+            $sql = "UPDATE tblblotter SET 
+                    complainant='$complainant', 
+                    caddress='$cAddress', 
+                    personToComplaint='$personToComplaint', 
+                    paddress='$pAddress', 
+                    complaint='$complaint', 
+                    action='$action', 
+                    status='$status'";
             
             if ($imageFileName) {
                 // If there's a new image, include it in the update
@@ -132,6 +139,18 @@ switch ($action) {
             $sql .= " WHERE id=$id";
 
             if ($conn->query($sql) === TRUE) {
+                // Clear existing supporting details for the blotter ID
+                $conn->query("DELETE FROM tblblotter_pagpapatunay WHERE id=$id");
+
+                // Insert new supporting details
+                if (isset($_POST['supportingDetails'])) {
+                    foreach ($_POST['supportingDetails'] as $detail) {
+                        $description = $conn->real_escape_string($detail);
+                        $insertSql = "INSERT INTO tblblotter_pagpapatunay (blotterId, id, descriptionn) VALUES (NULL, $id, '$description')";
+                        $conn->query($insertSql);
+                    }
+                }
+
                 $response['success'] = true;
                 $response['message'] = 'Blotter updated successfully.';
             } else {
@@ -141,17 +160,30 @@ switch ($action) {
             $response['message'] = 'No ID provided.';
         }
         break;
-
-
     case 'get':
         if (isset($_POST['id'])) {
             $id = intval($_POST['id']);
+            
+            // Fetch the main blotter details
             $sql = "SELECT * FROM tblblotter WHERE id = $id";
             $result = $conn->query($sql);
             
             if ($result->num_rows > 0) {
                 $response['success'] = true;
                 $response['data'] = $result->fetch_assoc();
+
+                // Fetch the supporting details
+                $supportingSql = "SELECT descriptionn FROM tblblotter_pagpapatunay WHERE id = $id";
+                $supportingResult = $conn->query($supportingSql);
+                $supportingDetails = [];
+
+                while ($detail = $supportingResult->fetch_assoc()) {
+                    $supportingDetails[] = $detail['descriptionn'];
+                }
+
+                // Add the supporting details to the response
+                $response['data']['supportingDetails'] = $supportingDetails;
+
             } else {
                 $response['message'] = 'No record found.';
             }
@@ -159,6 +191,7 @@ switch ($action) {
             $response['message'] = 'No ID provided.';
         }
         break;
+
     case 'updateStatus':
         if (isset($_POST['id']) && isset($_POST['status'])) {
             $id = intval($_POST['id']);

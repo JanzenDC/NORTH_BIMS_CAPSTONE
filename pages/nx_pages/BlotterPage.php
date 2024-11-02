@@ -105,9 +105,9 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                                     <td><?php echo htmlspecialchars($row['action']); ?></td>
                                     <td><?php echo htmlspecialchars($row['status']); ?></td>
                                     <td class="flex space-x-2">
-                                        <a class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" title="Generate">
+                                        <!-- <a class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" title="Generate">
                                             <i class="fas fa-file-download"></i>
-                                        </a>
+                                        </a> -->
                                         <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" title="Dismiss" onclick="setDismissed(<?php echo htmlspecialchars($row['id']); ?>)">
                                             <i class="fas fa-check-circle"></i>
                                         </button>
@@ -331,24 +331,24 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
 
     <!-- Dialog for Adding Blotter -->
     <div id="addBlotterDialog" title="Add Blotter" style="display:none;" class="p-6 bg-white rounded-lg shadow-lg">
-        <form id="blotterForm" class="space-y-4">
+        <form id="blotterForm" class="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="complainant" class="block text-sm font-medium text-gray-700">Complainant Name:</label>
                 <input type="text" id="complainant" name="complainant" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-            <div>
-                <label for="cAddress" class="block text-sm font-medium text-gray-700">Complainant Address:</label>
-                <input type="text" id="cAddress" name="cAddress" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
             </div>
             <div>
                 <label for="personToComplaint" class="block text-sm font-medium text-gray-700">Person to Complaint:</label>
                 <input type="text" id="personToComplaint" name="personToComplaint" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
             </div>
             <div>
+                <label for="cAddress" class="block text-sm font-medium text-gray-700">Complainant Address:</label>
+                <input type="text" id="cAddress" name="cAddress" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <div>
                 <label for="pAddress" class="block text-sm font-medium text-gray-700">Complainee Address:</label>
                 <input type="text" id="pAddress" name="pAddress" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
             </div>
-            <div>
+            <div class="col-span-1 md:col-span-2">
                 <label for="complaint" class="block text-sm font-medium text-gray-700">Complaint:</label>
                 <textarea id="complaint" name="complaint" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
             </div>
@@ -372,64 +372,107 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
     </div>
 
 
+
     <div id="dialog" title="Complaint Details" style="display:none;">
         <p id="dialog-content"></p>
     </div>
 
-    <div id="editBlotterDialog" title="Edit Blotter" style="display:none;" class="p-6 bg-white rounded-lg shadow-lg">
-        <form id="editBlotterForm" class="space-y-4">
-            <input type="hidden" id="editId" name="editId">
-            <div>
-                <label for="editComplainant" class="block text-sm font-medium text-gray-700">Complainant Name:</label>
-                <input type="text" id="editComplainant" name="editComplainant" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-            <div>
-                <label for="editCAddress" class="block text-sm font-medium text-gray-700">Complainant Address:</label>
-                <input type="text" id="editCAddress" name="editCAddress" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-            <div>
-                <label for="editPersonToComplaint" class="block text-sm font-medium text-gray-700">Person to Complaint:</label>
-                <input type="text" id="editPersonToComplaint" name="editPersonToComplaint" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-            <div>
-                <label for="editPAddress" class="block text-sm font-medium text-gray-700">Complainee Address:</label>
-                <input type="text" id="editPAddress" name="editPAddress" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
-            </div>
-            <div>
-                <label for="editComplaint" class="block text-sm font-medium text-gray-700">Complaint:</label>
-                <textarea id="editComplaint" name="editComplaint" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
-            </div>
-            <div>
-                <label for="editAction" class="block text-sm font-medium text-gray-700">Action:</label>
-                <select id="editAction" name="editAction" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="1st Option">Brgy. Captain</option>
-                    <option value="2nd Option">Lupon</option>
-                    <option value="3rd Option">Police</option>
-                </select>
-            </div>
-            <div>
-                <label for="editStatus" class="block text-sm font-medium text-gray-700">Status:</label>
-                <select id="editStatus" name="editStatus" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="New">New</option>
-                    <option value="Dismissed">Dismissed</option>
-                    <option value="Referred">Referred</option>
-                    <option value="Ongoing">Ongoing</option>
-                </select>
+<div id="editBlotterDialog" title="Edit Blotter" style="display:none;" class="p-6 bg-white rounded-lg shadow-lg">
+    <form id="editBlotterForm" class="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="hidden" id="editId" name="editId">
+        
+        <div>
+            <label for="editComplainant" class="block text-sm font-medium text-gray-700">Complainant Name:</label>
+            <input type="text" id="editComplainant" name="editComplainant" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
 
-            </div>
-            <div>
-                <label for="editImage" class="block text-sm font-medium text-gray-700">Upload Image Reference:</label>
-                <input type="file" id="editImage" name="editImage" accept="image/*" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
-                <img id="editImagePreview" src="" alt="Image Preview" class="mt-2" style="display:none; max-width: 100%;">
-            </div>
+        <div>
+            <label for="editPersonToComplaint" class="block text-sm font-medium text-gray-700">Person to Complaint:</label>
+            <input type="text" id="editPersonToComplaint" name="editPersonToComplaint" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
 
-        </form>
-    </div>
+        <div>
+            <label for="editCAddress" class="block text-sm font-medium text-gray-700">Complainant Address:</label>
+            <input type="text" id="editCAddress" name="editCAddress" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div>
+            <label for="editPAddress" class="block text-sm font-medium text-gray-700">Complainee Address:</label>
+            <input type="text" id="editPAddress" name="editPAddress" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+
+        <div class="col-span-1 md:col-span-2">
+            <label for="editComplaint" class="block text-sm font-medium text-gray-700">Complaint:</label>
+            <textarea id="editComplaint" name="editComplaint" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+        </div>
+
+        <div>
+            <label for="editAction" class="block text-sm font-medium text-gray-700">Action:</label>
+            <select id="editAction" name="editAction" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="1st Option">Brgy. Captain</option>
+                <option value="2nd Option">Lupon</option>
+                <option value="3rd Option">Police</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="editStatus" class="block text-sm font-medium text-gray-700">Status:</label>
+            <select id="editStatus" name="editStatus" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="New">New</option>
+                <option value="Dismissed">Dismissed</option>
+                <option value="Referred">Referred</option>
+                <option value="Ongoing">Ongoing</option>
+            </select>
+        </div>
+
+
+
+        <div class="col-span-1 md:col-span-2">
+            <label for="editImage" class="block text-sm font-medium text-gray-700">Upload Image Reference:</label>
+            <input type="file" id="editImage" name="editImage" accept="image/*" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <img id="editImagePreview" src="" alt="Image Preview" class="mt-2" style="display:none; max-width: 100%;">
+            <label class="block text-sm font-medium text-gray-700 mt-2">Supporting Details:</label>
+            <div id="supportingDetailsContainer">
+                <div class="flex items-center mb-2">
+                    <input type="text" name="supportingDetails[]" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Supporting Detail">
+                    <button type="button" class="ml-2 text-red-600 hover:text-red-800 remove-supporting-detail">
+                        <i class="fas fa-minus-circle"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="button" id="addSupportingDetail" class="mt-2 text-blue-600 hover:text-blue-800">
+                <i class="fas fa-plus"></i> Add More
+            </button>
+        </div>
+    </form>
+</div>
+
 
     <div id="imagePreviewDialog" title="Image Reference" style="display:none;">
         <img id="imagePreview" src="" alt="Image Preview" style="max-width: 100%;"/>
     </div>
     <script>
+        function addSupportingDetailInput(value = '') {
+            const inputHtml = `
+                <div class="flex items-center mb-2">
+                    <input type="text" name="supportingDetails[]" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Supporting Detail" value="${value}">
+                    <button type="button" class="ml-2 text-red-600 hover:text-red-800 remove-supporting-detail">
+                        <i class="fas fa-minus-circle"></i>
+                    </button>
+                </div>
+            `;
+            $('#supportingDetailsContainer').append(inputHtml);
+        }
+
+        // Event listener for adding more supporting details
+        $('#addSupportingDetail').on('click', function() {
+            addSupportingDetailInput(); // Add a new input with a blank value
+        });
+
+        // Event delegation for removing supporting detail inputs
+        $(document).on('click', '.remove-supporting-detail', function() {
+            $(this).closest('.flex').remove(); // Remove the input group
+        });
         $(document).ready(function() {
             $('#allCases, #dismissedCases, #referredCases, #rescheduledcases, #ongoingCases').DataTable({
                 "scrollX": true,
@@ -447,7 +490,7 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                 autoOpen: false,
                 modal: true,
                 width: 500,
-                height: 650,
+                height: 500,
                 buttons: {
                     "Add Blotter": function() {
                         AddBlotter();
@@ -467,7 +510,7 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                 autoOpen: false,
                 modal: true,
                 width: 500,
-                height: 650,
+                height: 500,
                 buttons: {
                     "Save Changes": function() {
                         const formData = new FormData();
@@ -479,6 +522,15 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                         formData.append('complaint', $('#editComplaint').val());
                         formData.append('action', $('#editAction').val());
                         formData.append('status', $('#editStatus').val());
+
+                        // Gather Supporting Details
+                        const supportingDetails = $('input[name="supportingDetails[]"]').map(function() {
+                            return $(this).val();
+                        }).get(); // Get values as an array
+                        supportingDetails.forEach(detail => {
+                            formData.append('supportingDetails[]', detail); // Append each detail to FormData
+                        });
+
                         const imageInput = document.getElementById('editImage');
                         if (imageInput.files.length > 0) {
                             formData.append('image', imageInput.files[0]); // Append the selected file
@@ -514,6 +566,7 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                     }
                 }
             });
+
 
 
             $("#imagePreviewDialog").dialog({
@@ -687,7 +740,16 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
 
                         // Reset the file input to allow re-uploading the same file
                         $('#editImage').val('');
-
+                        $('#supportingDetailsContainer').empty();
+                        
+                        // Populate supporting details
+                        if (response.data.supportingDetails && response.data.supportingDetails.length > 0) {
+                            response.data.supportingDetails.forEach(function(detail) {
+                                addSupportingDetailInput(detail);
+                            });
+                        } else {
+                            addSupportingDetailInput(); // Add one empty input if none exists
+                        }
                         $("#editBlotterDialog").dialog("open");
                     } else {
                         swal("Error!", response.message, "error");
