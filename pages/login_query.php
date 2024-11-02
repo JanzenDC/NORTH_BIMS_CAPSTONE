@@ -3,10 +3,16 @@ session_start();
 require('../pages/db_connect.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
+    $login = $_POST['username']; // Username or email
     $password = $_POST['password'];
 
-    $query = "SELECT * FROM tblregistered_account WHERE username = '$username'";
+    // Check if the input is an email
+    if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+        $query = "SELECT * FROM tblregistered_account WHERE email = '$login'";
+    } else {
+        $query = "SELECT * FROM tblregistered_account WHERE username = '$login'";
+    }
+
     $result = mysqli_query($conn, $query);
 
     if (!$result) {
