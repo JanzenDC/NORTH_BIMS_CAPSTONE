@@ -1,234 +1,595 @@
 <?php
-require_once "toaster_handler.php";
-
+session_start();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baranggay Management System</title>
-    <?php include 'headers.php'; ?>
-    <style>
-        .flip-container {
-            perspective: 1000px;
-            width: 400px;
-            height: 500px;
-        }
-        .flipper {
-            transition: 0.6s;
-            transform-style: preserve-3d;
-            position: relative;
-        }
-        .flip-container.flipped .flipper {
-            transform: rotateY(180deg);
-        }
-        .front, .back {
-            backface-visibility: hidden;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .back {
-            transform: rotateY(180deg);
-        }
-        .step {
-            display: none;
-        }
-        .step.active {
-            display: block;
-        }
-    </style>
-</head>
-<body>
-    <div class="md:flex h-screen">
-        <div class="md:w-1/2 flex h-screen items-center justify-center">
-            <div class="flip-container">
-                <div class="flipper">
-                    <div class="front">
-                        <div class="w-[400px]">
-                            <div class="flex justify-center">
-                                <img src="../assets/images/north.png" class="w-28" alt="Logo"/>
-                            </div>
-                            <p class="text-4xl text-center">LOGIN</p>
-                            <form class="w-full mb-4" method="POST" action="login_query.php">
-                                <p>Username</p>
-                                <input type="text" name="username" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Input Username..." required>
-                                
-                                <p>Password:</p>
-                                <input type="password" name="password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Input Password..." required>
-                                
-                                <button type="submit" class="bg-green-500 w-full text-center p-2 text-white font-bold">Submit</button>
-                                
-                                <p class="text-center mt-3">Don't have an account? <span class="font-bold cursor-pointer" id="showSignup">Sign Up</span></p>
-                            </form>
+<html><head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css" integrity="sha384-NvKbDTEnL+A8F/AA5Tc5kmMLSJHUO868P+lDtTpJIeQdGYaUIuLr4lVGOEA1OcMy" crossorigin="anonymous">   
+<base href="." />
+  <style>
+  :root {
+    --primary-green: #2E7D32;
+    --light-green: #81C784;
+    --dark-green: #1B5E20;
+    --accent: #F1F8E9;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-color: var(--accent);
+    padding-top: 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .navbar {
+  background-color: var(--primary-green);
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
 
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d480.6884926350885!2d121.3329908!3d15.4570868!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x339749f585e13ddf%3A0x452246bfd6837f2f!2sBarangay%20hall!5e0!3m2!1sen!2sph!4v1728649501242!5m2!1sen!2sph" class="w-full" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                        </div>
-                    </div>
-                    <div class="back -mt-[60px]">
-                        <div class="w-[400px] ">
-                            <div class="flex justify-center">
-                                <img src="../assets/images/north.png" class="w-28" alt="Logo"/>
-                            </div>
-                            <p class="text-4xl text-center">SIGN UP</p>
-                            <form id="multiStepForm" class="w-full mb-4 mt-3">
-                            <div class="step active" id="step1">
-                                <select name="id_type" id="id_type" onchange="toggleFileInput()" class="w-full p-2 border border-b-2 border-black rounded">
-                                    <option value="" disabled selected>Select ID type</option>
-                                    <option value="Driver's License">Driver's License</option>
-                                    <option value="UMID">UMID</option>
-                                    <option value="School ID">School ID</option>
-                                    <option value="National ID">National ID</option>
-                                    <option value="Philhealth">Philhealth ID</option>
-                                </select>
-                                <div class="input-field">
-                                    <p>ID:</p>
-                                    <div class="user-upload">
-                                        <input type="file" id="id_file" name="id_file" accept="image/*" disabled onchange="handleFileChange()" class="border-b-2 border-black w-full border p-2 rounded"/>
-                                        <input type="file" id="hidden_id_file" name="hidden_id_file" style="display: none;"/>
-                                    </div>
-                                </div>
-                                <div class="checkbox-container">
-                                    <input type="checkbox" id="privacyCheckbox" name="privacyCheckbox" required onchange="toggleNextButton()" />
-                                    <label for="privacyCheckbox">
-                                        Your privacy is important to us at Barangay Information Management System (BIMS). 
-                                        We collect and use your personal information solely to provide and enhance our services, and 
-                                        we safeguard it from unauthorized access. By using BIMS, you agree to our privacy policy.
-                                    </label>
-                                </div>
-                                <div class="flex justify-between mb-3">
-                                    <div></div>
-                                    <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(1)">Next</button>
-                                </div>
-                            </div>
+.navbar ul {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
 
-                            <!-- Step 2 -->
-                            <div class="step" id="step2">
-                                <p>Username</p>
-                                <input type="text" name="username" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Create Username..." >
-                                <p>Email</p>
-                                <input type="email" name="email" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Enter Email..." >
-                                <p>Password:</p>
-                                <input type="password" name="password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Create Password..." >
-                                <p>Confirm Password:</p>
-                                <input type="password" name="confirm_password" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Confirm Password..." >
-                                <div class="flex justify-between mb-3">
-                                    <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(1)">Previous</button>
-                                    <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(2)">Next</button>
-                                </div>
-                            </div>
+.navbar li {
+  margin-left: 2rem;
+}
 
-                            <!-- Step 3 -->
-                            <div class="step" id="step3">
-                                <p>Phone Number:</p>
-                                <input type="tel" name="phone_number" class="w-full mb-4 p-2 border border-b-2 border-black rounded" placeholder="Enter Phone Number..." >
-                                <p>Date of Birth:</p>
-                                <input type="date" name="date_of_birth" class="w-full mb-4 p-2 border border-b-2 border-black rounded" >
-                                <p>Age:</p>
-                                <input type="number" name="age" class="w-full mb-4 p-2 border border-b-2 border-black rounded" disabled>
-                                <div class="flex justify-between mb-3">
-                                    <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(2)">Previous</button>
-                                    <button type="button" class="p-2 rounded bg-green-500 text-white" onclick="nextStep(3)">Next</button>
-                                </div>
-                            </div>
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  position: relative;
+}
 
-                            <!-- Step 4 -->
-                            <div class="step" id="step4">
-                                <div class="flex gap-2">
-                                    <i class="fas fa-phone"></i>
-                                    <input type="text" placeholder="Contact Number" name="contact" oninput="formatContactNumber(this)" maxlength="11" required class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
-                                </div>
-                                <div class="flex gap-2">
-                                    <i class="fas fa-home"></i>
-                                    <input type="text" placeholder="House Number" name="house_no" maxlength="4" class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
-                                </div>
-                                <div class="flex gap-2">
-                                    <i class="fas fa-street-view"></i>
-                                    <div class="custom-select">
-                                        <select id="street" name="street" required class="w-full mb-4 p-2 border border-b-2 border-black rounded">
-                                            <option value="" disabled selected>Select Street</option>
-                                            <option value="Banaba">Banaba</option>
-                                            <option value="Narra">Narra</option>
-                                            <option value="Mulawin">Mulawin</option>
-                                            <option value="Kamagong">Kamagong</option>
-                                            <option value="Mabolo">Mabolo</option>
-                                            <option value="Calumpit">Calumpit</option>
-                                            <option value="Acasia">Acasia</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex gap-2">
-                                    <i class="fas fa-home"></i>
-                                    <input type="text" placeholder="Barangay" name="barangay" value="North Poblacion" readonly class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
-                                </div>
-                                <div class="flex gap-2">
-                                    <i class="fas fa-home"></i>
-                                    <input type="text" placeholder="Municipality" name="municipality" value="Gabaldon" readonly class="w-full mb-4 p-2 border border-b-2 border-black rounded"/>
-                                </div>
-                                <div class="flex gap-2">
-                                    <i class="fas fa-home"></i>
-                                    <input type="text" placeholder="Province" name="province" value="Nueva Ecija" readonly class="w-full mb-4 p-2 border border-b-2 border-black rounded" />
-                                </div>
+.navbar a:hover {
+  color: var(--light-green);
+}
 
-                                <div class="flex justify-between mb-3">
-                                    <button type="button" class="p-2 rounded bg-red-500 text-white" onclick="prevStep(3)">Previous</button>
-                                </div>
-                                <button type="submit" class="bg-green-500 w-full text-center p-2 text-white font-bold">Register</button>
-                            </div>
+.navbar a.active {
+  background-color: var(--dark-green);
+  color: var(--light-green);
+}
 
-                            <p class="text-center mt-3">Already have an account? <span class="font-bold cursor-pointer" id="showLogin">Login</span></p>
-                        </form>
+.navbar a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--light-green);
+  border-radius: 2px;
+}
 
-                        </div>
-                    </div>
-                </div>
+.logo {
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 40px;
+  width: auto;
+}
+  
+  .container {
+    position: relative;
+    width: 800px;
+    height: 500px;
+    margin: auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .form-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Changed from center */
+    padding: 10px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    transition: all 0.6s ease-in-out;
+  }
+  
+  .sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+  }
+  
+    .sign-up-container {
+      transform: translateX(100%);
+      left: 0;
+      width: 50%;
+      opacity: 0;
+      z-index: 1;
+    }
+  
+  
+  .container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+    opacity: 0; /* Add this to hide it completely */
+    visibility: hidden; /* Add this to remove from document flow */
+  }
+  
+  .container.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: show 0.6s;
+  }
+  
+  .overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+  }
+  
+  .container.right-panel-active .overlay-container {
+    transform: translateX(-100%);
+  }
+  
+  .overlay {
+    background: var(--primary-green);
+    background: linear-gradient(to right, var(--dark-green), var(--primary-green));
+    color: white;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+  }
+  
+  .container.right-panel-active .overlay {
+    transform: translateX(50%);
+  }
+  
+  .overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+  }
+  
+  .overlay-left {
+    transform: translateX(-20%);
+  }
+  
+  .container.right-panel-active .overlay-left {
+    transform: translateX(0);
+  }
+  
+  .overlay-right {
+    right: 0;
+    transform: translateX(0);
+  }
+  
+  .container.right-panel-active .overlay-right {
+    transform: translateX(20%);
+  }
+  
+  form {
+    width: 100%;
+    max-width: 320px;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  input {
+    margin: 6px 0; /* Reduced margin */
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    background-color: white;
+  }
+    select {
+    margin: 6px 0; /* Reduced margin */
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  
+  select:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    background-color: white;
+  }
+  
+  button {
+    min-width: 120px;
+    border-radius: 20px;
+    border: 1px solid var(--primary-green);
+    background-color: var(--primary-green);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+  
+  button:active {
+    transform: scale(0.95);
+  }
+  
+  button.ghost {
+    background-color: transparent;
+    border-color: white;
+  }
+  
+  h1 {
+    margin-bottom: 15px; /* Reduced margin */
+    font-size: 1.8rem; /* Slightly smaller font */
+    color: var(--dark-green);
+  }
+  
+  .steps-count {
+    width: 100%;
+    max-width: 280px;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px auto; /* Reduced margin */
+  }
+  
+  .step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+  
+  .step-number.active {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--light-green);
+  }
+  
+  .step-number.completed {
+    background: var(--light-green);
+    color: white;
+  }
+  
+  .progress-bar {
+    width: 100%;
+    max-width: 280px;
+    height: 4px;
+    background: #eee;
+    margin: 10px auto 20px; /* Reduced margin */
+    border-radius: 2px;
+    position: relative;
+  }
+  
+  .progress {
+    position: absolute;
+    height: 100%;
+    background: var(--primary-green);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  
+  .step {
+    position: absolute;
+    width: 100%;
+    max-width: 280px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateX(100%);
+    visibility: hidden;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Reduced gap */
+    padding: 0 20px;
+  }
+  
+  .step.active {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+  }
+  
+  .step.previous {
+    transform: translateX(-100%);
+  }
+  
+  .step h3 {
+    color: var(--dark-green);
+    margin-bottom: 10px; /* Reduced margin */
+    font-size: 1.1rem; /* Slightly smaller font */
+  }
+  
+  .step input {
+    margin: 12px 0;
+  }
+  
+  .btn-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 287px; /* Changed margin */
+    position: relative; /* Changed from absolute */
+    bottom: auto;
+    left: auto;
+    right: 0;
+    z-index: 9999;
+  }
+  
+  @keyframes show {
+    0%, 49.99% {
+      opacity: 0;
+      z-index: 1;
+    }
+    50%, 100% {
+      opacity: 1;
+      z-index: 5;
+    }
+  }
+  </style>
+  
+  <body>
+    <nav class="navbar">
+      <ul>
+        <li class="logo">
+          <img src="../assets/images/north.png" width="120" height="40">
+        </li>
+        <li><a href="landingpage.php">Home</a></li>
+        <li><a href="about.php">About</a></li>
+        <li><a href="login.php" class="active">Sign In</a></li>
+        <li><a href="contact.php">Contact Us</a></li>
+      </ul>
+    </nav>
+  
+    <div class="container" id="container">
+      <div class="form-container sign-up-container">
+        <form action="signup_query.php" id="signupForm" method="POST" enctype="multipart/form-data">
+            <h1>Create Account</h1>
+            <div class="steps-count">
+                <div class="step-number active">1</div>
+                <div class="step-number">2</div>
+                <div class="step-number">3</div>
+                <div class="step-number">4</div>
+                <div class="step-number">5</div>
             </div>
+            <div class="progress-bar">
+                <div class="progress" style="width: 25%"></div>
+            </div>
+            
+            <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 1: Personal Information</h3>
+                <input type="text" name="fname" placeholder="First Name"  />
+                <input type="text" name="mname" placeholder="Middle Name" />
+                <input type="text" name="lname" placeholder="Last Name"  />
+                <input type="text" name="suffix" placeholder="Suffix" />
+                <input type="date" name="date_of_birth" id="date_of_birth" placeholder="Birth Date"  />
+                <input type="number" name="age" id="age" placeholder="Age"  readonly />
+            </div>
+
+
+            <div class="step"  style="overflow: auto; max-height: 300px; padding: 10px;">
+
+                <h3>Step 2: Contact Details</h3>
+                <input type="tel" name="contact" placeholder="Phone Number"  />
+            </div>
+
+            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 3: Address</h3>
+                <input type="text" name="house_no" placeholder="House Number"  />
+                <input type="text" name="street" placeholder="Street"  />
+                <input type="text" name="barangay" placeholder="Barangay"  />
+                <input type="text" name="municipality" placeholder="Municipality"  />
+                <input type="text" name="province" placeholder="Province"  />
+                <input type="email" name="email" placeholder="Email"  />
+            </div>
+
+            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 4: Additional Information</h3>
+                <input type="text" name="occupation" placeholder="Occupation"  />
+                <input type="text" name="civil_status" placeholder="Civil Status"  />
+                <input type="file" name="id_file" accept="image/*" />
+            </div>
+
+            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 5: Verification</h3>
+                <input type="text" name="id_type" placeholder="Valid ID Type" />
+                <input type="text" name="id_number" placeholder="ID Number" />
+                <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
+
+                <select name="registration_status" required>
+                    <option value="" disabled selected>Account Type</option>
+                    <option value="0">Non-Resident</option>
+                    <option value="1">Resident</option>
+                </select>
+
+            </div>
+
+
+            <div class="btn-group">
+                <button type="button" id="prevBtn" style="display: none;">Previous</button>
+                <button type="button" id="nextBtn">Next</button>
+            </div>
+        </form>
+
+
+      </div>
+      <div class="form-container sign-in-container">
+        <form action="login_query.php" method='POST'>
+          <h1>Sign in</h1>
+          <input type="text" name='username' placeholder="Email/Username" />
+          <input type="password" name='password' placeholder="Password" />
+          <!-- <a href="#"><p>Forgot Password?</a></p> -->
+          <button type='submit'>Sign In</button>
+        </form>
+      </div>
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1 style="color: white">Welcome Back!</h1>
+            <p>Please login with your personal info</p>
+            <button class="ghost" id="signIn">Sign In</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1 style="color: white">Hello!</h1>
+            <p>Enter your personal details and start journey with us</p>
+            <button class="ghost" id="signUp">Sign Up</button>
+          </div>
         </div>
-        <div class="md:w-1/2 bg-cover bg-center relative hidden md:block" style="background-image: url('../assets/images/background_BIMS.jpg')">
-            <div class="absolute inset-0 bg-gradient-to-t from-green-500 to-transparent"></div>
-        </div>
+      </div>
     </div>
-
+  
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            <?php
-            if (!empty($toastrScript)) {
-                echo $toastrScript;
+      const signUpButton = document.getElementById('signUp');
+      const signInButton = document.getElementById('signIn');
+      const container = document.getElementById('container'); 
+      // Trigger sign up view immediately on page load
+      window.addEventListener('load', () => {
+        container.classList.add('right-panel-active');
+      });
+      const steps = document.querySelectorAll('.step');
+      const nextBtn = document.getElementById('nextBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const progress = document.querySelector('.progress');
+      const stepNumbers = document.querySelectorAll('.step-number');
+      let currentStep = 0;
+  
+      signUpButton.addEventListener('click', () => {
+        container.classList.add('right-panel-active');
+      });
+  
+      signInButton.addEventListener('click', () => {
+        container.classList.remove('right-panel-active');
+      });
+  
+    function updateStep(step) {
+        steps.forEach((s, index) => {
+            s.classList.remove('active', 'previous');
+            if (index === step) {
+                s.classList.add('active');
+            } else if (index < step) {
+                s.classList.add('previous');
             }
-            ?>
-        });
-        document.getElementById('showSignup').addEventListener('click', function() {
-            document.querySelector('.flip-container').classList.add('flipped');
         });
 
-        document.getElementById('showLogin').addEventListener('click', function() {
-            document.querySelector('.flip-container').classList.remove('flipped');
+        stepNumbers.forEach((num, index) => {
+            num.classList.remove('active', 'completed');
+            if (index === step) {
+                num.classList.add('active');
+            } else if (index < step) {
+                num.classList.add('completed');
+            }
         });
 
-        let currentStep = 0;
+        progress.style.width = `${((step + 1) / steps.length) * 100}%`;
 
-        function showStep(step) {
-            const steps = document.querySelectorAll('.step');
-            steps.forEach((s, index) => {
-                s.classList.toggle('active', index === step);
-            });
-        }
+        prevBtn.style.display = step === 0 ? 'none' : 'block';
+        nextBtn.textContent = step === steps.length - 1 ? 'Submit' : 'Next';
+        
+        // Update button type
+        nextBtn.type = step === steps.length - 1 ? 'submit' : 'button';
+    }
 
-        function nextStep(step) {
+    nextBtn.addEventListener('click', () => {
+        if (currentStep < steps.length - 1) {
             currentStep++;
-            showStep(currentStep);
+            updateStep(currentStep);
+        } else {
+            // No need for manual submit since button type is now submit
+            // document.getElementById('signupForm').submit();
         }
-
-        function prevStep(step) {
-            currentStep--;
-            showStep(currentStep);
+    });
+  
+      prevBtn.addEventListener('click', () => {
+        if (currentStep > 0) {
+          currentStep--;
+          updateStep(currentStep);
         }
+      });
+      $(document).ready(function() {
+            <?php if (isset($_SESSION['toastr_message'])): ?>
+                var message = "<?php echo $_SESSION['toastr_message']; ?>";
+                var type = "<?php echo $_SESSION['toastr_type']; ?>";
+                toastr[type](message);
+                <?php unset($_SESSION['toastr_message']); ?>
+                <?php unset($_SESSION['toastr_type']); ?>
+            <?php endif; ?>
+        });
+        const dateOfBirthInput = document.getElementById('date_of_birth');
+        const ageInput = document.getElementById('age');
 
-        // Initialize the form by showing the first step
-        showStep(currentStep);
+        dateOfBirthInput.addEventListener('change', function() {
+            const birthDate = new Date(dateOfBirthInput.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            // Adjust age if birth date hasn't occurred yet this year
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            ageInput.value = age >= 0 ? age : ''; // Set age or clear if negative
+        });
+
     </script>
-</body>
-</html>
+  </body>
+  </html>

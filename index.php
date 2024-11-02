@@ -1,6 +1,6 @@
 <?php
 // Set the redirect location
-$redirectLocation = 'pages/login.php';
+$redirectLocation = 'pages/landingpage.php';
 
 // Output HTML with fade-in followed by bounce effect
 ?>

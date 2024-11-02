@@ -4,30 +4,36 @@ require('../pages/db_connect.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect and sanitize form data
-    $fname = htmlspecialchars($_POST['fname']);
-    $mname = htmlspecialchars($_POST['mname']);
-    $lname = htmlspecialchars($_POST['lname']);
-    $suffix = htmlspecialchars($_POST['suffix']);
-    $bday = htmlspecialchars($_POST['date_of_birth']);
-    $age = htmlspecialchars($_POST['age']);
-    $contact = htmlspecialchars($_POST['contact']);
-    $house_no = htmlspecialchars($_POST['house_no']);
-    $street = htmlspecialchars($_POST['street']);
-    $brgy = htmlspecialchars($_POST['barangay']);
-    $municipality = htmlspecialchars($_POST['municipality']);
-    $province = htmlspecialchars($_POST['province']);
-    $email = htmlspecialchars($_POST['email']);
-    $username = htmlspecialchars($_POST['username']);
-    $password = htmlspecialchars($_POST['password']);
-    $id_type = htmlspecialchars($_POST['id_type']);
+    $fname = !empty($_POST['fname']) ? htmlspecialchars($_POST['fname']) : null;
+    $mname = !empty($_POST['mname']) ? htmlspecialchars($_POST['mname']) : null;
+    $lname = !empty($_POST['lname']) ? htmlspecialchars($_POST['lname']) : null;
+    $suffix = !empty($_POST['suffix']) ? htmlspecialchars($_POST['suffix']) : null;
+    $bday = !empty($_POST['date_of_birth']) ? htmlspecialchars($_POST['date_of_birth']) : null;
+    $age = !empty($_POST['age']) ? htmlspecialchars($_POST['age']) : null;
+    $contact = !empty($_POST['contact']) ? htmlspecialchars($_POST['contact']) : null;
+    $house_no = !empty($_POST['house_no']) ? htmlspecialchars($_POST['house_no']) : null;
+    $street = !empty($_POST['street']) ? htmlspecialchars($_POST['street']) : null;
+    $brgy = !empty($_POST['barangay']) ? htmlspecialchars($_POST['barangay']) : null;
+    $municipality = !empty($_POST['municipality']) ? htmlspecialchars($_POST['municipality']) : null;
+    $province = !empty($_POST['province']) ? htmlspecialchars($_POST['province']) : null;
+    $email = !empty($_POST['email']) ? htmlspecialchars($_POST['email']) : null;
+    $username = !empty($_POST['username']) ? htmlspecialchars($_POST['username']) : null;
+    $password = !empty($_POST['password']) ? htmlspecialchars($_POST['password']) : null;
+    $id_type = !empty($_POST['id_type']) ? htmlspecialchars($_POST['id_type']) : null;
+    
+    // Collect the registration status
+    $registration_status = !empty($_POST['registration_status']) ? htmlspecialchars($_POST['registration_status']) : null;
 
     // Handle file upload if necessary
-    $id_file_path = '';
+    $id_file_name = null;
     if (isset($_FILES['id_file']) && $_FILES['id_file']['error'] == 0) {
         $uploadedFile = $_FILES['id_file'];
-        $uploadDir = 'uploads/'; // Ensure this directory exists and is writable
-        $id_file_path = $uploadDir . basename($uploadedFile['name']);
-        
+        $uploadDir = '../assets/images/id/'; // Ensure this directory exists and is writable
+
+        // Create a unique file name using a combination of timestamp and a random number
+        $uniqueName = uniqid('id_', true) . '.' . pathinfo($uploadedFile['name'], PATHINFO_EXTENSION);
+        $id_file_path = $uploadDir . $uniqueName;
+
         // Move uploaded file
         if (!move_uploaded_file($uploadedFile['tmp_name'], $id_file_path)) {
             $_SESSION['toastr_message'] = 'File upload failed.';
@@ -35,6 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: login.php");
             exit;
         }
+
+        // Store just the unique file name in the database, not the full path
+        $id_file_name = $uniqueName;
     }
 
     // Hash the password for security
@@ -59,8 +68,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Prepare the insert statement
-    $insert_query = "INSERT INTO tblregistered_account (fname, mname, lname, suffix, bday, age, contact, houseNo, street, brgy, municipality, province, email, username, password, id_type, id_file, account_type, image) 
-                     VALUES ('$fname', '$mname', '$lname', '$suffix', '$bday', '$age', '$contact', '$house_no', '$street', '$brgy', '$municipality', '$province', '$email', '$username', '$hashed_password', '$id_type', '$id_file_path', 1, NULL)";
+    $insert_query = "INSERT INTO tblregistered_account (fname, mname, lname, suffix, bday, age, contact, houseNo, street, brgy, municipality, province, email, username, password, id_type, id_file, account_type) 
+                     VALUES ('$fname', '$mname', '$lname', '$suffix', '$bday', '$age', '$contact', '$house_no', '$street', '$brgy', '$municipality', '$province', '$email', '$username', '$hashed_password', '$id_type', '$id_file_name', '$registration_status')";
 
     // Execute the insert statement
     if (mysqli_query($conn, $insert_query)) {
