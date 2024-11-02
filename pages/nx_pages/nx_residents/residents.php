@@ -95,7 +95,7 @@ $conn->close();
 
 <!-- Create Official Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4" style="height: 80vh; overflow-y: auto;">
         <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Create Resident</h2>
         
@@ -107,51 +107,94 @@ $conn->close();
         
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
             <div id="createPersonalInfo" class="tab-content">
-                <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
-                <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded">
-                <input type="number" name="age" id="addAge" placeholder="Age" class="block w-full mb-2 p-2 border rounded" readonly>
-                <select name="gender" id="addGender" class="block w-full mb-2 p-2 border rounded">
-                    <option value="" disabled selected>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-                <input type="text" name="birthplace" id="addBirthplace" placeholder="Birthplace" class="block w-full mb-2 p-2 border rounded">
+                <div class="grid grid-cols-2 gap-4">
+                    <label for="addFname">First Name</label>
+                    <input type="text" name="fname" id="addFname" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addMname">Middle Name</label>
+                    <input type="text" name="mname" id="addMname" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addLname">Last Name</label>
+                    <input type="text" name="lname" id="addLname" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addSuffix">Suffix</label>
+                    <input type="text" name="suffix" id="addSuffix" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addBday">Birthday</label>
+                    <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addAge">Age</label>
+                    <input type="number" name="age" id="addAge" class="block w-full mb-2 p-2 border rounded" readonly>
+
+                    <label for="addGender">Gender</label>
+                    <select name="gender" id="addGender" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <label for="addBirthplace">Birthplace</label>
+                    <input type="text" name="birthplace" id="addBirthplace" class="block w-full mb-2 p-2 border rounded">
+                </div>
             </div>
 
             <div id="createAddressInfo" class="tab-content hidden">
-                <input type="number" name="houseNo" id="addHouseNo" placeholder="House Number" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="purok" id="addPurok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="brgy" id="addBrgy" placeholder="Barangay" disabled class="block w-full mb-2 p-2 border rounded" value="North Poblacion">
-                <input type="text" name="municipality" id="addMunicipality" disabled placeholder="Municipality" class="block w-full mb-2 p-2 border rounded" value="Gabaldon">
-                <input type="text" name="province" id="addProvince" disabled value="Nueva Ecija" placeholder="Province" class="block w-full mb-2 p-2 border rounded">
+                <div class="grid grid-cols-2 gap-4">
+                    <label for="addHouseNo">House Number</label>
+                    <input type="number" name="houseNo" id="addHouseNo" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addPurok">Purok</label>
+                    <input type="text" name="purok" id="addPurok" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addBrgy">Barangay</label>
+                    <input type="text" name="brgy" id="addBrgy" disabled value="North Poblacion" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addMunicipality">Municipality</label>
+                    <input type="text" name="municipality" disabled value="Gabaldon" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addProvince">Province</label>
+                    <input type="text" name="province" disabled value="Nueva Ecija" class="block w-full mb-2 p-2 border rounded">
+                </div>
             </div>
 
             <div id="createOtherInfo" class="tab-content hidden">
-                <select name="civil_status" id="addCivilStatus" class="block w-full mb-2 p-2 border rounded">
-                    <option value="" disabled>Civil Status</option>
-                    <option value="Single" selected>Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Widowed">Widowed</option>
-                    <option value="Divorced">Divorced</option>
-                </select>
-                <input type="text" name="year_stayed" id="addYearStayed" placeholder="Years Stayed" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" name="education" id="addEducation" placeholder="Education" class="block w-full mb-2 p-2 border rounded">
-                <select name="head_fam" id="addHeadFam" class="block w-full mb-2 p-2 border rounded">
-                    <option value="" disabled selected>Head of Family?</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-                <input type="text" name="occupation" id="addOccupation" placeholder="Occupation" class="block w-full mb-2 p-2 border rounded">
-                <select name="voter" id="addVoter" class="block w-full mb-2 p-2 border rounded">
-                    <option value="" disabled selected>Voter?</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-                <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded">
+                <div class="grid grid-cols-2 gap-4">
+                    <label for="addCivilStatus">Civil Status</label>
+                    <select name="civil_status" id="addCivilStatus" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled>Civil Status</option>
+                        <option value="Single" selected>Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Widowed">Widowed</option>
+                        <option value="Divorced">Divorced</option>
+                    </select>
+
+                    <label for="addYearStayed">Years Stayed</label>
+                    <input type="text" name="year_stayed" id="addYearStayed" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addEducation">Education</label>
+                    <input type="text" name="education" id="addEducation" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addHeadFam">Head of Family?</label>
+                    <select name="head_fam" id="addHeadFam" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Head of Family?</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+
+                    <label for="addOccupation">Occupation</label>
+                    <input type="text" name="occupation" id="addOccupation" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="addVoter">Voter?</label>
+                    <select name="voter" id="addVoter" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Voter?</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+
+                    <label for="addImage">Upload Image</label>
+                    <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded">
+                </div>
             </div>
 
             <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Create</button>
@@ -161,7 +204,7 @@ $conn->close();
 
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4" style="height: 80vh; overflow-y: auto;">
         <span class="cursor-pointer float-right" onclick="closeModal('editModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Edit Resident</h2>
 
@@ -175,58 +218,102 @@ $conn->close();
             <input type="hidden" id="editId" name="resident_id">
 
             <div id="editPersonalInfo" class="tab-content">
-                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
-                <input type="date" id="editBday" name="bday" class="block w-full mb-2 p-2 border rounded">
-                <input type="number" id="editAge" name="age" placeholder="Age" class="block w-full mb-2 p-2 border rounded">
-                <select id="editGender" name="gender" class="block w-full mb-2 p-2 border rounded">
-                    <option value="" disabled selected>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-                <input type="text" id="editBirthplace" name="birthplace" placeholder="Birthplace" class="block w-full mb-2 p-2 border rounded">
+                <div class="grid grid-cols-2 gap-4">
+                    <label for="editFname">First Name</label>
+                    <input type="text" id="editFname" name="fname" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editMname">Middle Name</label>
+                    <input type="text" id="editMname" name="mname" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editLname">Last Name</label>
+                    <input type="text" id="editLname" name="lname" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editSuffix">Suffix</label>
+                    <input type="text" id="editSuffix" name="suffix" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editBday">Birthday</label>
+                    <input type="date" id="editBday" name="bday" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editAge">Age</label>
+                    <input type="number" id="editAge" name="age" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editGender">Gender</label>
+                    <select id="editGender" name="gender" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <label for="editBirthplace">Birthplace</label>
+                    <input type="text" id="editBirthplace" name="birthplace" class="block w-full mb-2 p-2 border rounded">
+                </div>
             </div>
 
             <div id="editAddressInfo" class="tab-content hidden">
-                <input type="number" id="editHouseNo" name="houseNo" placeholder="House No." class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editPurok" name="purok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editBrgy" name="brgy" placeholder="Barangay" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editMunicipality" name="municipality" placeholder="Municipality" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editProvince" name="province" placeholder="Province" class="block w-full mb-2 p-2 border rounded">
+                <div class="grid grid-cols-2 gap-4">
+                    <label for="editHouseNo">House No.</label>
+                    <input type="number" id="editHouseNo" name="houseNo" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editPurok">Purok</label>
+                    <input type="text" id="editPurok" name="purok" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editBrgy">Barangay</label>
+                    <input type="text" id="editBrgy" name="brgy" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editMunicipality">Municipality</label>
+                    <input type="text" id="editMunicipality" name="municipality" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editProvince">Province</label>
+                    <input type="text" id="editProvince" name="province" class="block w-full mb-2 p-2 border rounded">
+                </div>
             </div>
 
             <div id="editOtherInfo" class="tab-content hidden">
-                <select id="editCivilStatus" name="civil_status" class="block w-full mb-2 p-2 border rounded">
-                    <option value="" disabled selected>Civil Status</option>
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                    <option value="Widowed">Widowed</option>
-                    <option value="Divorced">Divorced</option>
-                </select>
-                <input type="text" id="editYearStayed" name="year_stayed" placeholder="Years Stayed" class="block w-full mb-2 p-2 border rounded">
-                <input type="text" id="editEducation" name="education" placeholder="Education" class="block w-full mb-2 p-2 border rounded">
-                <select id="editHeadFam" name="head_fam" class="block w-full mb-2 p-2 border rounded">
-                    <option value="" disabled selected>Head of Family?</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-                <input type="text" id="editOccupation" name="occupation" placeholder="Occupation" class="block w-full mb-2 p-2 border rounded">
-                <select id="editVoter" name="voter" class="block w-full mb-2 p-2 border rounded">
-                    <option value="" disabled selected>Voter?</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-                <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
-                <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100%; max-width:100px; height:auto;">
+                <div class="grid grid-cols-2 gap-4">
+                    <label for="editCivilStatus">Civil Status</label>
+                    <select id="editCivilStatus" name="civil_status" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Civil Status</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Widowed">Widowed</option>
+                        <option value="Divorced">Divorced</option>
+                    </select>
+
+                    <label for="editYearStayed">Years Stayed</label>
+                    <input type="text" id="editYearStayed" name="year_stayed" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editEducation">Education</label>
+                    <input type="text" id="editEducation" name="education" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editHeadFam">Head of Family?</label>
+                    <select id="editHeadFam" name="head_fam" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Head of Family?</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+
+                    <label for="editOccupation">Occupation</label>
+                    <input type="text" id="editOccupation" name="occupation" class="block w-full mb-2 p-2 border rounded">
+
+                    <label for="editVoter">Voter?</label>
+                    <select id="editVoter" name="voter" class="block w-full mb-2 p-2 border rounded">
+                        <option value="" disabled selected>Voter?</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+
+                    <label for="editImage">Upload Image</label>
+                    <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
+                    <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100%; max-width:100px; height:auto;">
+                </div>
             </div>
 
             <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Update</button>
         </form>
     </div>
 </div>
+
 
 <div id="viewModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full mx-4">

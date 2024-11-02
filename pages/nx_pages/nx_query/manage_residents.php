@@ -46,7 +46,7 @@ switch ($action) {
         // Validate required fields
         $requiredFields = ['fname', 'mname', 'lname', 'suffix', 'bday', 'age', 'houseNo', 
                         'purok', 'civil_status', 'year_stayed', 'education', 'gender', 
-                        'birthplace', 'head_fam', 'occupation', 'voter', 'image'];
+                        'birthplace', 'head_fam', 'occupation', 'voter'];
 
         foreach ($requiredFields as $field) {
             if (empty($data[$field])) {
