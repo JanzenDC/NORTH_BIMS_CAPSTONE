@@ -417,10 +417,15 @@ session_start();
             
             <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 1: Personal Information</h3>
-                <input type="text" name="fname" placeholder="First Name"  />
-                <input type="text" name="mname" placeholder="Middle Name" />
-                <input type="text" name="lname" placeholder="Last Name"  />
-                <input type="text" name="suffix" placeholder="Suffix" />
+                <select name="registration_status" required>
+                    <option value="" disabled selected>Account Type</option>
+                    <option value="0">Non-Resident</option>
+                    <option value="1">Resident</option>
+                </select>
+                <input type="text" name="fname" placeholder="First Name" onchange="capitalizeFirstLetter(this)" />
+                <input type="text" name="mname" placeholder="Middle Name" onchange="capitalizeFirstLetter(this)" />
+                <input type="text" name="lname" placeholder="Last Name" onchange="capitalizeFirstLetter(this)" />
+                <input type="text" name="suffix" placeholder="Suffix" onchange="capitalizeFirstLetter(this)" />
                 <input type="date" name="date_of_birth" id="date_of_birth" placeholder="Birth Date"  />
                 <input type="number" name="age" id="age" placeholder="Age"  readonly />
             </div>
@@ -429,38 +434,46 @@ session_start();
             <div class="step"  style="overflow: auto; max-height: 300px; padding: 10px;">
 
                 <h3>Step 2: Contact Details</h3>
-                <input type="tel" name="contact" placeholder="Phone Number"  />
+                <input type="text" name="contact" placeholder="Phone Number"  />
             </div>
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 3: Address</h3>
                 <input type="text" name="house_no" placeholder="House Number"  />
                 <input type="text" name="street" placeholder="Street"  />
-                <input type="text" name="barangay" placeholder="Barangay"  />
-                <input type="text" name="municipality" placeholder="Municipality"  />
-                <input type="text" name="province" placeholder="Province"  />
+                <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
+                <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
+                <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
                 <input type="email" name="email" placeholder="Email"  />
             </div>
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 4: Additional Information</h3>
                 <input type="text" name="occupation" placeholder="Occupation"  />
-                <input type="text" name="civil_status" placeholder="Civil Status"  />
+                <select name="civil_status" required>
+                    <option value="" disabled selected>Select Civil Status</option>
+                    <option value="single">Single</option>
+                    <option value="married">Married</option>
+                    <option value="divorced">Divorced</option>
+                    <option value="widowed">Widowed</option>
+                    <option value="separated">Separated</option>
+                </select>
                 <input type="file" name="id_file" accept="image/*" />
             </div>
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 5: Verification</h3>
-                <input type="text" name="id_type" placeholder="Valid ID Type" />
+                <select name="id_type" required>
+                    <option value="" disabled selected>Select Valid ID Type</option>
+                    <option value="passport">Passport</option>
+                    <option value="drivers license">Driver's License</option>
+                    <option value="national id">National ID</option>
+                    <option value="voter id">Voter ID</option>
+                    <option value="company id">Company ID</option>
+                    <option value="school id">School ID</option>
+                </select>
                 <input type="text" name="id_number" placeholder="ID Number" />
                 <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
-
-                <select name="registration_status" required>
-                    <option value="" disabled selected>Account Type</option>
-                    <option value="0">Non-Resident</option>
-                    <option value="1">Resident</option>
-                </select>
-
             </div>
 
 
@@ -498,6 +511,42 @@ session_start();
     </div>
   
     <script>
+      function capitalizeFirstLetter(input) {
+          const value = input.value.toLowerCase();
+          input.value = value.charAt(0).toUpperCase() + value.slice(1);
+      }
+      document.querySelector('input[name="contact"]').onchange = function() {
+          let value = this.value;
+
+          // Check if the value starts with "09"
+          if (value.startsWith('09')) {
+              // Replace "09" with "+63"
+              this.value = '+63' + value.slice(2);
+          }
+      };
+      document.querySelector('select[name="registration_status"]').addEventListener('change', function() {
+          const addressFields = {
+              barangay: document.querySelector('input[name="barangay"]'),
+              municipality: document.querySelector('input[name="municipality"]'),
+              province: document.querySelector('input[name="province"]')
+          };
+
+          if (this.value === "0") {
+              Object.values(addressFields).forEach(field => {
+                  field.removeAttribute('readonly');
+                  field.value = '';
+              });
+          } else if (this.value === "1") {
+              addressFields.barangay.value = 'North Poblacion';
+              addressFields.municipality.value = 'Gabaldon';
+              addressFields.province.value = 'Nueva Ecija';
+              
+              Object.values(addressFields).forEach(field => {
+                  field.setAttribute('readonly', true);
+              });
+          }
+      });
+
       const signUpButton = document.getElementById('signUp');
       const signInButton = document.getElementById('signIn');
       const container = document.getElementById('container'); 
