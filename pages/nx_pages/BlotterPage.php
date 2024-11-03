@@ -312,7 +312,9 @@ $ongoingData = $resultOngoing->fetch_all(MYSQLI_ASSOC);
                                     <td><?php echo htmlspecialchars($row['action']); ?></td>
                                     <td><?php echo htmlspecialchars($row['status']); ?></td>
                                     <td class="flex space-x-2">
-                                            <a class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" title="Generate">
+
+                                    
+                                            <a href='GenerateCertificate.php?page=generate_blotter&id=<?php echo $row['id']; ?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200" title="Generate">
                                             <i class="fas fa-file-download"></i>
                                             </a>
                                             <button class="bg-purple-500 text-white font-semibold py-2 px-4 rounded hover:bg-purple-600 transition duration-200" title="Edit" onclick="openEditDialog(<?php echo htmlspecialchars($row['id']); ?>)">
