@@ -14,7 +14,7 @@ $user = $_SESSION['user'];
 $page = isset($_GET['page']) ? $_GET['page'] : 'generate_clearance';
 
 // Ensure the page is valid to prevent security issues
-$valid_pages = ['generate_clearance', 'generate_indigency', 'generate_residency', 'generate_bpermit', 'bilihannglupa', '', '', 'generate_blotter']; // Add other valid pages here
+$valid_pages = ['generate_clearance', 'generate_indigency', 'generate_residency', 'generate_bpermit', 'bilihannglupa', 'bilihan_ng_hayop', '', 'generate_blotter']; // Add other valid pages here
 
 if (!in_array($page, $valid_pages)) {
     $page = 'generate_clearance'; // Fallback to 'home' if the page is invalid

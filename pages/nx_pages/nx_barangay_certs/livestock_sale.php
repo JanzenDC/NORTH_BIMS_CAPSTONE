@@ -416,7 +416,7 @@ function deleteDisapproved(id) {
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
                         <td class="flex space-x-2">
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
+                            <a href='GenerateCertificate.php?page=bilihan_ng_hayop&id=<?php echo htmlspecialchars($data['id']);?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
                             <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($data['id']); ?>)">Done</button>
                         </td>
                     </tr>
@@ -520,7 +520,7 @@ function deleteDisapproved(id) {
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
                         <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
                         <td class="flex space-x-2">
-                            <button class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</button>
+                            <a href='GenerateCertificate.php?page=bilihan_ng_hayop&id=<?php echo htmlspecialchars($data['id']);?>' class="bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition duration-200">Generate</a>
                             <button class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200" onclick="doneCert(<?php echo htmlspecialchars($data['id']); ?>)">Done</button>
                         </td>
                     </tr>
