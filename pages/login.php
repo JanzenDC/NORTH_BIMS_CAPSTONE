@@ -320,7 +320,14 @@ session_start();
     border-radius: 2px;
     position: relative;
   }
-  
+  .rule {
+      display: flex;
+      align-items: center;
+  }
+  .check-icon {
+      margin-left: 10px;
+      color: green;
+  }
   .progress {
     position: absolute;
     height: 100%;
@@ -402,88 +409,91 @@ session_start();
   
     <div class="container" id="container">
       <div class="form-container sign-up-container">
-        <form action="signup_query.php" id="signupForm" method="POST" enctype="multipart/form-data">
-            <h1>Create Account</h1>
-            <div class="steps-count">
-                <div class="step-number active">1</div>
-                <div class="step-number">2</div>
-                <div class="step-number">3</div>
-                <div class="step-number">4</div>
-                <div class="step-number">5</div>
-            </div>
-            <div class="progress-bar">
-                <div class="progress" style="width: 25%"></div>
-            </div>
-            
-            <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
-                <h3>Step 1: Personal Information</h3>
-                <select name="registration_status" required>
-                    <option value="" disabled selected>Account Type</option>
-                    <option value="0">Non-Resident</option>
-                    <option value="1">Resident</option>
-                </select>
-                <input type="text" name="fname" placeholder="First Name" onchange="capitalizeFirstLetter(this)" />
-                <input type="text" name="mname" placeholder="Middle Name" onchange="capitalizeFirstLetter(this)" />
-                <input type="text" name="lname" placeholder="Last Name" onchange="capitalizeFirstLetter(this)" />
-                <input type="text" name="suffix" placeholder="Suffix" onchange="capitalizeFirstLetter(this)" />
-                <input type="date" name="date_of_birth" id="date_of_birth" placeholder="Birth Date"  />
-                <input type="number" name="age" id="age" placeholder="Age"  readonly />
-            </div>
+          <form action="signup_query.php" id="signupForm" method="POST" enctype="multipart/form-data">
+              <h1>Create Account</h1>
+              <div class="steps-count">
+                  <div class="step-number active">1</div>
+                  <div class="step-number">2</div>
+                  <div class="step-number">3</div>
+                  <div class="step-number">4</div>
+                  <div class="step-number">5</div>
+              </div>
+              <div class="progress-bar">
+                  <div class="progress" style="width: 25%"></div>
+              </div>
 
+              <!-- Step 1: Personal Information -->
+              <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
+                  <h3>Step 1: Personal Information</h3>
+                  <select name="registration_status" required>
+                      <option value="" disabled selected>Account Type</option>
+                      <option value="0">Non-Resident</option>
+                      <option value="1">Resident</option>
+                  </select>
+                  <input type="text" name="fname" placeholder="First Name" onchange="capitalizeFirstLetter(this)" />
+                  <input type="text" name="mname" placeholder="Middle Name" onchange="capitalizeFirstLetter(this)" />
+                  <input type="text" name="lname" placeholder="Last Name" onchange="capitalizeFirstLetter(this)" />
+                  <input type="text" name="suffix" placeholder="Suffix" onchange="capitalizeFirstLetter(this)" />
+                  <input type="date" name="date_of_birth" id="date_of_birth" placeholder="Birth Date" />
+                  <input type="number" name="age" id="age" placeholder="Age" readonly />
+              </div>
 
-            <div class="step"  style="overflow: auto; max-height: 300px; padding: 10px;">
+              <!-- Step 2: Contact Details -->
+              <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                  <h3>Step 2: Contact Details</h3>
+                  <input type="text" name="contact" placeholder="Phone Number" />
+              </div>
 
-                <h3>Step 2: Contact Details</h3>
-                <input type="text" name="contact" placeholder="Phone Number"  />
-            </div>
+              <!-- Step 3: Address -->
+              <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                  <h3>Step 3: Address</h3>
+                  <input type="text" name="house_no" placeholder="House Number" />
+                  <input type="text" name="street" placeholder="Street" />
+                  <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
+                  <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
+                  <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
+                  <input type="email" name="email" placeholder="Email" />
+              </div>
 
-            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
-                <h3>Step 3: Address</h3>
-                <input type="text" name="house_no" placeholder="House Number"  />
-                <input type="text" name="street" placeholder="Street"  />
-                <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
-                <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
-                <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
-                <input type="email" name="email" placeholder="Email"  />
-            </div>
+        <!-- Step 4: Password Setup -->
+              <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                  <h3>Step 4: Set Password</h3>
+                  <input type="password" id="password" name="password" placeholder="Password" oninput="checkPasswordStrength()" />
+                  <!-- <div class="progress-bar">
+                      <div id="passwordStrengthBar" class="progress" style="width: 0%;"></div>
+                  </div> -->
+                  <p id="passwordStrengthText"></p>
 
-            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
-                <h3>Step 4: Additional Information</h3>
-                <input type="text" name="occupation" placeholder="Occupation"  />
-                <select name="civil_status" required>
-                    <option value="" disabled selected>Select Civil Status</option>
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                    <option value="divorced">Divorced</option>
-                    <option value="widowed">Widowed</option>
-                    <option value="separated">Separated</option>
-                </select>
-                <input type="file" name="id_file" accept="image/*" />
-            </div>
+                  <ul id="passwordRules">
+                      <li id="lengthRule" class="rule">At least 6 characters <span class="check-icon" style="display: none;">✔️</span></li>
+                      <li id="lowercaseRule" class="rule">At least 1 lowercase letter <span class="check-icon" style="display: none;">✔️</span></li>
+                      <li id="uppercaseRule" class="rule">At least 1 uppercase letter <span class="check-icon" style="display: none;">✔️</span></li>
+                      <li id="numberRule" class="rule">At least 1 number <span class="check-icon" style="display: none;">✔️</span></li>
+                      <li id="specialCharRule" class="rule">At least 1 special character <span class="check-icon" style="display: none;">✔️</span></li>
+                  </ul>
+              </div>
 
-            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
-                <h3>Step 5: Verification</h3>
-                <select name="id_type" required>
-                    <option value="" disabled selected>Select Valid ID Type</option>
-                    <option value="passport">Passport</option>
-                    <option value="drivers license">Driver's License</option>
-                    <option value="national id">National ID</option>
-                    <option value="voter id">Voter ID</option>
-                    <option value="company id">Company ID</option>
-                    <option value="school id">School ID</option>
-                </select>
-                <input type="text" name="id_number" placeholder="ID Number" />
-                <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
-            </div>
+              <!-- Step 5: Verification -->
+              <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                  <h3>Step 5: Verification</h3>
+                  <select name="id_type" required>
+                      <option value="" disabled selected>Select Valid ID Type</option>
+                      <option value="passport">Passport</option>
+                      <option value="drivers_license">Driver's License</option>
+                      <option value="national_id">National ID</option>
+                      <option value="voter_id">Voter ID</option>
+                      <option value="company_id">Company ID</option>
+                      <option value="school_id">School ID</option>
+                  </select>
+                  <input type="text" name="id_number" placeholder="ID Number" />
+                  <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
+              </div>
 
-
-            <div class="btn-group">
-                <button type="button" id="prevBtn" style="display: none;">Previous</button>
-                <button type="button" id="nextBtn">Next</button>
-            </div>
-        </form>
-
-
+              <div class="btn-group">
+                  <button type="button" id="prevBtn" style="display: none;">Previous</button>
+                  <button type="button" id="nextBtn">Next</button>
+              </div>
+          </form>
       </div>
       <div class="form-container sign-in-container">
         <form action="login_query.php" method='POST'>
@@ -568,7 +578,63 @@ session_start();
       signInButton.addEventListener('click', () => {
         container.classList.remove('right-panel-active');
       });
-  
+      function checkPasswordStrength() {
+          const password = document.getElementById('password').value;
+          const strengthBar = document.getElementById('passwordStrengthBar');
+          const strengthText = document.getElementById('passwordStrengthText');
+          const lengthRule = document.getElementById('lengthRule');
+          const lowercaseRule = document.getElementById('lowercaseRule');
+          const uppercaseRule = document.getElementById('uppercaseRule');
+          const numberRule = document.getElementById('numberRule');
+          const specialCharRule = document.getElementById('specialCharRule');
+
+          let strength = 0;
+
+          // Password strength rules
+          const rules = {
+              length: password.length >= 6,
+              lowercase: /[a-z]/.test(password),
+              uppercase: /[A-Z]/.test(password),
+              number: /[0-9]/.test(password),
+              specialChar: /[^a-zA-Z0-9]/.test(password)
+          };
+
+          // Update rules display
+          lengthRule.querySelector('.check-icon').style.display = rules.length ? 'inline' : 'none';
+          lowercaseRule.querySelector('.check-icon').style.display = rules.lowercase ? 'inline' : 'none';
+          uppercaseRule.querySelector('.check-icon').style.display = rules.uppercase ? 'inline' : 'none';
+          numberRule.querySelector('.check-icon').style.display = rules.number ? 'inline' : 'none';
+          specialCharRule.querySelector('.check-icon').style.display = rules.specialChar ? 'inline' : 'none';
+
+          // Calculate strength
+          for (const rule in rules) {
+              if (rules[rule]) strength++;
+          }
+
+          // Update the strength bar and text
+          switch (strength) {
+              case 0:
+              case 1:
+                  strengthBar.style.width = '15%';
+                  strengthBar.style.backgroundColor = 'red';
+                  strengthText.innerText = 'Weak';
+                  break;
+              case 2:
+                  strengthBar.style.width = '50%';
+                  strengthBar.style.backgroundColor = 'orange';
+                  strengthText.innerText = 'Medium';
+                  break;
+              case 3:
+              case 4:
+                  strengthBar.style.width = '100%';
+                  strengthBar.style.backgroundColor = 'green';
+                  strengthText.innerText = 'Strong';
+                  break;
+              default:
+                  strengthBar.style.width = '0%';
+                  strengthText.innerText = '';
+          }
+      }
     function updateStep(step) {
         steps.forEach((s, index) => {
             s.classList.remove('active', 'previous');
