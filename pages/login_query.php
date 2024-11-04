@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: nx_residentpage/res_Dashboard.php");
                 } else {
                     // Non-resident dashboard
-                    header("Location: nx_pages/nresident_dashboard.php");
+                    header("Location: nx_nonresident/res_Dashboard.php");
                 }
                 exit;
             } else {
