@@ -420,9 +420,9 @@ function doneCert(id) {
                             <div class="bg-blue-400 rounded-lg p-2 " title='Edit'  onclick="editCert(<?php echo htmlspecialchars($row['id']);?>)">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </div>
-                            <div class="bg-green-400 rounded-lg p-2 " title='Generate'>
+                            <a href='GenerateCertificate.php?page=bilihanngsasakyan&id=<?php echo htmlspecialchars($row['id']);?>' class="bg-green-400 rounded-lg p-2 " title='Generate'>
                                 <i class="fa-solid fa-arrows-rotate"></i>
-                            </div>
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
