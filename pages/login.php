@@ -3,6 +3,8 @@ session_start();
 ?>
 <html><head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include Toastr JS -->
@@ -458,10 +460,12 @@ session_start();
         <!-- Step 4: Password Setup -->
               <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                   <h3>Step 4: Set Password</h3>
-                  <input type="password" id="password" name="password" placeholder="Password" oninput="checkPasswordStrength()" />
-                  <!-- <div class="progress-bar">
-                      <div id="passwordStrengthBar" class="progress" style="width: 0%;"></div>
-                  </div> -->
+                  <div style="position: relative;">
+                      <input type="password" id="password" name="password" placeholder="Password" oninput="checkPasswordStrength()" />
+                      <span id="togglePassword" style="cursor: pointer; position: absolute; right: 10px; top: 25px;">
+                          <i class="fas fa-eye" id="eyeIcon"></i>
+                      </span>
+                  </div>
                   <p id="passwordStrengthText"></p>
 
                   <ul id="passwordRules">
@@ -472,6 +476,7 @@ session_start();
                       <li id="specialCharRule" class="rule">At least 1 special character <span class="check-icon" style="display: none;">✔️</span></li>
                   </ul>
               </div>
+
 
               <!-- Step 5: Verification -->
               <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
@@ -662,7 +667,19 @@ session_start();
         // Update button type
         nextBtn.type = step === steps.length - 1 ? 'submit' : 'button';
     }
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
 
+    togglePassword.addEventListener('click', () => {
+        // Toggle the type attribute
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        // Toggle the eye icon
+        eyeIcon.classList.toggle('fa-eye');
+        eyeIcon.classList.toggle('fa-eye-slash');
+    });
     nextBtn.addEventListener('click', () => {
         if (currentStep < steps.length - 1) {
             currentStep++;
