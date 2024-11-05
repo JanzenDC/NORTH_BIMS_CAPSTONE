@@ -66,112 +66,127 @@ $conn->close();
 </div>
 
 <!-- Create Official Modal -->
-<div id="createModal" class="modal fixed inset-0 bg-gray-500  bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3 ">
-        <i class="fa-solid  text-sm fa-x float-right cursor-pointer"  onclick="closeModal('createModal')" style="color:red;"></i>
-        <!-- <span class="cursor-pointer float-right ">&times;</span> -->
+<div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+        <i class="fa-solid text-sm fa-x float-right cursor-pointer" onclick="closeModal('createModal')" style="color:red;"></i>
         <h1 class="text-xl font-bold mb-4">Add Barangay Official</h1>
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
+            
+            <!-- Flex container for two columns -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="text-field-outlined w-full">
+                        <input placeholder="" type="text" name="fname" id="addFname" required>
+                        <span class="text-bold">Firstname</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="text-field-outlined w-full">
+                        <input placeholder="" type="text" name="mname" id="addMname" required>
+                        <span class="text-bold">Middlename</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="text-field-outlined w-full">
+                        <input placeholder="" type="text" name="lname" id="addLname" required>
+                        <span class="text-bold">Lastname</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="text-field-outlined w-full">
+                        <input placeholder="" type="text" name="suffix" id="addSuffix" required>
+                        <span class="text-bold">Suffix</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="text-field-outlined w-full">
+                        <input placeholder="" type="text" name="position" id="addPosition" required>
+                        <span class="text-bold">Position</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="text-field-outlined w-full">
+                        <input placeholder="" type="number" pattern="\d{1,11}" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11);" name="contact" id="addContact" required>
+                        <span class="text-bold">Contact Number</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="text-field-outlined w-full">
+                        <input placeholder="" type="date" name="bday" id="addBday" required>
+                        <span class="text-bold">Birthdate</span>
+                    </label>
+                </div>
+            </div>
 
-
-            <label class="text-field-outlined w-full ">
-            <input placeholder="" type="text" name="fname" id="addFname" required>
-            <span class="text-bold">Firstname</span>
-            </label>
-            <label class="text-field-outlined w-full ">
-            <input placeholder="" type="text" name="mname" id="addMname"  required>
-            <span class="text-bold">Middlename</span>
-            </label>
-            <label class="text-field-outlined w-full ">
-            <input placeholder="" type="text" name="lname" id="addLname" required>
-            <span class="text-bold">Lastname</span>
-            </label>
-            <label class="text-field-outlined w-full ">
-            <input placeholder="" type="text" name="suffix" id="addSuffix" required>
-            <span class="text-bold">Suffix</span>
-            </label>
-            <label class="text-field-outlined w-full ">
-            <input placeholder="" type="text" name="position" id="addPosition" required>
-            <span class="text-bold">Position</span>
-            </label>
-            <label class="text-field-outlined w-full ">
-            <input placeholder="" type="number" pattern="\d{1,11}" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11);"  name="contact" id="addContact"  required>
-            <span class="text-bold">Contact Number</span>
-            </label>
-            <label class="text-field-outlined w-full ">
-            <input placeholder="" type="date" name="bday" id="addBday"  required>
-            <span class="text-bold">Birthdate</span>
-            </label>
+            <!-- Image Upload Section -->
             <input type="file" name="image" id="addImage" class="block w-full mt-1 mb-2 p-2 border rounded-md border-opacity-70 border-black" required>
 
-
-
+            <!-- Submit Button -->
             <button type="submit" class="custom-btn btn-3 rounded mt-1"><span>Create</span></button>
-           
         </form>
     </div>
 </div>
 
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-2/3">
         <span class="cursor-pointer float-right" onclick="closeModal('editModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Edit Official</h2>
         <form id="editForm" enctype="multipart/form-data">
             <input type="hidden" id="editId" name="id">
 
-            <!-- Name Fields -->
-            <div class="flex mb-4">
-                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mr-2 p-2 border rounded" required>
-                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mr-2 p-2 border rounded">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required>
-            </div>
-
-            <!-- Other Fields in Two Columns -->
+            <!-- Name Fields in Two Columns -->
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded">
-                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required>
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required>
-                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+                <div>
+                    <label for="editFname" class="block text-sm font-semibold mb-1">First Name</label>
+                    <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label for="editMname" class="block text-sm font-semibold mb-1">Middle Name</label>
+                    <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label for="editLname" class="block text-sm font-semibold mb-1">Last Name</label>
+                    <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label for="editSuffix" class="block text-sm font-semibold mb-1">Suffix</label>
+                    <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded">
+                </div>
             </div>
 
-            <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
-            <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
+            <!-- Position, Contact, Birthdate in Two Columns -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="editPosition" class="block text-sm font-semibold mb-1">Position</label>
+                    <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label for="editContact" class="block text-sm font-semibold mb-1">Contact</label>
+                    <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label for="editBday" class="block text-sm font-semibold mb-1">Birthdate</label>
+                    <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+                </div>
+            </div>
+
+            <!-- Image Upload Section in Full Width -->
+            <div class="mb-4">
+                <label for="editImage" class="block text-sm font-semibold mb-1">Profile Image</label>
+                <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
+                <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
+            </div>
+
+            <!-- Submit Button -->
             <button type="submit" class="bg-blue-500 text-white p-2 rounded" onclick="updateRecord()">Update</button>
         </form>
     </div>
 </div>
 
 
-<!-- Edit Official Modal -->
-<div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
-        <span class="cursor-pointer float-right" onclick="closeModal('editModal')">&times;</span>
-        <h2 class="text-lg font-semibold mb-4">Edit Official</h2>
-        <form id="editForm" enctype="multipart/form-data">
-            <input type="hidden" id="editId" name="id">
 
-            <!-- Name Fields -->
-            <div class="flex mb-4">
-                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mr-2 p-2 border rounded" required>
-                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mr-2 p-2 border rounded">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required>
-            </div>
 
-            <!-- Other Fields in Two Columns -->
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded">
-                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required>
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required>
-                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
-            </div>
-
-            <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
-            <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded" onclick="updateRecord()">Update</button>
-        </form>
-    </div>
-</div>
 
 
 
