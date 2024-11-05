@@ -1,16 +1,19 @@
 <?php
+// Include FPDF library (assuming the library is installed correctly)
+require('fpdf/fpdf.php');  // Make sure the path to fpdf.php is correct
+
 // Database connection parameters
-$servername = "localhost";  // Localhost if you're running XAMPP locally
-$username = "root";         // Default MySQL username in XAMPP
-$password = "";             // Default password in XAMPP is empty
-$dbname = "north"; // Replace with your database name
+$servername = "localhost";  
+$username = "root";         
+$password = "";             
+$dbname = "north"; 
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error); // Error message if connection fails
+    die("Connection failed: " . $conn->connect_error);
 }
 
 // Query to fetch all residents ordered by houseNo and head_fam
@@ -29,84 +32,196 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 // Close connection after retrieving data
 $conn->close();
+
+// Extend the FPDF class to include the custom header function
+class PDF extends FPDF {
+    // Header function to add the custom header
+    function Header() {
+        // Set font for the text
+        $this->SetFont('Arial', 'B', 12);
+
+        // Add the image
+        $this->Image('../../../assets/images/north.png', 45, 8, 30); // Position image at x=45, y=8 with a width of 30
+
+        // Set Y position for the text
+        $this->SetY(10);
+
+        // Calculate X position to center the text
+        $pageWidth = $this->GetPageWidth();
+        $textWidth = $this->GetStringWidth('Republic of the Philippines');
+        $x = ($pageWidth - $textWidth) / 2;
+        $this->SetX($x);
+
+        // Print centered text
+        $this->Cell($textWidth, 10, 'Republic of the Philippines', 0, 1, 'C');
+        $this->Cell(0, 4, 'Province of Nueva Ecija', 0, 1, 'C');
+        $this->Cell(0, 4, 'Municipality of Gabaldon', 0, 1, 'C');
+        $this->Cell(0, 4, 'Barangay North Poblacion', 0, 1, 'C');
+
+        // Move down for the title
+        $this->Ln(10);
+
+        // Title
+        $this->SetFont('Arial', 'B', 15);
+        $this->Cell(0, 10, 'Resident Report', 0, 1, 'C');
+
+        // Line break
+        $this->Ln(10);
+    }
+}
+
+// Initialize PDF object from the custom PDF class
+$pdf = new PDF('L', 'mm', 'Legal');  // 'L' for landscape, 'mm' for millimeters, 'Legal' for paper size
+$pdf->SetAutoPageBreak(true, 10); // Set auto page break with 10mm margin at the bottom
+$pdf->AddPage();
+
+// Set font for table headers
+$pdf->SetFont('Arial', 'B', 8); // Reduced font size for headers to fit text
+$pdf->SetFillColor(200, 220, 255);  // Light blue fill color for headers
+
+// Table headers with line breaks manually inserted
+$header = [
+    'HOUSEHOLD HEAD', 
+    'RELATION TO HOUSEHOLD HEAD', 
+    'DATE OF BIRTH', 
+    'AGE', 
+    'SEX', 
+    'CIVIL STATUS', 
+    'OCCUPATION', 
+    'EDUCATIONAL ATTAINMENT', 
+    'REGISTERED VOTERS'
+];
+
+// Adjust column widths for landscape (Legal paper)
+$colWidths = [45, 45, 45, 20, 20, 30, 30, 45, 30]; // Widths for each column, adjusted for Legal size
+
+// Table header loop with line breaks for headers
+$pdf->Cell($colWidths[0], 7, 'HOUSEHOLD HEAD', 1, 0, 'C', true);
+$pdf->Cell($colWidths[1], 7, 'RELATION TO HOUSEHOLD HEAD', 1, 0, 'C', true);
+$pdf->Cell($colWidths[2], 7, 'DATE OF BIRTH', 1, 0, 'C', true);
+$pdf->Cell($colWidths[3], 7, 'AGE', 1, 0, 'C', true);
+$pdf->Cell($colWidths[4], 7, 'SEX', 1, 0, 'C', true);
+$pdf->Cell($colWidths[5], 7, 'CIVIL STATUS', 1, 0, 'C', true);
+$pdf->Cell($colWidths[6], 7, 'OCCUPATION', 1, 0, 'C', true);
+$pdf->Cell($colWidths[7], 7, 'EDUCATIONAL ATTAINMENT', 1, 0, 'C', true);
+$pdf->Cell($colWidths[8], 7, 'REGISTERED VOTERS', 1, 0, 'C', true);
+$pdf->Ln(); // New line after header row
+
+// Set font for table content
+$pdf->SetFont('Arial', '', 8); // Smaller font size for table rows to fit text
+
+// Loop through households and display family data
+foreach ($households as $houseNo => $members) {
+    // First loop to show household head only once
+    foreach ($members as $index => $member) {
+        if ($member['head_fam'] === 'Yes') {
+            // Check if the current position is too close to the bottom of the page, if so, add a page
+            if ($pdf->GetY() > 250) {  // 250mm is a safe threshold before the bottom of a Legal page
+                $pdf->AddPage();  // Add new page
+                // Reprint header on the new page
+                $pdf->SetFont('Arial', 'B', 8);
+                $pdf->SetFillColor(200, 220, 255);
+                $pdf->Cell($colWidths[0], 7, 'HOUSEHOLD HEAD', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[1], 7, 'RELATION TO HOUSEHOLD HEAD', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[2], 7, 'DATE OF BIRTH', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[3], 7, 'AGE', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[4], 7, 'SEX', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[5], 7, 'CIVIL STATUS', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[6], 7, 'OCCUPATION', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[7], 7, 'EDUCATIONAL ATTAINMENT', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[8], 7, 'REGISTERED VOTERS', 1, 0, 'C', true);
+                $pdf->Ln();
+                $pdf->SetFont('Arial', '', 8);
+            }
+
+            // Print row content
+            $pdf->Cell($colWidths[0], 6, $member['fname'] . ' ' . $member['mname'] . ' ' . $member['lname'] . ' ' . $member['suffix'], 1);
+            $pdf->Cell($colWidths[1], 6, '', 1); // Empty for 'Relation to Household Head'
+            $pdf->Cell($colWidths[2], 6, $member['bday'], 1);
+            $pdf->Cell($colWidths[3], 6, $member['age'], 1);
+            $pdf->Cell($colWidths[4], 6, $member['gender'], 1);
+            $pdf->Cell($colWidths[5], 6, $member['civil_status'], 1);
+            $pdf->Cell($colWidths[6], 6, $member['occupation'], 1);
+            $pdf->Cell($colWidths[7], 6, $member['education'], 1);
+            $pdf->Cell($colWidths[8], 6, $member['voter'], 1);
+            $pdf->Ln();
+        }
+    }
+
+    // Then loop to show family members (exclude household head)
+    foreach ($members as $index => $member) {
+        if ($member['head_fam'] !== 'Yes') {
+            // Check if the current position is too close to the bottom of the page, if so, add a page
+            if ($pdf->GetY() > 250) {  // 250mm is a safe threshold before the bottom of a Legal page
+                $pdf->AddPage();  // Add new page
+                // Reprint header on the new page
+                $pdf->SetFont('Arial', 'B', 8);
+                $pdf->SetFillColor(200, 220, 255);
+                $pdf->Cell($colWidths[0], 7, 'HOUSEHOLD HEAD', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[1], 7, 'RELATION TO HOUSEHOLD HEAD', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[2], 7, 'DATE OF BIRTH', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[3], 7, 'AGE', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[4], 7, 'SEX', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[5], 7, 'CIVIL STATUS', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[6], 7, 'OCCUPATION', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[7], 7, 'EDUCATIONAL ATTAINMENT', 1, 0, 'C', true);
+                $pdf->Cell($colWidths[8], 7, 'REGISTERED VOTERS', 1, 0, 'C', true);
+                $pdf->Ln();
+                $pdf->SetFont('Arial', '', 8);
+            }
+
+            // Print row content
+            $pdf->Cell($colWidths[0], 6, '', 1); // Empty for 'Household Head'
+            $pdf->Cell($colWidths[1], 6, $member['fname'] . ' ' . $member['mname'] . ' ' . $member['lname'] . ' ' . $member['relation'], 1);
+            $pdf->Cell($colWidths[2], 6, $member['bday'], 1);
+            $pdf->Cell($colWidths[3], 6, $member['age'], 1);
+            $pdf->Cell($colWidths[4], 6, $member['gender'], 1);
+            $pdf->Cell($colWidths[5], 6, $member['civil_status'], 1);
+            $pdf->Cell($colWidths[6], 6, $member['occupation'], 1);
+            $pdf->Cell($colWidths[7], 6, $member['education'], 1);
+            $pdf->Cell($colWidths[8], 6, $member['voter'], 1);
+            $pdf->Ln();
+        }
+    }
+}
+
+// Add some vertical space before signatures
+$pdf->Ln(20);
+
+// Set font for signature lines
+$pdf->SetFont('Arial', 'B', 10);
+
+// Calculate positions for 4 signature fields
+$pageWidth = $pdf->GetPageWidth();
+$signatureWidth = 80;
+$spacing = ($pageWidth - (4 * $signatureWidth)) / 5;
+$y = $pdf->GetY();
+
+// Add sample values for signature fields
+$signatures = [
+    'Respondent' => '_______________',
+    'Purok Leader' => '_______________',
+    'BRGY SECRETARY' => 'SHERLITA C. CALUDUCAN',
+    'PUNONG BARANGAY' => 'EDWIN P. PARUNGAO'
+];
+
+// Draw sample values and labels for each signature field
+for ($i = 0; $i < 4; $i++) {
+    $x = ($spacing + $signatureWidth) * $i + $spacing;
+    
+    // Position for the name text (sample value)
+    $pdf->SetXY($x, $y);
+    $pdf->Cell($signatureWidth, 10, $signatures[array_keys($signatures)[$i]], 0, 0, 'C');
+    
+    // Position for the label text (slightly below the name)
+    $pdf->SetXY($x, $y + 10);
+    
+    // Set the label text based on position
+    $label = array_keys($signatures)[$i];
+    
+    $pdf->Cell($signatureWidth, 10, $label, 0, 0, 'C');
+}
+
+// Output the PDF
+$pdf->Output();
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generate Report</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    <div class="container mx-auto p-4">
-        <h1 class="text-3xl font-bold text-gray-800 mb-4">Resident Report</h1>
-        
-        <!-- Table for displaying the data -->
-        <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-            <table class="min-w-full table-auto">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">HOUSEHOLD HEAD</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">RELATION TO HOUSEHOLD HEAD</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">DATE OF BIRTH</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">AGE</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">SEX ON BIRTH</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">CIVIL STATUS</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">OCCUPATION</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">EDUCATIONAL ATTAINMENT</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">REGISTERED VOTERS</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white">
-                    <?php 
-                    // Loop through households and display family data
-                    foreach ($households as $houseNo => $members): 
-                        // First loop to show household head only once
-                        foreach ($members as $index => $member): 
-                            if ($member['head_fam'] === 'Yes'):
-                    ?>
-                        <tr class="border-b">
-                            <!-- Household Head: Show full details here -->
-                            <td class="px-4 py-2 text-sm font-semibold text-gray-700"><?= $member['fname'] . ' ' . $member['mname'] . ' ' . $member['lname'] . ' ' . $member['suffix'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700">Household Head</td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['bday'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['age'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['gender'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['civil_status'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['occupation'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['education'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['voter'] ?></td>
-                        </tr>
-                        <?php 
-                            endif; // End household head check
-                        endforeach; 
-
-                        // Then loop to show family members (exclude household head)
-                        foreach ($members as $index => $member): 
-                            if ($member['head_fam'] !== 'Yes'):
-                    ?>
-                        <tr class="border-b">
-                            <!-- Family Members: Leave household head column empty -->
-                            <td class="px-4 py-2 text-sm text-gray-700"></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['fname'] ?> <?= $member['mname'] ?> <?= $member['lname'] ?> <?= $member['relation'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['bday'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['age'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['gender'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['civil_status'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['occupation'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['education'] ?></td>
-                            <td class="px-4 py-2 text-sm text-gray-700"><?= $member['voter'] ?></td>
-                        </tr>
-                    <?php 
-                            endif; // End family member check
-                        endforeach;
-                    endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</body>
-</html>

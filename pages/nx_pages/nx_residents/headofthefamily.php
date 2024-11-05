@@ -52,9 +52,7 @@ function getFamilyMembers($houseNo) {
     <div class="p-3 w-full bg-white shadow-lg rounded-lg">
         <p class="text-3xl mb-3 font-bold text-gray-800">HEAD OF FAMILY LIST</p>
         <hr class="mt-3 mb-3">
-        <button class='p-3 bg-blue-500 rounded-lg mb-8 text-white' onclick="GenerateReport()">
-            Generate Report
-        </button>
+
         <table id="officials-table" class="cell-border hover" style='width: 100%;'>
             <thead>
                 <tr class="bg-gray-50">
@@ -209,8 +207,5 @@ function getFamilyMembers($houseNo) {
             }
         });
 
-        function GenerateReport(){
-            const pdfUrl = `../nx_pages/nx_residents/generate_report.php`;
-            window.open(pdfUrl, '_blank');
-        }
+
     </script>

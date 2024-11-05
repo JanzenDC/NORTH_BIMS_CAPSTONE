@@ -73,6 +73,9 @@ while ($row = mysqli_fetch_assoc($result_blotter)) {
                     <a href='../nx_pages/ReportPage.php?page=document_stats' class='bg-green-600 rounded-md p-3 text-white cursor-pointer'>
                         Document Statistics
                     </a>
+                    <button class='bg-green-600 rounded-md p-3 text-white cursor-pointer' onclick="GenerateReport()">
+                        Generate Report
+                    </button>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -242,6 +245,10 @@ while ($row = mysqli_fetch_assoc($result_blotter)) {
                 }]
             }
         });
+        function GenerateReport(){
+            const pdfUrl = `../nx_pages/nx_residents/generate_report.php`;
+            window.open(pdfUrl, '_blank');
+        }
     </script>
 </body>
 </html>
