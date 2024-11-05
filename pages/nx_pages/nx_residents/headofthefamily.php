@@ -8,6 +8,7 @@ $sqls = "SELECT
     h.brgy,
     h.province,
     h.municipality,
+    h.relation,
     CONCAT(h.fname, ' ', h.lname) as head_of_family,
     (SELECT COUNT(*) 
      FROM tblresident m 
@@ -34,6 +35,7 @@ function getFamilyMembers($houseNo) {
         fname,
         lname,
         head_fam,
+        relation,
         CONCAT(fname, ' ', lname) as full_name
     FROM tblresident 
     WHERE houseNo = ?
@@ -50,7 +52,9 @@ function getFamilyMembers($houseNo) {
     <div class="p-3 w-full bg-white shadow-lg rounded-lg">
         <p class="text-3xl mb-3 font-bold text-gray-800">HEAD OF FAMILY LIST</p>
         <hr class="mt-3 mb-3">
-        
+        <button class='p-3 bg-blue-500 rounded-lg mb-8 text-white' onclick="GenerateReport()">
+            Generate Report
+        </button>
         <table id="officials-table" class="cell-border hover" style='width: 100%;'>
             <thead>
                 <tr class="bg-gray-50">
@@ -109,16 +113,26 @@ function getFamilyMembers($houseNo) {
                                                 if ($result_members->num_rows > 0) {
                                                     while ($member = $result_members->fetch_assoc()) {
                                                         $memberName = htmlspecialchars($member['full_name']);
+                                                        $relation = htmlspecialchars($member['relation']);
                                                         $isHead = $member['head_fam'] === 'yes' 
                                                             ? '<span class="text-blue-600 ml-2">(Head of Family)</span>' 
                                                             : '';
+                                                        
+                                                        // Check if relation is empty
+                                                        if (!empty($relation)) {
+                                                            $relationText = "($relation)";
+                                                        } else {
+                                                            $relationText = ''; // Remove the parentheses if no relation
+                                                        }
+
                                                         echo "<p class='py-1 border-b border-gray-200'>" . 
-                                                             $memberName . $isHead . "</p>";
+                                                            $memberName . $isHead . $relationText . "</p>";
                                                     }
                                                 } else {
                                                     echo "<p class='text-gray-500'>No members found.</p>";
                                                 }
                                                 ?>
+
                                             </div>
                                         </div>
                                     </div>
@@ -194,4 +208,9 @@ function getFamilyMembers($houseNo) {
                 }
             }
         });
+
+        function GenerateReport(){
+            const pdfUrl = `../nx_pages/nx_residents/generate_report.php`;
+            window.open(pdfUrl, '_blank');
+        }
     </script>
