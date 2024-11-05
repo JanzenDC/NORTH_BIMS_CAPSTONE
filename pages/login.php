@@ -3,8 +3,6 @@ session_start();
 ?>
 <html><head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include Toastr JS -->
@@ -322,14 +320,7 @@ session_start();
     border-radius: 2px;
     position: relative;
   }
-  .rule {
-      display: flex;
-      align-items: center;
-  }
-  .check-icon {
-      margin-left: 10px;
-      color: green;
-  }
+  
   .progress {
     position: absolute;
     height: 100%;
@@ -383,7 +374,26 @@ session_start();
     right: 0;
     z-index: 9999;
   }
-  
+  .strength-indicator {
+      height: 10px;
+      width: 100%;
+      margin-top: 5px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+  }
+
+  .weak {
+      background-color: red;
+  }
+
+  .medium {
+      background-color: orange;
+  }
+
+  .strong {
+      background-color: green;
+  }
+
   @keyframes show {
     0%, 49.99% {
       opacity: 0;
@@ -411,94 +421,90 @@ session_start();
   
     <div class="container" id="container">
       <div class="form-container sign-up-container">
-          <form action="signup_query.php" id="signupForm" method="POST" enctype="multipart/form-data">
-              <h1>Create Account</h1>
-              <div class="steps-count">
-                  <div class="step-number active">1</div>
-                  <div class="step-number">2</div>
-                  <div class="step-number">3</div>
-                  <div class="step-number">4</div>
-                  <div class="step-number">5</div>
-              </div>
-              <div class="progress-bar">
-                  <div class="progress" style="width: 25%"></div>
-              </div>
-
-              <!-- Step 1: Personal Information -->
-              <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
-                  <h3>Step 1: Personal Information</h3>
-                  <select name="registration_status" required>
-                      <option value="" disabled selected>Account Type</option>
-                      <option value="0">Non-Resident</option>
-                      <option value="1">Resident</option>
-                  </select>
-                  <input type="text" name="fname" placeholder="First Name" onchange="capitalizeFirstLetter(this)" />
-                  <input type="text" name="mname" placeholder="Middle Name" onchange="capitalizeFirstLetter(this)" />
-                  <input type="text" name="lname" placeholder="Last Name" onchange="capitalizeFirstLetter(this)" />
-                  <input type="text" name="suffix" placeholder="Suffix" onchange="capitalizeFirstLetter(this)" />
-                  <input type="date" name="date_of_birth" id="date_of_birth" placeholder="Birth Date" />
-                  <input type="number" name="age" id="age" placeholder="Age" readonly />
-              </div>
-
-              <!-- Step 2: Contact Details -->
-              <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
-                  <h3>Step 2: Contact Details</h3>
-                  <input type="text" name="contact" placeholder="Phone Number" />
-              </div>
-
-              <!-- Step 3: Address -->
-              <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
-                  <h3>Step 3: Address</h3>
-                  <input type="text" name="house_no" placeholder="House Number" />
-                  <input type="text" name="street" placeholder="Street" />
-                  <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
-                  <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
-                  <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
-                  <input type="email" name="email" placeholder="Email" />
-              </div>
-
-        <!-- Step 4: Password Setup -->
-              <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
-                  <h3>Step 4: Set Password</h3>
-                  <div style="position: relative;">
-                      <input type="password" id="password" name="password" placeholder="Password" oninput="checkPasswordStrength()" />
-                      <span id="togglePassword" style="cursor: pointer; position: absolute; right: 10px; top: 25px;">
-                          <i class="fas fa-eye" id="eyeIcon"></i>
-                      </span>
-                  </div>
-                  <p id="passwordStrengthText"></p>
-
-                  <ul id="passwordRules">
-                      <li id="lengthRule" class="rule">At least 6 characters <span class="check-icon" style="display: none;">✔️</span></li>
-                      <li id="lowercaseRule" class="rule">At least 1 lowercase letter <span class="check-icon" style="display: none;">✔️</span></li>
-                      <li id="uppercaseRule" class="rule">At least 1 uppercase letter <span class="check-icon" style="display: none;">✔️</span></li>
-                      <li id="numberRule" class="rule">At least 1 number <span class="check-icon" style="display: none;">✔️</span></li>
-                      <li id="specialCharRule" class="rule">At least 1 special character <span class="check-icon" style="display: none;">✔️</span></li>
-                  </ul>
-              </div>
+        <form action="signup_query.php" id="signupForm" method="POST" enctype="multipart/form-data">
+            <h1>Create Account</h1>
+            <div class="steps-count">
+                <div class="step-number active">1</div>
+                <div class="step-number">2</div>
+                <div class="step-number">3</div>
+                <div class="step-number">4</div>
+                <div class="step-number">5</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" style="width: 25%"></div>
+            </div>
+            
+            <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 1: Personal Information</h3>
+                <select name="registration_status" required>
+                    <option value="" disabled selected>Account Type</option>
+                    <option value="0">Non-Resident</option>
+                    <option value="1">Resident</option>
+                </select>
+                <input type="text" name="fname" placeholder="First Name" onchange="capitalizeFirstLetter(this)" />
+                <input type="text" name="mname" placeholder="Middle Name" onchange="capitalizeFirstLetter(this)" />
+                <input type="text" name="lname" placeholder="Last Name" onchange="capitalizeFirstLetter(this)" />
+                <input type="text" name="suffix" placeholder="Suffix" maxlength="1" pattern="[A-Za-z]" onchange="capitalizeFirstLetter(this)" />
+                <input type="date" name="date_of_birth" id="date_of_birth" placeholder="Birth Date"  />
+                <input type="number" name="age" id="age" placeholder="Age"  readonly />
+            </div>
 
 
-              <!-- Step 5: Verification -->
-              <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
-                  <h3>Step 5: Verification</h3>
-                  <select name="id_type" required>
-                      <option value="" disabled selected>Select Valid ID Type</option>
-                      <option value="passport">Passport</option>
-                      <option value="drivers_license">Driver's License</option>
-                      <option value="national_id">National ID</option>
-                      <option value="voter_id">Voter ID</option>
-                      <option value="company_id">Company ID</option>
-                      <option value="school_id">School ID</option>
-                  </select>
-                  <input type="text" name="id_number" placeholder="ID Number" />
-                  <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
-              </div>
+            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 2: Login and Contact Details</h3>
+                <input type="text" name="contact" placeholder="Phone Number" />
+                <input type="email" name="email" placeholder="Email" />
+                <input type="password" id="password" placeholder="Password" oninput="checkPasswordStrength()" />
+                <div id="password-strength" class="strength-indicator"></div>
+            </div>
 
-              <div class="btn-group">
-                  <button type="button" id="prevBtn" style="display: none;">Previous</button>
-                  <button type="button" id="nextBtn">Next</button>
-              </div>
-          </form>
+
+            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 3: Address</h3>
+                <input type="text" name="house_no" placeholder="House Number"  />
+                <input type="text" name="street" placeholder="Street"  />
+                <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
+                <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
+                <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
+            </div>
+
+            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 4: Additional Information</h3>
+                <input type="text" name="occupation" placeholder="Occupation"  />
+                <select name="civil_status" required>
+                    <option value="" disabled selected>Select Civil Status</option>
+                    <option value="single">Single</option>
+                    <option value="married">Married</option>
+                    <option value="divorced">Divorced</option>
+                    <option value="widowed">Widowed</option>
+                    <option value="separated">Separated</option>
+                </select>
+                <input type="file" name="id_file" accept="image/*" />
+            </div>
+
+            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
+                <h3>Step 5: Verification</h3>
+                <select name="id_type" required>
+                    <option value="" disabled selected>Select Valid ID Type</option>
+                    <option value="passport">Passport</option>
+                    <option value="drivers license">Driver's License</option>
+                    <option value="national id">National ID</option>
+                    <option value="voter id">Voter ID</option>
+                    <option value="company id">Company ID</option>
+                    <option value="school id">School ID</option>
+                </select>
+                <input type="text" name="id_number" placeholder="ID Number" />
+                <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
+            </div>
+
+
+            <div class="btn-group">
+                <button type="button" id="prevBtn" style="display: none;">Previous</button>
+                <button type="button" id="nextBtn">Next</button>
+            </div>
+        </form>
+
+
       </div>
       <div class="form-container sign-in-container">
         <form action="login_query.php" method='POST'>
@@ -526,19 +532,131 @@ session_start();
     </div>
   
     <script>
+      // Password strength checker
+      function checkPasswordStrength() {
+          const password = document.getElementById('password').value;
+          const strengthIndicator = document.getElementById('password-strength');
+          let strength = 0;
+
+          // Check password criteria
+          if (password.length >= 8) strength++; // Length
+          if (/[A-Z]/.test(password)) strength++; // Uppercase letter
+          if (/[a-z]/.test(password)) strength++; // Lowercase letter
+          if (/[0-9]/.test(password)) strength++; // Number
+          if (/[\W_]/.test(password)) strength++; // Special character
+
+          // Update strength indicator
+          strengthIndicator.className = 'strength-indicator';
+          if (strength === 0) {
+              strengthIndicator.classList.add('weak');
+              strengthIndicator.style.width = '0%';
+          } else if (strength <= 2) {
+              strengthIndicator.classList.add('weak');
+              strengthIndicator.style.width = '33%';
+          } else if (strength === 3) {
+              strengthIndicator.classList.add('medium');
+              strengthIndicator.style.width = '66%';
+          } else {
+              strengthIndicator.classList.add('strong');
+              strengthIndicator.style.width = '100%';
+          }
+      }
+
+      // Capitalize first letter
       function capitalizeFirstLetter(input) {
           const value = input.value.toLowerCase();
           input.value = value.charAt(0).toUpperCase() + value.slice(1);
       }
+
+      // Step validation function
+      function validateStep(step) {
+          const fields = {
+              0: ['registration_status', 'fname', 'lname', 'date_of_birth', 'age'], // Step 1
+              1: ['contact', 'email', 'password'], // Step 2
+              2: ['house_no', 'street', 'barangay', 'municipality', 'province'], // Step 3
+              3: ['occupation', 'civil_status', 'id_file'], // Step 4
+              4: ['id_type', 'id_number', 'emergency_contact'] // Step 5
+          };
+
+          const requiredFields = fields[step];
+          let isValid = true;
+          let firstInvalidField = null;
+
+          requiredFields.forEach(fieldName => {
+              const field = document.querySelector(`[name="${fieldName}"]`);
+              if (!field.value) {
+                  isValid = false;
+                  field.style.borderColor = 'red';
+                  if (!firstInvalidField) firstInvalidField = field;
+              } else {
+                  field.style.borderColor = '#e0e0e0';
+              }
+          });
+
+          // Additional validation for specific fields
+          if (step === 1) {
+              // Email validation
+              const email = document.querySelector('[name="email"]').value;
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              if (!emailRegex.test(email)) {
+                  isValid = false;
+                  document.querySelector('[name="email"]').style.borderColor = 'red';
+              }
+
+              // Password strength validation
+              const password = document.getElementById('password').value;
+              let strength = 0;
+              if (password.length >= 8) strength++;
+              if (/[A-Z]/.test(password)) strength++;
+              if (/[a-z]/.test(password)) strength++;
+              if (/[0-9]/.test(password)) strength++;
+              if (/[\W_]/.test(password)) strength++;
+              
+              if (strength < 3) {
+                  isValid = false;
+                  document.getElementById('password').style.borderColor = 'red';
+              }
+          }
+
+          if (!isValid) {
+              if (firstInvalidField) {
+                  firstInvalidField.focus();
+              }
+              toastr.error('Please fill in all required fields correctly');
+          }
+
+          return isValid;
+      }
+
+      // Initialize elements
+      const signUpButton = document.getElementById('signUp');
+      const signInButton = document.getElementById('signIn');
+      const container = document.getElementById('container');
+      const steps = document.querySelectorAll('.step');
+      const nextBtn = document.getElementById('nextBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const progress = document.querySelector('.progress');
+      const stepNumbers = document.querySelectorAll('.step-number');
+      let currentStep = 0;
+
+      // Event handlers for form switch
+      signUpButton.addEventListener('click', () => {
+          container.classList.add('right-panel-active');
+      });
+
+      signInButton.addEventListener('click', () => {
+          container.classList.remove('right-panel-active');
+      });
+
+      // Contact number formatter
       document.querySelector('input[name="contact"]').onchange = function() {
           let value = this.value;
-
-          // Check if the value starts with "09"
           if (value.startsWith('09')) {
-              // Replace "09" with "+63"
               this.value = '+63' + value.slice(2);
           }
       };
+
+      // Registration status handler
       document.querySelector('select[name="registration_status"]').addEventListener('change', function() {
           const addressFields = {
               barangay: document.querySelector('input[name="barangay"]'),
@@ -562,166 +680,101 @@ session_start();
           }
       });
 
-      const signUpButton = document.getElementById('signUp');
-      const signInButton = document.getElementById('signIn');
-      const container = document.getElementById('container'); 
-      // Trigger sign up view immediately on page load
-      window.addEventListener('load', () => {
-        container.classList.add('right-panel-active');
-      });
-      const steps = document.querySelectorAll('.step');
-      const nextBtn = document.getElementById('nextBtn');
-      const prevBtn = document.getElementById('prevBtn');
-      const progress = document.querySelector('.progress');
-      const stepNumbers = document.querySelectorAll('.step-number');
-      let currentStep = 0;
-  
-      signUpButton.addEventListener('click', () => {
-        container.classList.add('right-panel-active');
-      });
-  
-      signInButton.addEventListener('click', () => {
-        container.classList.remove('right-panel-active');
-      });
-      function checkPasswordStrength() {
-          const password = document.getElementById('password').value;
-          const strengthBar = document.getElementById('passwordStrengthBar');
-          const strengthText = document.getElementById('passwordStrengthText');
-          const lengthRule = document.getElementById('lengthRule');
-          const lowercaseRule = document.getElementById('lowercaseRule');
-          const uppercaseRule = document.getElementById('uppercaseRule');
-          const numberRule = document.getElementById('numberRule');
-          const specialCharRule = document.getElementById('specialCharRule');
+      // Age calculator
+      const dateOfBirthInput = document.getElementById('date_of_birth');
+      const ageInput = document.getElementById('age');
 
-          let strength = 0;
+      dateOfBirthInput.addEventListener('change', function() {
+          const birthDate = new Date(dateOfBirthInput.value);
+          const today = new Date();
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const monthDiff = today.getMonth() - birthDate.getMonth();
 
-          // Password strength rules
-          const rules = {
-              length: password.length >= 6,
-              lowercase: /[a-z]/.test(password),
-              uppercase: /[A-Z]/.test(password),
-              number: /[0-9]/.test(password),
-              specialChar: /[^a-zA-Z0-9]/.test(password)
-          };
-
-          // Update rules display
-          lengthRule.querySelector('.check-icon').style.display = rules.length ? 'inline' : 'none';
-          lowercaseRule.querySelector('.check-icon').style.display = rules.lowercase ? 'inline' : 'none';
-          uppercaseRule.querySelector('.check-icon').style.display = rules.uppercase ? 'inline' : 'none';
-          numberRule.querySelector('.check-icon').style.display = rules.number ? 'inline' : 'none';
-          specialCharRule.querySelector('.check-icon').style.display = rules.specialChar ? 'inline' : 'none';
-
-          // Calculate strength
-          for (const rule in rules) {
-              if (rules[rule]) strength++;
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+              age--;
           }
 
-          // Update the strength bar and text
-          switch (strength) {
-              case 0:
-              case 1:
-                  strengthBar.style.width = '15%';
-                  strengthBar.style.backgroundColor = 'red';
-                  strengthText.innerText = 'Weak';
-                  break;
-              case 2:
-                  strengthBar.style.width = '50%';
-                  strengthBar.style.backgroundColor = 'orange';
-                  strengthText.innerText = 'Medium';
-                  break;
-              case 3:
-              case 4:
-                  strengthBar.style.width = '100%';
-                  strengthBar.style.backgroundColor = 'green';
-                  strengthText.innerText = 'Strong';
-                  break;
-              default:
-                  strengthBar.style.width = '0%';
-                  strengthText.innerText = '';
-          }
+          ageInput.value = age >= 0 ? age : '';
+      });
+
+      // Step update function
+      function updateStep(step) {
+          steps.forEach((s, index) => {
+              s.classList.remove('active', 'previous');
+              if (index === step) {
+                  s.classList.add('active');
+              } else if (index < step) {
+                  s.classList.add('previous');
+              }
+          });
+
+          stepNumbers.forEach((num, index) => {
+              num.classList.remove('active', 'completed');
+              if (index === step) {
+                  num.classList.add('active');
+              } else if (index < step) {
+                  num.classList.add('completed');
+              }
+          });
+
+          progress.style.width = `${((step + 1) / steps.length) * 100}%`;
+          prevBtn.style.display = step === 0 ? 'none' : 'block';
+          nextBtn.textContent = step === steps.length - 1 ? 'Submit' : 'Next';
+          nextBtn.type = step === steps.length - 1 ? 'submit' : 'button';
       }
-    function updateStep(step) {
-        steps.forEach((s, index) => {
-            s.classList.remove('active', 'previous');
-            if (index === step) {
-                s.classList.add('active');
-            } else if (index < step) {
-                s.classList.add('previous');
-            }
-        });
 
-        stepNumbers.forEach((num, index) => {
-            num.classList.remove('active', 'completed');
-            if (index === step) {
-                num.classList.add('active');
-            } else if (index < step) {
-                num.classList.add('completed');
-            }
-        });
-
-        progress.style.width = `${((step + 1) / steps.length) * 100}%`;
-
-        prevBtn.style.display = step === 0 ? 'none' : 'block';
-        nextBtn.textContent = step === steps.length - 1 ? 'Submit' : 'Next';
-        
-        // Update button type
-        nextBtn.type = step === steps.length - 1 ? 'submit' : 'button';
-    }
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    const eyeIcon = document.getElementById('eyeIcon');
-
-    togglePassword.addEventListener('click', () => {
-        // Toggle the type attribute
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-
-        // Toggle the eye icon
-        eyeIcon.classList.toggle('fa-eye');
-        eyeIcon.classList.toggle('fa-eye-slash');
-    });
-    nextBtn.addEventListener('click', () => {
-        if (currentStep < steps.length - 1) {
-            currentStep++;
-            updateStep(currentStep);
-        } else {
-            // No need for manual submit since button type is now submit
-            // document.getElementById('signupForm').submit();
-        }
-    });
-  
-      prevBtn.addEventListener('click', () => {
-        if (currentStep > 0) {
-          currentStep--;
-          updateStep(currentStep);
-        }
+      // Next button handler
+      nextBtn.addEventListener('click', () => {
+          if (currentStep < steps.length - 1) {
+              if (validateStep(currentStep)) {
+                  currentStep++;
+                  updateStep(currentStep);
+              }
+          } else {
+              if (validateStep(currentStep)) {
+                  document.getElementById('signupForm').submit();
+              }
+          }
       });
+
+      // Previous button handler
+      prevBtn.addEventListener('click', () => {
+          if (currentStep > 0) {
+              currentStep--;
+              updateStep(currentStep);
+          }
+      });
+
+      // Handle form input styling
+      document.getElementById('signupForm').addEventListener('input', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+              e.target.style.borderColor = '#e0e0e0';
+          }
+      });
+
+      // Initialize toastr options
+      toastr.options = {
+          "closeButton": true,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "timeOut": "3000"
+      };
+
+      // Trigger sign up view on page load
+      window.addEventListener('load', () => {
+          container.classList.add('right-panel-active');
+      });
+
+      // Initialize toastr messages if any
       $(document).ready(function() {
-            <?php if (isset($_SESSION['toastr_message'])): ?>
-                var message = "<?php echo $_SESSION['toastr_message']; ?>";
-                var type = "<?php echo $_SESSION['toastr_type']; ?>";
-                toastr[type](message);
-                <?php unset($_SESSION['toastr_message']); ?>
-                <?php unset($_SESSION['toastr_type']); ?>
-            <?php endif; ?>
-        });
-        const dateOfBirthInput = document.getElementById('date_of_birth');
-        const ageInput = document.getElementById('age');
-
-        dateOfBirthInput.addEventListener('change', function() {
-            const birthDate = new Date(dateOfBirthInput.value);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-
-            // Adjust age if birth date hasn't occurred yet this year
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-
-            ageInput.value = age >= 0 ? age : ''; // Set age or clear if negative
-        });
-
+          <?php if (isset($_SESSION['toastr_message'])): ?>
+              var message = "<?php echo $_SESSION['toastr_message']; ?>";
+              var type = "<?php echo $_SESSION['toastr_type']; ?>";
+              toastr[type](message);
+              <?php unset($_SESSION['toastr_message']); ?>
+              <?php unset($_SESSION['toastr_type']); ?>
+          <?php endif; ?>
+      });
     </script>
   </body>
   </html>
