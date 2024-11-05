@@ -60,18 +60,18 @@ $conn->close();
 </div>
 
 <!-- MODALS SECTION -->
-<!-- Create Barangay Tanod/Police Modal -->
+<!-- Create Official Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
         <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Create Barangay Tanod/Police</h2>
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
-            <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded">
-            <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded">
-            <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" value="Barangay Tanod" required>
-            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" required>
+            <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+            <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+            <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+            <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+            <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" value="Barangay Tanod" required oninput="capitalizeFirstLetter(this)">
+            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" required oninput="formatPhoneNumber(this)">
             <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" required>
             <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" required>
             <button type="submit" class="bg-blue-500 text-white p-2 rounded">Create</button>
@@ -89,16 +89,16 @@ $conn->close();
 
             <!-- Name Fields -->
             <div class="flex mb-4">
-                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mr-2 p-2 border rounded" required>
-                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mr-2 p-2 border rounded">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required>
+                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mr-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mr-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
             </div>
 
             <!-- Other Fields in Two Columns -->
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded">
-                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required>
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required>
+                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required oninput="formatPhoneNumber(this)">
                 <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
             </div>
 
@@ -127,6 +127,20 @@ $(document).ready(function() {
 });
 function openModal(modalId) {
     document.getElementById(modalId).classList.remove("hidden");
+}
+// Capitalize first letter of input
+function capitalizeFirstLetter(input) {
+    let value = input.value;
+    value = value.charAt(0).toUpperCase() + value.slice(1);
+    input.value = value;
+}
+
+// Format phone number (if starts with '09', change to '+63')
+function formatPhoneNumber(input) {
+    let phoneNumber = input.value;
+    if (phoneNumber.startsWith('09')) {
+        input.value = '+63' + phoneNumber.substring(1);
+    }
 }
 
 function closeModal(modalId) {
