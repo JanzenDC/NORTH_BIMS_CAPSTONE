@@ -73,9 +73,18 @@ while ($row = mysqli_fetch_assoc($result_blotter)) {
                     <a href='../nx_pages/ReportPage.php?page=document_stats' class='bg-green-600 rounded-md p-3 text-white cursor-pointer'>
                         Document Statistics
                     </a>
-                    <button class='bg-green-600 rounded-md p-3 text-white cursor-pointer' onclick="GenerateReport()">
-                        Generate Report
-                    </button>
+                    <select class="bg-green-600 text-white rounded-md p-3 cursor-pointer" onchange="generateReport(this.value)">
+                        <option value="" disabled selected>Select Purok</option>
+                        <option value="Acadia">Villa Gabriel</option>
+                        <option value="mulawin">Mulawin</option>
+                        <option value="Kamagong">Camagong</option>
+                        <option value="banaba">Banaba</option>
+                        <option value="narra">Narra</option>
+                        <option value="calumpit">Calumpit</option>
+                        <option value="mabolo">Mabolo</option>
+                        <!-- Add more options here if necessary -->
+                    </select>
+
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -245,10 +254,21 @@ while ($row = mysqli_fetch_assoc($result_blotter)) {
                 }]
             }
         });
-        function GenerateReport(){
-            const pdfUrl = `../nx_pages/nx_residents/generate_report.php`;
-            window.open(pdfUrl, '_blank');
+        function generateReport(value) {
+            if (value) {
+                const pdfUrl = `../nx_pages/nx_residents/generate_report.php?area=${encodeURIComponent(value)}`;
+                window.open(pdfUrl, '_blank');
+            } else {
+                // Using SweetAlert2 (swal) to show a warning
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Area Selected',
+                    text: 'Please select an area first to generate the report.',
+                    confirmButtonText: 'OK'
+                });
+            }
         }
+
     </script>
 </body>
 </html>

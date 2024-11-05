@@ -16,9 +16,19 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Query to fetch all residents ordered by houseNo and head_fam
-$sql = "SELECT * FROM tblresident ORDER BY houseNo, head_fam DESC";
-$result = mysqli_query($conn, $sql);
+// Get the 'purok' parameter from the URL
+$purokss = isset($_GET['area']) ? $_GET['area'] : '';  
+
+// SQL query to fetch residents based on the 'purok' value
+$sql = "SELECT * FROM tblresident WHERE purok = '$purokss' ORDER BY houseNo, head_fam DESC"; 
+
+// Execute the query and check for errors
+$result = $conn->query($sql);
+
+// Check if query execution was successful
+if (!$result) {
+    die("Error executing query: " . $conn->error);  // Optional: Handle error more gracefully in production
+}
 
 // Group residents by their houseNo
 $households = [];
@@ -27,16 +37,21 @@ while ($row = mysqli_fetch_assoc($result)) {
     if (!isset($households[$houseNo])) {
         $households[$houseNo] = [];
     }
-    $households[$houseNo][] = $row;  // Add each resident to the appropriate houseNo group
+    $households[$houseNo][] = $row;
 }
 
 // Close connection after retrieving data
 $conn->close();
 
+// Start output buffering to prevent accidental output
+ob_start();
+
 // Extend the FPDF class to include the custom header function
 class PDF extends FPDF {
     // Header function to add the custom header
     function Header() {
+        global $purokss;  // Access the global $purokss variable
+
         // Set font for the text
         $this->SetFont('Arial', 'B', 12);
 
@@ -56,14 +71,14 @@ class PDF extends FPDF {
         $this->Cell($textWidth, 10, 'Republic of the Philippines', 0, 1, 'C');
         $this->Cell(0, 4, 'Province of Nueva Ecija', 0, 1, 'C');
         $this->Cell(0, 4, 'Municipality of Gabaldon', 0, 1, 'C');
-        $this->Cell(0, 4, 'Barangay North Poblacion', 0, 1, 'C');
+        $this->Cell(0, 4, 'RECORD OF BARANGAY INHABITANTS', 0, 1, 'C');
 
         // Move down for the title
         $this->Ln(10);
 
-        // Title
+        // Title with dynamic Purok value
         $this->SetFont('Arial', 'B', 15);
-        $this->Cell(0, 10, 'Resident Report', 0, 1, 'C');
+        $this->Cell(0, 10, 'Purok: ' . strtoupper($purokss), 0, 1, 'C'); 
 
         // Line break
         $this->Ln(10);
@@ -148,31 +163,12 @@ foreach ($households as $houseNo => $members) {
         }
     }
 
-    // Then loop to show family members (exclude household head)
+    // Loop through other family members
     foreach ($members as $index => $member) {
         if ($member['head_fam'] !== 'Yes') {
-            // Check if the current position is too close to the bottom of the page, if so, add a page
-            if ($pdf->GetY() > 250) {  // 250mm is a safe threshold before the bottom of a Legal page
-                $pdf->AddPage();  // Add new page
-                // Reprint header on the new page
-                $pdf->SetFont('Arial', 'B', 8);
-                $pdf->SetFillColor(200, 220, 255);
-                $pdf->Cell($colWidths[0], 7, 'HOUSEHOLD HEAD', 1, 0, 'C', true);
-                $pdf->Cell($colWidths[1], 7, 'RELATION TO HOUSEHOLD HEAD', 1, 0, 'C', true);
-                $pdf->Cell($colWidths[2], 7, 'DATE OF BIRTH', 1, 0, 'C', true);
-                $pdf->Cell($colWidths[3], 7, 'AGE', 1, 0, 'C', true);
-                $pdf->Cell($colWidths[4], 7, 'SEX', 1, 0, 'C', true);
-                $pdf->Cell($colWidths[5], 7, 'CIVIL STATUS', 1, 0, 'C', true);
-                $pdf->Cell($colWidths[6], 7, 'OCCUPATION', 1, 0, 'C', true);
-                $pdf->Cell($colWidths[7], 7, 'EDUCATIONAL ATTAINMENT', 1, 0, 'C', true);
-                $pdf->Cell($colWidths[8], 7, 'REGISTERED VOTERS', 1, 0, 'C', true);
-                $pdf->Ln();
-                $pdf->SetFont('Arial', '', 8);
-            }
-
-            // Print row content
+            // Print row content for non-head family members
             $pdf->Cell($colWidths[0], 6, '', 1); // Empty for 'Household Head'
-            $pdf->Cell($colWidths[1], 6, $member['fname'] . ' ' . $member['mname'] . ' ' . $member['lname'] . ' ' . $member['relation'], 1);
+            $pdf->Cell($colWidths[1], 6, $member['relation'], 1);
             $pdf->Cell($colWidths[2], 6, $member['bday'], 1);
             $pdf->Cell($colWidths[3], 6, $member['age'], 1);
             $pdf->Cell($colWidths[4], 6, $member['gender'], 1);
@@ -184,7 +180,6 @@ foreach ($households as $houseNo => $members) {
         }
     }
 }
-
 // Add some vertical space before signatures
 $pdf->Ln(20);
 
@@ -221,7 +216,11 @@ for ($i = 0; $i < 4; $i++) {
     
     $pdf->Cell($signatureWidth, 10, $label, 0, 0, 'C');
 }
+// End output buffering and clean it
+ob_end_clean();
 
-// Output the PDF
-$pdf->Output();
+$filename = 'PUROK_' . strtoupper($purokss) . '_householdreport_' . date('Ymd') . '.pdf';
+
+// Output the PDF with the generated filename
+$pdf->Output('I', $filename);
 ?>
