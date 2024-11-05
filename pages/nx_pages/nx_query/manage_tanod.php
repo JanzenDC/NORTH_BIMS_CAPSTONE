@@ -16,6 +16,11 @@ $response = [
 $action = $_GET['action'] ?? '';
 $user = $_SESSION['user']['username']; // Assuming user session is started
 
+// Function to capitalize the first letter of each word in a string
+function capitalizeFirstLetter($string) {
+    return ucwords(strtolower($string)); // Capitalize first letter of each word
+}
+
 function logAction($conn, $action, $user) {
     $logdate = date('Y-m-d H:i:s');
     $stmt = $conn->prepare("INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)");
@@ -26,16 +31,39 @@ function logAction($conn, $action, $user) {
 switch ($action) {
     case 'create':
         // Create
-        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
-        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
-        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
-        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
-        $position = mysqli_real_escape_string($conn, $_POST['position']);
+        $fname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['fname']));
+        $mname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['mname']));
+        $lname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['lname']));
+        $suffix = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['suffix']));
+        $position = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['position']));
         $contact = mysqli_real_escape_string($conn, $_POST['contact']);
         $bday = mysqli_real_escape_string($conn, $_POST['bday']);
+        
+        // Handle file upload (validate image type and size)
         $image = $_FILES['image']['name'];
+        $imageTmp = $_FILES['image']['tmp_name'];
+        $imageSize = $_FILES['image']['size'];
+        $imageExt = strtolower(pathinfo($image, PATHINFO_EXTENSION));
 
-        if (move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image")) {
+        // Allowed image types and size validation
+        $allowedExtensions = ['jpg', 'jpeg', 'png'];
+        $maxSize = 5 * 1024 * 1024; // 5MB max size
+        if (!in_array($imageExt, $allowedExtensions)) {
+            $response['message'] = "Invalid image format. Only JPG, JPEG, and PNG are allowed.";
+            logAction($conn, "Failed to upload image for official: Invalid format", $user);
+            echo json_encode($response);
+            exit;
+        }
+        if ($imageSize > $maxSize) {
+            $response['message'] = "Image size exceeds the 5MB limit.";
+            logAction($conn, "Failed to upload image for official: Exceeds size limit", $user);
+            echo json_encode($response);
+            exit;
+        }
+
+        // Move uploaded image to the desired directory
+        if (move_uploaded_file($imageTmp, "../../../assets/images/pfp/$image")) {
+            // Insert the data into the database
             $query = "INSERT INTO tbltanod (fname, mname, lname, suffix, position, contact, bday, image) 
                       VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
             if (mysqli_query($conn, $query)) {
@@ -71,11 +99,11 @@ switch ($action) {
     case 'update':
         // Update
         $id = (int)$_POST['id'];
-        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
-        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
-        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
-        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
-        $position = mysqli_real_escape_string($conn, $_POST['position']);
+        $fname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['fname']));
+        $mname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['mname']));
+        $lname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['lname']));
+        $suffix = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['suffix']));
+        $position = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['position']));
         $contact = mysqli_real_escape_string($conn, $_POST['contact']);
         $bday = mysqli_real_escape_string($conn, $_POST['bday']);
         

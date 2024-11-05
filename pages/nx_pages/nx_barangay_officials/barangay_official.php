@@ -76,43 +76,43 @@ $conn->close();
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input placeholder="" type="text" name="fname" id="addFname" required>
+                        <input type="text" name="fname" id="addFname" required>
                         <span class="text-bold">Firstname</span>
                     </label>
                 </div>
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input placeholder="" type="text" name="mname" id="addMname" required>
+                        <input  type="text" name="mname" id="addMname">
                         <span class="text-bold">Middlename</span>
                     </label>
                 </div>
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input placeholder="" type="text" name="lname" id="addLname" required>
+                        <input type="text" name="lname" id="addLname" required>
                         <span class="text-bold">Lastname</span>
                     </label>
                 </div>
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input placeholder="" type="text" name="suffix" id="addSuffix" required>
+                        <input type="text" name="suffix" id="addSuffix">
                         <span class="text-bold">Suffix</span>
                     </label>
                 </div>
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input placeholder="" type="text" name="position" id="addPosition" required>
+                        <input type="text" name="position" id="addPosition" required>
                         <span class="text-bold">Position</span>
                     </label>
                 </div>
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input placeholder="" type="number" pattern="\d{1,11}" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11);" name="contact" id="addContact" required>
+                        <input type="number" pattern="\d{1,11}" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11);" name="contact" id="addContact" required>
                         <span class="text-bold">Contact Number</span>
                     </label>
                 </div>
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input placeholder="" type="date" name="bday" id="addBday" required>
+                        <input name="bday" id="addBday" required>
                         <span class="text-bold">Birthdate</span>
                     </label>
                 </div>
@@ -188,8 +188,6 @@ $conn->close();
 
 
 
-
-
 <!-- Include DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -212,7 +210,29 @@ $(document).ready(function() {
 function openModal(modalId) {
     document.getElementById(modalId).classList.remove("hidden");
 }
+function capitalizeFirstLetter(event) {
+    const value = event.target.value;
+    event.target.value = value.charAt(0).toUpperCase() + value.slice(1);
+}
+    function formatContactNumber(event) {
+        let value = event.target.value;
 
+        if (value.startsWith('09')) {
+            event.target.value = '+63' + value.slice(2);
+        }
+    }
+document.addEventListener('DOMContentLoaded', () => {
+    const fields = document.querySelectorAll('#createForm input, #editForm input');
+
+    fields.forEach(input => {
+        input.addEventListener('input', capitalizeFirstLetter);
+    });
+    const contactField = document.getElementById('addContact');
+    contactField.addEventListener('input', formatContactNumber);
+
+    const editContactField = document.getElementById('editContact');
+    editContactField.addEventListener('input', formatContactNumber);
+});
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add("hidden");
 }

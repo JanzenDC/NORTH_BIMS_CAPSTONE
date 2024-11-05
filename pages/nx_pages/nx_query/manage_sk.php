@@ -16,6 +16,11 @@ $response = [
 $action = $_GET['action'] ?? '';
 $user = $_SESSION['user']['username']; // Assuming user session is started
 
+// Function to capitalize the first letter of each word in a string
+function capitalizeFirstLetter($string) {
+    return ucwords(strtolower($string)); // Capitalize first letter of each word
+}
+
 function logAction($conn, $action, $user) {
     $logdate = date('Y-m-d H:i:s');
     $stmt = $conn->prepare("INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)");
@@ -26,11 +31,11 @@ function logAction($conn, $action, $user) {
 switch ($action) {
     case 'create':
         // Create
-        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
-        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
-        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
-        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
-        $position = mysqli_real_escape_string($conn, $_POST['position']);
+        $fname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['fname']));
+        $mname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['mname']));
+        $lname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['lname']));
+        $suffix = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['suffix']));
+        $position = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['position']));
         $contact = mysqli_real_escape_string($conn, $_POST['contact']);
         $bday = mysqli_real_escape_string($conn, $_POST['bday']);
         $image = $_FILES['image']['name'];
@@ -71,11 +76,11 @@ switch ($action) {
     case 'update':
         // Update
         $id = (int)$_POST['id'];
-        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
-        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
-        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
-        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
-        $position = mysqli_real_escape_string($conn, $_POST['position']);
+        $fname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['fname']));
+        $mname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['mname']));
+        $lname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['lname']));
+        $suffix = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['suffix']));
+        $position = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['position']));
         $contact = mysqli_real_escape_string($conn, $_POST['contact']);
         $bday = mysqli_real_escape_string($conn, $_POST['bday']);
         

@@ -21,16 +21,21 @@ function logAction($conn, $action, $user) {
     $stmt->execute();
 }
 
+// Function to capitalize first letter of each word
+function capitalizeFirstLetter($string) {
+    return ucwords(strtolower($string)); // Capitalize the first letter of each word, ensuring the rest are lowercase
+}
+
 $action = $_GET['action'] ?? '';
 $user = $_SESSION['user']['username']; 
 switch ($action) {
     case 'create':
         // Create
-        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
-        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
-        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
-        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
-        $purok = mysqli_real_escape_string($conn, $_POST['purok']);
+        $fname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['fname']));
+        $mname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['mname']));
+        $lname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['lname']));
+        $suffix = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['suffix']));
+        $purok = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['purok']));
         $contact = mysqli_real_escape_string($conn, $_POST['contact']);
         $bday = mysqli_real_escape_string($conn, $_POST['bday']);
         $image = $_FILES['image']['name'];
@@ -68,11 +73,11 @@ switch ($action) {
     case 'update':
         // Update
         $id = (int)$_POST['id'];
-        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
-        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
-        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
-        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
-        $purok = mysqli_real_escape_string($conn, $_POST['purok']);
+        $fname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['fname']));
+        $mname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['mname']));
+        $lname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['lname']));
+        $suffix = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['suffix']));
+        $purok = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['purok']));
         $contact = mysqli_real_escape_string($conn, $_POST['contact']);
         $bday = mysqli_real_escape_string($conn, $_POST['bday']);
         
