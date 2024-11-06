@@ -573,7 +573,7 @@ session_start();
       </div>
       <div class="form-container sign-in-container">
         <form action="login_query.php" method='POST'>
-          <h1>Sign in</h1>
+          <h1 style="text-align: center;">Sign in</h1>
           <input type="text" name='username' placeholder="Email/Username" />
           <div class="input-group">
             <input type="password" id="signin_password" name='password' placeholder="Password" />
