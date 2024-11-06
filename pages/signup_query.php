@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $province = !empty($_POST['province']) ? htmlspecialchars($_POST['province']) : null;
     $email = !empty($_POST['email']) ? htmlspecialchars($_POST['email']) : null;
     $username = !empty($_POST['username']) ? htmlspecialchars($_POST['username']) : null;
-    $password = !empty($_POST['password']) ? htmlspecialchars($_POST['password']) : null;
+    $password = !empty($_POST['password_holder']) ? htmlspecialchars($_POST['password_holder']) : null;
     $id_type = !empty($_POST['id_type']) ? htmlspecialchars($_POST['id_type']) : null;
     
     // Collect the registration status
@@ -68,8 +68,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Prepare the insert statement
-    $insert_query = "INSERT INTO tblregistered_account (fname, mname, lname, suffix, bday, age, contact, houseNo, street, brgy, municipality, province, email, username, password, id_type, id_file, account_type) 
-                     VALUES ('$fname', '$mname', '$lname', '$suffix', '$bday', '$age', '$contact', '$house_no', '$street', '$brgy', '$municipality', '$province', '$email', '$username', '$hashed_password', '$id_type', '$id_file_name', '$registration_status')";
+    $insert_query = "INSERT INTO tblregistered_account (fname, mname, lname, suffix, bday, age, contact, houseNo, street, brgy, municipality, province, email, username, password, id_type, id_file, account_type, image) 
+                     VALUES ('$fname', '$mname', '$lname', '$suffix', '$bday', '$age', '$contact', '$house_no', '$street', '$brgy', '$municipality', '$province', '$email', '$username', '$hashed_password', '$id_type', '$id_file_name', '$registration_status', 'default.png')";
 
     // Execute the insert statement
     if (mysqli_query($conn, $insert_query)) {

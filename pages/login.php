@@ -452,10 +452,11 @@ session_start();
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 2: Login and Contact Details</h3>
-                <input type="text" name="contact" placeholder="Phone Number" />
+                <input type="text" name="contact" placeholder="Phone Number" maxlength="12" />
+
                 <input type="email" name="email" placeholder="Email" />
-                <input type="password" id="password" placeholder="Password" oninput="checkPasswordStrength()" />
-                <div id="password-strength" class="strength-indicator"></div>
+                <input type="password" id="password_holder" name="password_holder" placeholder="Password" oninput="checkPasswordStrength()" />
+                <div id="password_strength" class="strength-indicator"></div>
             </div>
 
 
@@ -479,7 +480,7 @@ session_start();
                     <option value="widowed">Widowed</option>
                     <option value="separated">Separated</option>
                 </select>
-                <input type="file" name="id_file" accept="image/*" />
+                
             </div>
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
@@ -493,6 +494,8 @@ session_start();
                     <option value="company id">Company ID</option>
                     <option value="school id">School ID</option>
                 </select>
+                <h3>Identification Card:</h3>
+                <input type="file" name="id_file" accept="image/*" />
                 <input type="text" name="id_number" placeholder="ID Number" />
                 <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
             </div>
@@ -534,8 +537,8 @@ session_start();
     <script>
       // Password strength checker
       function checkPasswordStrength() {
-          const password = document.getElementById('password').value;
-          const strengthIndicator = document.getElementById('password-strength');
+          const password = document.getElementById('password_holder').value;
+          const strengthIndicator = document.getElementById('password_strength');
           let strength = 0;
 
           // Check password criteria
@@ -568,20 +571,20 @@ session_start();
           input.value = value.charAt(0).toUpperCase() + value.slice(1);
       }
 
-      // Step validation function
       function validateStep(step) {
           const fields = {
               0: ['registration_status', 'fname', 'lname', 'date_of_birth', 'age'], // Step 1
-              1: ['contact', 'email', 'password'], // Step 2
+              1: ['contact', 'email', 'password_holder'], // Step 2
               2: ['house_no', 'street', 'barangay', 'municipality', 'province'], // Step 3
-              3: ['occupation', 'civil_status', 'id_file'], // Step 4
-              4: ['id_type', 'id_number', 'emergency_contact'] // Step 5
+              3: ['occupation', 'civil_status'], // Step 4
+              4: ['id_type', 'id_file', 'id_number', 'emergency_contact'] // Step 5
           };
 
           const requiredFields = fields[step];
           let isValid = true;
           let firstInvalidField = null;
 
+          // General required field validation
           requiredFields.forEach(fieldName => {
               const field = document.querySelector(`[name="${fieldName}"]`);
               if (!field.value) {
@@ -589,44 +592,54 @@ session_start();
                   field.style.borderColor = 'red';
                   if (!firstInvalidField) firstInvalidField = field;
               } else {
-                  field.style.borderColor = '#e0e0e0';
+                  field.style.borderColor = '#e0e0e0'; // Reset border color
               }
           });
 
-          // Additional validation for specific fields
+
           if (step === 1) {
-              // Email validation
               const email = document.querySelector('[name="email"]').value;
               const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              const emailField = document.querySelector('[name="email"]');
               if (!emailRegex.test(email)) {
                   isValid = false;
-                  document.querySelector('[name="email"]').style.borderColor = 'red';
+                  emailField.style.borderColor = 'red';
+                  toastr.error('Please enter a valid email address.');
+              } else {
+                  emailField.style.borderColor = ''; // Reset if valid
               }
 
               // Password strength validation
-              const password = document.getElementById('password').value;
+              const password = document.getElementById('password_holder').value;
+              const passwordField = document.getElementById('password_holder');
               let strength = 0;
-              if (password.length >= 8) strength++;
-              if (/[A-Z]/.test(password)) strength++;
-              if (/[a-z]/.test(password)) strength++;
-              if (/[0-9]/.test(password)) strength++;
-              if (/[\W_]/.test(password)) strength++;
               
+              if (password.length >= 8) strength++; // Minimum length of 8
+              if (/[A-Z]/.test(password)) strength++; // At least one uppercase letter
+              if (/[a-z]/.test(password)) strength++; // At least one lowercase letter
+              if (/[0-9]/.test(password)) strength++; // At least one digit
+              if (/[\W_]/.test(password)) strength++; // At least one special character
+
               if (strength < 3) {
                   isValid = false;
-                  document.getElementById('password').style.borderColor = 'red';
+                  passwordField.style.borderColor = 'red';
+                  toastr.warning('Password must be at least 8 characters long and include a mix of uppercase, lowercase, numbers, and special characters.');
+              } else {
+                  passwordField.style.borderColor = ''; // Reset if valid
               }
           }
 
+          // Handle invalid state and focus
           if (!isValid) {
               if (firstInvalidField) {
-                  firstInvalidField.focus();
+                  firstInvalidField.focus(); // Focus on the first invalid field
               }
-              toastr.error('Please fill in all required fields correctly');
+              toastr.error('Please fill in all required fields correctly.');
           }
 
-          return isValid;
+          return isValid; // Return the validation status
       }
+
 
       // Initialize elements
       const signUpButton = document.getElementById('signUp');
