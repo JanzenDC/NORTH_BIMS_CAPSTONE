@@ -560,6 +560,13 @@ session_start();
                 <input type="file" name="id_file" accept="image/*" />
                 <input type="text" name="id_number" placeholder="ID Number" />
                 <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
+                <div style="margin-top: 10px;">
+                    <input type="checkbox" name="privacy_agreement" required>
+                    <label for="privacy_agreement">
+                        Your privacy is important to us at Barangay Information Management System (BIMS). We collect and use your personal information solely to provide and enhance our services, and we safeguard it from unauthorized access. By using BIMS, you agree to our privacy policy.
+                    </label>
+                </div>
+
             </div>
 
 
@@ -699,7 +706,7 @@ session_start();
               1: ['contact', 'email', 'password_holder'], // Step 2
               2: ['house_no', 'street', 'barangay', 'municipality', 'province'], // Step 3
               3: ['occupation', 'civil_status'], // Step 4
-              4: ['id_type', 'id_file', 'id_number', 'emergency_contact'] // Step 5
+              4: ['id_type', 'id_file', 'id_number', 'emergency_contact', 'privacy_agreement'] // Step 5
           };
 
           const requiredFields = fields[step];
@@ -718,38 +725,16 @@ session_start();
               }
           });
 
-
-          if (step === 1) {
-              const email = document.querySelector('[name="email"]').value;
-              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-              const emailField = document.querySelector('[name="email"]');
-              if (!emailRegex.test(email)) {
+          // Privacy Agreement Checkbox validation (Step 5)
+          if (step === 4) {
+              const privacyCheckbox = document.querySelector('[name="privacy_agreement"]');
+              if (!privacyCheckbox.checked) {
                   isValid = false;
-                  emailField.style.borderColor = 'red';
-                  toastr.error('Please enter a valid email address.');
-              } else {
-                  emailField.style.borderColor = ''; // Reset if valid
-              }
-
-              // Password strength validation
-              const password = document.getElementById('password_holder').value;
-              const passwordField = document.getElementById('password_holder');
-              let strength = 0;
-              
-              if (password.length >= 8) strength++; // Minimum length of 8
-              if (/[A-Z]/.test(password)) strength++; // At least one uppercase letter
-              if (/[a-z]/.test(password)) strength++; // At least one lowercase letter
-              if (/[0-9]/.test(password)) strength++; // At least one digit
-              if (/[\W_]/.test(password)) strength++; // At least one special character
-
-              if (strength < 3) {
-                  isValid = false;
-                  passwordField.style.borderColor = 'red';
-                  toastr.warning('Password must be at least 8 characters long and include a mix of uppercase, lowercase, numbers, and special characters.');
-              } else {
-                  passwordField.style.borderColor = ''; // Reset if valid
+                  toastr.error('You must agree to the privacy policy before proceeding.');
               }
           }
+
+          // Other step-specific validations (e.g., email format, password strength) can be added here
 
           // Handle invalid state and focus
           if (!isValid) {
@@ -761,6 +746,7 @@ session_start();
 
           return isValid; // Return the validation status
       }
+
 
 
       // Initialize elements
@@ -861,11 +847,13 @@ session_start();
       // Next button handler
       nextBtn.addEventListener('click', () => {
           if (currentStep < steps.length - 1) {
+              // Validate current step before advancing
               if (validateStep(currentStep)) {
                   currentStep++;
                   updateStep(currentStep);
               }
           } else {
+              // If on the last step, validate and submit
               if (validateStep(currentStep)) {
                   document.getElementById('signupForm').submit();
               }
