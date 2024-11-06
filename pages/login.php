@@ -560,7 +560,7 @@ session_start();
                 <input type="file" name="id_file" accept="image/*" />
                 <input type="text" name="id_number" placeholder="ID Number" />
                 <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
-                <div style="margin-top: 10px;">
+                <div style="margin-top: 10px; display: flex; gap: 10px;">
                     <input type="checkbox" name="privacy_agreement" required>
                     <label for="privacy_agreement">
                         Your privacy is important to us at Barangay Information Management System (BIMS). We collect and use your personal information solely to provide and enhance our services, and we safeguard it from unauthorized access. By using BIMS, you agree to our privacy policy.
