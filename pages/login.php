@@ -7,7 +7,10 @@ session_start();
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css" integrity="sha384-NvKbDTEnL+A8F/AA5Tc5kmMLSJHUO868P+lDtTpJIeQdGYaUIuLr4lVGOEA1OcMy" crossorigin="anonymous">   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
 <base href="." />
   <style>
   :root {
@@ -374,26 +377,48 @@ session_start();
     right: 0;
     z-index: 9999;
   }
-  .strength-indicator {
-      height: 10px;
+    .password-container {
+      position: relative;
       width: 100%;
-      margin-top: 5px;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-  }
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
 
-  .weak {
-      background-color: red;
-  }
+    .input-group input {
+      flex: 1;
+      padding-right: 40px; /* Make room for the icon */
+    }
+  
 
-  .medium {
-      background-color: orange;
-  }
+    .password-toggle:hover {
+      color: #333;
+    }
 
-  .strong {
-      background-color: green;
-  }
+    .strength-indicator {
+      height: 4px;
+      width: 100%;
+      background-color: #eee;
+      border-radius: 2px;
+      overflow: hidden;
+    }
 
+    .strength-progress {
+      height: 100%;
+      width: 0;
+      transition: all 0.3s ease;
+    }
+
+    .weak { background-color: #ff4444; }
+    .medium { background-color: #ffa700; }
+    .strong { background-color: #00c851; }
   @keyframes show {
     0%, 49.99% {
       opacity: 0;
@@ -455,8 +480,15 @@ session_start();
                 <input type="text" name="contact" placeholder="Phone Number" maxlength="12" />
 
                 <input type="email" name="email" placeholder="Email" />
-                <input type="password" id="password_holder" name="password_holder" placeholder="Password" oninput="checkPasswordStrength()" />
-                <div id="password_strength" class="strength-indicator"></div>
+                <div class="password-container" style="margin-bottom: 50px;">
+                  <div class="input-group">
+                    <input type="password" id="password_holder" name="password_holder" placeholder="Password" />
+                    <i class="fa fa-eye password-toggle"></i>
+                  </div>
+                  <div class="strength-indicator">
+                    <div id="strength-progress" class="strength-progress"></div>
+                  </div>
+                </div>
             </div>
 
 
@@ -535,35 +567,74 @@ session_start();
     </div>
   
     <script>
-      // Password strength checker
-      function checkPasswordStrength() {
-          const password = document.getElementById('password_holder').value;
-          const strengthIndicator = document.getElementById('password_strength');
-          let strength = 0;
-
-          // Check password criteria
-          if (password.length >= 8) strength++; // Length
-          if (/[A-Z]/.test(password)) strength++; // Uppercase letter
-          if (/[a-z]/.test(password)) strength++; // Lowercase letter
-          if (/[0-9]/.test(password)) strength++; // Number
-          if (/[\W_]/.test(password)) strength++; // Special character
-
-          // Update strength indicator
-          strengthIndicator.className = 'strength-indicator';
-          if (strength === 0) {
-              strengthIndicator.classList.add('weak');
-              strengthIndicator.style.width = '0%';
-          } else if (strength <= 2) {
-              strengthIndicator.classList.add('weak');
-              strengthIndicator.style.width = '33%';
-          } else if (strength === 3) {
-              strengthIndicator.classList.add('medium');
-              strengthIndicator.style.width = '66%';
-          } else {
-              strengthIndicator.classList.add('strong');
-              strengthIndicator.style.width = '100%';
-          }
+    function togglePassword() {
+      const passwordInput = document.getElementById('password_holder');
+      const toggleIcon = document.querySelector('.password-toggle');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
       }
+    }
+
+    function checkPasswordStrength(password) {
+      let strength = 0;
+      const strengthProgress = document.getElementById('strength-progress');
+
+      // Length check (at least 8 characters)
+      if (password.length >= 8) strength++;
+      
+      // Uppercase letter check
+      if (/[A-Z]/.test(password)) strength++;
+      
+      // Lowercase letter check
+      if (/[a-z]/.test(password)) strength++;
+      
+      // Number check
+      if (/[0-9]/.test(password)) strength++;
+      
+      // Special character check
+      if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+
+      // Update strength indicator
+      strengthProgress.classList.remove('weak', 'medium', 'strong');
+      
+      if (password.length === 0) {
+        strengthProgress.style.width = '0';
+      } else if (strength <= 2) {
+        strengthProgress.style.width = '33%';
+        strengthProgress.classList.add('weak');
+      } else if (strength <= 3) {
+        strengthProgress.style.width = '66%';
+        strengthProgress.classList.add('medium');
+      } else {
+        strengthProgress.style.width = '100%';
+        strengthProgress.classList.add('strong');
+      }
+
+      return strength;
+    }
+
+    // Initialize password strength checker
+    document.addEventListener('DOMContentLoaded', function() {
+      const passwordInput = document.getElementById('password_holder');
+      if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+          checkPasswordStrength(this.value);
+        });
+      }
+
+      // Initialize password toggle
+      const toggleButton = document.querySelector('.password-toggle');
+      if (toggleButton) {
+        toggleButton.addEventListener('click', togglePassword);
+      }
+    });
 
       // Capitalize first letter
       function capitalizeFirstLetter(input) {
