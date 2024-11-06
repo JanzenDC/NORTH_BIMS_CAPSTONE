@@ -41,10 +41,10 @@ if ($day % 10 == 1 && $day % 100 != 11) {
         <div style="display: flex; justify-content: center;">
           <div style="position: relative; width: 816px; height: 1056px; background: white; overflow: hidden;">
             <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 0; opacity: 0.3;">
-              <div style="width: 790px; height: 790px; background: url('./assets/images/north.png') no-repeat center; background-size: contain; opacity: 0.3; z-index: 0;"></div>
+              <div style="width: 790px; height: 790px; background: url('../../assets/images/north.png') no-repeat center; background-size: contain; opacity: 0.3; z-index: 0;"></div>
             </div>
             
-            <img src="./assets/images/north.png" style="position: absolute; top: 100px; left: 80px; width: 125px; height: 125px;" />
+            <img src="../../assets/images/north.png" style="position: absolute; top: 100px; left: 80px; width: 125px; height: 125px;" />
             
             <div style="display: flex; justify-content: center; margin-top: 120px;">
               <div style="font-size: 16px; text-align: center;">

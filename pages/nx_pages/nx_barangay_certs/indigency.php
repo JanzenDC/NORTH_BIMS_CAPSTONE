@@ -54,7 +54,6 @@ $(document).ready(function() {
     });
     $('#residentTable').DataTable({
         "searching": true, // Enable the search feature
-        "scrollX": true // Enable horizontal scrolling
     });
     // Initialize jQuery UI Tabs
     $("#tabs").tabs();
@@ -656,12 +655,12 @@ function disapproveCert(targetID) {
 <!-- Resident Search Dialog -->
 <div id="residentDialog" style="display:none;">
     <h2>Select Resident</h2>
-    <table id="residentTable" class="display" style="width: 100%; border-collapse: collapse;">
+    <table id="residentTable" class="display" style="width:100%">
         <thead>
             <tr>
-                <th style="border: 1px solid #ccc; padding: 8px;">Resident Name</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Age</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Actions</th>
+                <th>Resident Name</th>
+                <th>Age</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -674,18 +673,19 @@ function disapproveCert(targetID) {
                 while ($row = $resultResidents->fetch_assoc()) {
                     $fullName = htmlspecialchars($row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']);
                     echo "<tr>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'>" . $fullName . "</td>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'>" . htmlspecialchars($row['age']) . "</td>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'><button class='select-resident bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200' data-name='" . $fullName . "' data-age='" . htmlspecialchars($row['age']) . "' data-id='" . htmlspecialchars($row['resident_id']) . "'>Select</button></td>";
+                    echo "<td>" . $fullName . "</td>";
+                    echo "<td>" . htmlspecialchars($row['age']) . "</td>";
+                    echo "<td><button class='select-resident bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200' data-name='" . $fullName . "' data-age='" . htmlspecialchars($row['age']) . "' data-id='" . htmlspecialchars($row['resident_id']) . "'>Select</button></td>";
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='3' style='text-align:center; border: 1px solid #ccc; padding: 8px;'>No residents found</td></tr>";
+                echo "<tr><td colspan='3' style='text-align:center;'>No residents found</td></tr>";
             }
             ?>
         </tbody>
     </table>
 </div>
+
 
 <!-- Add Certificate Dialog -->
 <div id="add-certificate-dialog" title="Add Certificate" style="display:none;">
