@@ -682,7 +682,7 @@ function doneCert(id) {
     </div>
 
     <div class="mb-4">
-        <label for="new_saleAgreement" class="block text-sm font-medium text-gray-700">Sale Agreement:</label>
+        <label for="new_saleAgreement" class="block text-sm font-medium text-gray-700">Agreed Price:</label>
         <input type="text" id="new_saleAgreement" name="new_saleAgreement" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200" required>
     </div>
 

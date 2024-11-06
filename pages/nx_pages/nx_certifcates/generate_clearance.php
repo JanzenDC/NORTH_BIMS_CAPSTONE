@@ -75,7 +75,7 @@ if ($day % 10 == 1 && $day % 100 != 11) {
                             </div>
                             
                             <div style="margin-right: 15px;">
-                                <div style="font-size: 13px; margin-top: 20px;">TO WHOM IT MAY CONCERN:</div>
+                                <div style="font-size: 13px; margin-top: 20px; margin-right: 15px;">TO WHOM IT MAY CONCERN:</div>
                                 <div style="margin-top: 20px; font-size: 13px; word-spacing: 10px;">
                                     This is to certify that <u style="font-weight: bold;">&nbsp;<?= $fullname ?>, <span style="font-size: 14px; font-weight: bold;"><?= $row['age'] ?> years old&nbsp;,</span></u></span><span>&nbsp;,</span>
                                     <br><span style="font-weight: bold; font-size: 13px;">Single/Married/widow/widower</span> a bonafide resident of<span><i style="font-weight: bold; font-size: 13px; word-spacing: 1px;"> Barangay North Poblacion, <u>Gabaldon</u> Nueva Ecija,</i></span>
