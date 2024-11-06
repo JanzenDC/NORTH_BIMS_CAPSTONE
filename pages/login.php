@@ -419,6 +419,36 @@ session_start();
     .weak { background-color: #ff4444; }
     .medium { background-color: #ffa700; }
     .strong { background-color: #00c851; }
+
+    .sign-in-container .input-group {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.sign-in-container .input-group input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.sign-in-container .input-group-append {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.sign-in-container .input-group-text {
+  background: none;
+  border: none;
+  color: #666;
+}
+
+.sign-in-container .password-toggle:hover {
+  color: #333;
+}
   @keyframes show {
     0%, 49.99% {
       opacity: 0;
@@ -545,7 +575,14 @@ session_start();
         <form action="login_query.php" method='POST'>
           <h1>Sign in</h1>
           <input type="text" name='username' placeholder="Email/Username" />
-          <input type="password" name='password' placeholder="Password" />
+          <div class="input-group">
+            <input type="password" id="signin_password" name='password' placeholder="Password" />
+            <div class="input-group-append">
+              <span class="input-group-text p-2">
+                <i class="fa fa-eye password-toggle" onclick="toggleSignInPassword()"></i>
+              </span>
+            </div>
+          </div>
           <a href="forgot_pass.php"><p>Forgot Password?</a></p>
           <button type='submit'>Sign In</button>
         </form>
@@ -567,6 +604,20 @@ session_start();
     </div>
   
     <script>
+    function toggleSignInPassword() {
+      const passwordInput = document.getElementById('signin_password');
+      const toggleIcon = document.querySelector('.sign-in-container .password-toggle');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
     function togglePassword() {
       const passwordInput = document.getElementById('password_holder');
       const toggleIcon = document.querySelector('.password-toggle');
