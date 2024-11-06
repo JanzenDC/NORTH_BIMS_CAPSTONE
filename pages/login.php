@@ -511,7 +511,7 @@ session_start();
           <h1>Sign in</h1>
           <input type="text" name='username' placeholder="Email/Username" />
           <input type="password" name='password' placeholder="Password" />
-          <!-- <a href="#"><p>Forgot Password?</a></p> -->
+          <a href="forgot_pass.php"><p>Forgot Password?</a></p>
           <button type='submit'>Sign In</button>
         </form>
       </div>
