@@ -698,8 +698,8 @@ function deleteDisapproved(id) {
                     <label for="amount" class="block text-gray-700">Amount:</label>
                     <input type="number" id="amount" name="amount" class="mt-1 p-2 border rounded w-full" placeholder="Enter amount" required>
                     
-                    <label for="amountInWords" class="block text-gray-700 mt-2">Amount in Words:</label>
-                    <input type="text" id="amountInWords" name="amountInWords" class="mt-1 p-2 border rounded w-full" placeholder="Enter amount in words" required>
+                    <label for="amountInWords" class="block text-gray-700 mt-2">Amount as Words:</label>
+                    <input type="text" id="amountInWords" name="amountInWords" class="mt-1 p-2 border rounded w-full" placeholder="Enter amount as words" required>
 
                     <label for="transactionDate" class="block text-gray-700 mt-2">Transaction Date:</label>
                     <input type="date" id="transactionDate" name="transactionDate" class="mt-1 p-2 border rounded w-full" required>

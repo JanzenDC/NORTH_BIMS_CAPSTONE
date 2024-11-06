@@ -554,7 +554,7 @@ function doneCert(id) {
     </div>
 
     <div class="mb-4">
-        <label for="New_amountWords" class="block font-medium">Amount in Words:</label>
+        <label for="New_amountWords" class="block font-medium">Amount as Words:</label>
         <input type="text" id="New_amountWords" name="amount_words" class="border rounded p-2 w-full" required>
     </div>
 
