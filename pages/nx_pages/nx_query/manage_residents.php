@@ -15,9 +15,14 @@ $response = [
 
 $action = $_GET['action'] ?? '';
 
-// Function to capitalize the first letter of each word in names
+function logAction($conn, $action, $user) {
+    $logdate = date('Y-m-d H:i:s');
+    $stmt = $conn->prepare("INSERT INTO tbllogs (user, logdate, action) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $user, $logdate, $action);
+    $stmt->execute();
+}
 function capitalizeFirstLetter($string) {
-    return ucwords(strtolower($string)); // Capitalize the first letter of each word, ensuring the rest are lowercase
+    return ucwords(strtolower($string)); // 
 }
 
 $user = $_SESSION['user']['username']; 
@@ -50,7 +55,6 @@ switch ($action) {
         foreach ($requiredFields as $field) {
             if (empty($data[$field])) {
                 $response['message'] = "Field '$field' is required.";
-                logAction($conn, "Failed to create resident: $response[message]", $user);
                 echo json_encode($response);
                 exit;
             }
