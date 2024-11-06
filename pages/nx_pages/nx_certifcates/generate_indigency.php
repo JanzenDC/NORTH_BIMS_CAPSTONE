@@ -19,7 +19,35 @@ $day = date('j', $timestamp); // Day without leading zeros
 $month = date('F', $timestamp); // Full month name
 $year = date('Y', $timestamp); // Full year
 
-// Determine the suffix for the day
+// Tagalog month translations
+$months = [
+    'January' => 'Enero',
+    'February' => 'Pebrero',
+    'March' => 'Marso',
+    'April' => 'Abril',
+    'May' => 'Mayo',
+    'June' => 'Hunyo',
+    'July' => 'Hulyo',
+    'August' => 'Agosto',
+    'September' => 'Setyembre',
+    'October' => 'Oktubre',
+    'November' => 'Nobyembre',
+    'December' => 'Disyembre'
+];
+
+// Convert day number to Tagalog words
+function convertDayToTagalog($day) {
+    $tagalogNumbers = [
+        1 => 'isa', 2 => 'dalawa', 3 => 'tatlo', 4 => 'apat', 5 => 'lima', 6 => 'anim', 7 => 'pito', 8 => 'walo', 9 => 'siyam',
+        10 => 'sampu', 11 => 'labing isa', 12 => 'labindalawa', 13 => 'labintatlo', 14 => 'labing apat', 15 => 'labing lima',
+        16 => 'labing anim', 17 => 'labimpito', 18 => 'labing walo', 19 => 'labingsiyam', 20 => 'dalawampu', 21 => 'dalawampu’t isa',
+        22 => 'dalawampu’t dalawa', 23 => 'dalawampu’t tatlo', 24 => 'dalawampu’t apat', 25 => 'dalawampu’t lima', 26 => 'dalawampu’t anim',
+        27 => 'dalawampu’t pito', 28 => 'dalawampu’t walo', 29 => 'dalawampu’t siyam', 30 => 'tatlumpu', 31 => 'tatlumpu’t isa'
+    ];
+
+    // Convert the day to Tagalog words if it exists in the array
+    return isset($tagalogNumbers[$day]) ? $tagalogNumbers[$day] : $day;
+}
 $suffix = 'th';
 if ($day % 10 == 1 && $day % 100 != 11) {
     $suffix = 'st';
@@ -28,6 +56,10 @@ if ($day % 10 == 1 && $day % 100 != 11) {
 } elseif ($day % 10 == 3 && $day % 100 != 13) {
     $suffix = 'rd';
 }
+$dayInWords = convertDayToTagalog($day);
+
+// Translate the month to Tagalog
+$monthTagalog = isset($months[$month]) ? $months[$month] : $month;
 ?>
 <!doctype html>
 <html>
@@ -58,15 +90,23 @@ if ($day % 10 == 1 && $day % 100 != 11) {
                     </h1>
                 </div>
 
-                <div style="margin: 85px 100px 0 100px; line-height: 2;">
+                <div style="margin: 85px 100px 0 100px; font-size: small;">
                     <h1>TO WHOM IT MAY CONCERN:</h1>
                     <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>This is to certify that <b><?= $fullname ?>, <?= $row['age'] ?> years old</b> resident of Purok Banaba, Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
                     <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This further certifies that <b><?= $fullname ?>,</b> the above-named person belongs to indigent families as per record kept in this Barangay.</div>
                     <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This certification is issued upon request of <b><?= $fullname ?>,</b> for medical assistance purposes and for whatever legal purposes it may serve.</div>
                     <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Given this <?= $day ?><sup><?= $suffix ?></sup> day of <?= $month ?>, <?= $year ?>, here at Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
+
+                    <h1>SA KANINO ITO MAARING MANGALAP:</h1>
+                    <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>Ito ay nagpapatunay na si <b><?= $fullname ?>, <?= $row['age'] ?> taong gulang</b>, residente ng Purok Banaba, Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
+                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Ito rin ay nagpapatunay na si <b><?= $fullname ?>,</b> ang nabanggit na tao, ay kabilang sa mga pook na mahihirap batay sa tala na nakatala sa Barangay na ito.</div>
+                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Ang sertipikasyong ito ay inilabas sa kahilingan ni <b><?= $fullname ?>,</b> para sa layunin ng medikal na tulong at para sa anumang layunin ng legal na pangangailangan.</div>
+                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Ibinigay ito sa <?= $dayInWords ?> araw ng <?= $monthTagalog ?>, <?= $year ?> dito sa Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
                 </div>
 
-                <div style="margin-top: 40px;">
+
+
+                <div>
                     <div style="text-align: center; margin-left: 50px;">Prepared by:</div>
                     <div style="margin-top: 20px; margin-left: 300px; font-weight: bold; line-height: 1.2;">SHERLITA C. CALUDUCAN<br><span style="font-weight: normal;">Barangay Secretary</span></div>
                 </div>
