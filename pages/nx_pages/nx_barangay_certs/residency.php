@@ -36,7 +36,7 @@ $doneData = $resultDone->fetch_all(MYSQLI_ASSOC);
 
 <script>
 $(document).ready(function() {
-    // Initialize DataTables
+
     $('#walkinTable').DataTable({
         "scrollX": true // Enable horizontal scrolling
     });
@@ -53,10 +53,9 @@ $(document).ready(function() {
         "scrollX": true // Enable horizontal scrolling
     });
     $('#residentTable').DataTable({
-        "searching": true, // Enable the search feature
         "scrollX": true // Enable horizontal scrolling
     });
-    // Initialize jQuery UI Tabs
+
     $("#tabs").tabs();
 
     // Initialize the resident dialog
@@ -64,6 +63,9 @@ $(document).ready(function() {
         autoOpen: false,
         modal: true,
         width: 600,
+        resizable: false, // Disable resizing
+        responsive: true
+
     });
 
     // Initialize the add certificate dialog
@@ -77,6 +79,11 @@ $(document).ready(function() {
     // Open resident dialog on button click
     $("#open-resident-dialog").on("click", function() {
         $("#residentDialog").dialog("open");
+            setTimeout(function() {
+                $('#residentDialog thead th').each(function() {
+                    $(this).trigger('click');
+                });
+            }, 100);
     });
 
     // Handle resident selection
@@ -656,36 +663,44 @@ function disapproveCert(targetID) {
 <!-- Resident Search Dialog -->
 <div id="residentDialog" style="display:none;">
     <h2>Select Resident</h2>
-    <table id="residentTable" class="display" style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr>
-                <th style="border: 1px solid #ccc; padding: 8px;">Resident Name</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Age</th>
-                <th style="border: 1px solid #ccc; padding: 8px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            // Fetch residents from tblresident
-            $sqlResidents = "SELECT * FROM tblresident";
-            $resultResidents = $conn->query($sqlResidents);
+    <div style="width:100%;">
+        <table id="residentTable" class="display" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Resident Name</th>
+                    <th>Age</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Fetch residents from tblresident
+                $sqlResidents = "SELECT * FROM tblresident";
+                $resultResidents = $conn->query($sqlResidents);
 
-            if ($resultResidents->num_rows > 0) {
-                while ($row = $resultResidents->fetch_assoc()) {
-                    $fullName = htmlspecialchars($row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']);
-                    echo "<tr>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'>" . $fullName . "</td>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'>" . htmlspecialchars($row['age']) . "</td>";
-                    echo "<td style='border: 1px solid #ccc; padding: 8px;'><button class='select-resident bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 transition duration-200' data-name='" . $fullName . "' data-age='" . htmlspecialchars($row['age']) . "' data-id='" . htmlspecialchars($row['resident_id']) . "'>Select</button></td>";
-                    echo "</tr>";
+                if ($resultResidents->num_rows > 0) {
+                    while ($row = $resultResidents->fetch_assoc()) {
+                        $fullName = htmlspecialchars($row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']);
+                        $age = htmlspecialchars($row['age']);
+                        $residentId = htmlspecialchars($row['resident_id']);
+
+                        // Output the row with consistent styles
+                        echo "<tr>";
+                        echo "<td>" . $fullName . "</td>";
+                        echo "<td>" . $age . "</td>";
+                        echo "<td><button class='select-resident bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200' data-name='" . $fullName . "' data-age='" . $age . "' data-id='" . $residentId . "'>Select</button></td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='3' style='text-align:center; border: 1px solid #ccc; padding: 8px;'>No residents found</td></tr>";
                 }
-            } else {
-                echo "<tr><td colspan='3' style='text-align:center; border: 1px solid #ccc; padding: 8px;'>No residents found</td></tr>";
-            }
-            ?>
-        </tbody>
-    </table>
+                ?>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+
 
 <!-- Add Certificate Dialog -->
 <div id="add-certificate-dialog" title="Add Certificate" style="display:none;">
