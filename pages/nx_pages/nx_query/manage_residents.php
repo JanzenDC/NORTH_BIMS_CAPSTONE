@@ -48,18 +48,6 @@ switch ($action) {
     case 'create':
         $data = $_POST;
 
-        // Validate required fields
-        $requiredFields = ['fname', 'mname', 'lname', 'suffix', 'bday', 'houseNo', 'civil_status', 'education', 'gender', 
-        'birthplace', 'head_fam', 'occupation', 'voter'];
-
-        foreach ($requiredFields as $field) {
-            if (empty($data[$field])) {
-                $response['message'] = "Field '$field' is required.";
-                echo json_encode($response);
-                exit;
-            }
-        }
-
         // Sanitize and capitalize names
         $fname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $data['fname']));
         $mname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $data['mname']));
@@ -102,10 +90,10 @@ switch ($action) {
                                             purok, brgy, municipality, province, civil_status, 
                                             year_stayed, education, gender, birthplace, 
                                             head_fam, occupation, voter, image, relation) 
-                VALUES ('$fname', '$mname', '$lname', '$suffix', '$bday', $age, '$houseNo', 
-                        '$purok', '$brgy', '$municipality', '$province', '$civil_status', 
-                        '$year_stayed', '$education', '$gender', '$birthplace', 
-                        '$head_fam', '$occupation', '$voter', '$imageName', '$relation')";
+                    VALUES ('$fname', '$mname', '$lname', '$suffix', '$bday', $age, '$houseNo', 
+                            '$purok', '$brgy', '$municipality', '$province', '$civil_status', 
+                            '$year_stayed', '$education', '$gender', '$birthplace', 
+                            '$head_fam', '$occupation', '$voter', '$imageName', '$relation')";
 
         // Execute the query
         if (mysqli_query($conn, $query)) {
