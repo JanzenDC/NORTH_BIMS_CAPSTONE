@@ -91,19 +91,19 @@ $monthTagalog = isset($months[$month]) ? $months[$month] : $month;
                 </div>
 
                 <div style="margin: 85px 100px 0 100px; font-size: small;">
-                    <h1>TO WHOM IT MAY CONCERN:</h1>
-                    <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>This is to certify that <b><?= $fullname ?>, <?= $row['age'] ?> years old</b> resident of Purok Banaba, Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
-                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This further certifies that <b><?= $fullname ?>,</b> the above-named person belongs to indigent families as per record kept in this Barangay.</div>
-                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This certification is issued upon request of <b><?= $fullname ?>,</b> for medical assistance purposes and for whatever legal purposes it may serve.</div>
+                                    <h1>TO WHOM IT MAY CONCERN:</h1>
+                                    <p style="font-style: italic; font-size: 12px; margin-top: 3px; margin-bottom: 10px;">(SA KANINO ITO MAARING MANGALAP)</p>
+                                    <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>This is to certify that <b>MARICAR SOMERA, 43 years old</b> resident of Purok Banaba,</div>
+                                    <div style="font-style: italic; font-size: 12px; margin-left: 100px;">(Ito ay nagpapatunay na si) (residente ng Purok Banaba),</div>
+
+                                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Barangay North Poblacion, Gabaldon, Nueva Ecija. This further certify that <b>MARICAR SOMERA,</b> the above name person belongs to indigent families as per record kept in this Barangay.</div>
+                                    <div style="font-style: italic; font-size: 12px; margin-left: -16px;">(Ito rin ay nagpapatunay na si)</div>
+
+                                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This certification is issued upon request of <b>MARICAR SOMERA,</b> for medical assistance purposes and for whatever legal purposes it may serve.</div>
+
                     <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Given this <?= $day ?><sup><?= $suffix ?></sup> day of <?= $month ?>, <?= $year ?>, here at Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
-
-                    <h1>SA KANINO ITO MAARING MANGALAP:</h1>
-                    <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>Ito ay nagpapatunay na si <b><?= $fullname ?>, <?= $row['age'] ?> taong gulang</b>, residente ng Purok Banaba, Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
-                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Ito rin ay nagpapatunay na si <b><?= $fullname ?>,</b> ang nabanggit na tao, ay kabilang sa mga pook na mahihirap batay sa tala na nakatala sa Barangay na ito.</div>
-                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Ang sertipikasyong ito ay inilabas sa kahilingan ni <b><?= $fullname ?>,</b> para sa layunin ng medikal na tulong at para sa anumang layunin ng legal na pangangailangan.</div>
-                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Ibinigay ito sa <?= $dayInWords ?> araw ng <?= $monthTagalog ?>, <?= $year ?> dito sa Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
+                    <div style="font-style: italic; word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Ibinigay ito sa <?= $dayInWords ?> araw ng <?= $monthTagalog ?>, <?= $year ?> dito sa Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
                 </div>
-
 
 
                 <div>
