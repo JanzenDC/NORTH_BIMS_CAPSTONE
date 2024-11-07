@@ -1,5 +1,8 @@
 <?php
+require '../../db_connect.php';
 $userid = $_SESSION['user']['id'];
+
+
 $sqlWalkin = "SELECT * FROM vehicle_cert WHERE status = 'Walk-in' AND created_by ='$userid'";
 $resultWalkin = $conn->query($sqlWalkin);
 
@@ -12,6 +15,9 @@ if ($resultWalkin->num_rows > 0) {
 
 $sqlNew = "SELECT * FROM vehicle_cert WHERE status = 'New' AND created_by ='$userid'";
 $resultNew = $conn->query($sqlNew);
+if (!$resultNew) {
+    die('Error executing query: ' . $conn->error);
+}
 
 $newData = [];
 if ($resultNew->num_rows > 0) {
@@ -20,8 +26,11 @@ if ($resultNew->num_rows > 0) {
     }
 }
 
-$sqlApproved = "SELECT * FROM vehicle_cert WHERE status = 'Approved' AND created_by ='$userid' AND created_by ='$userid'";
+$sqlApproved = "SELECT * FROM vehicle_cert WHERE status = 'Approved' AND created_by ='$userid'";
 $resultApproved = $conn->query($sqlApproved);
+if (!$resultApproved) {
+    die('Error executing query: ' . $conn->error);
+}
 
 $approvedData = [];
 if ($resultApproved->num_rows > 0) {
@@ -30,8 +39,11 @@ if ($resultApproved->num_rows > 0) {
     }
 }
 
-$sqlDisApproved = "SELECT * FROM vehicle_cert WHERE status = 'Dispproved'";
+$sqlDisApproved = "SELECT * FROM vehicle_cert WHERE status = 'Dispproved' AND created_by = '$userid'";
 $resultDisApproved = $conn->query($sqlDisApproved);
+if (!$resultDisApproved) {
+    die('Error executing query: ' . $conn->error);
+}
 
 $disapprovedData = [];
 if ($resultDisApproved->num_rows > 0) {
@@ -40,8 +52,11 @@ if ($resultDisApproved->num_rows > 0) {
     }
 }
 
-$sqlDone = "SELECT * FROM vehicle_cert WHERE status = 'Done'";
+$sqlDone = "SELECT * FROM vehicle_cert WHERE status = 'Done' AND created_by = '$userid'";
 $resultDone = $conn->query($sqlDone);
+if (!$resultDone) {
+    die('Error executing query: ' . $conn->error);
+}
 
 $doneData = [];
 if ($resultDone->num_rows > 0) {
@@ -50,6 +65,7 @@ if ($resultDone->num_rows > 0) {
     }
 }
 ?>
+
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
