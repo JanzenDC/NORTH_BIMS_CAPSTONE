@@ -234,7 +234,7 @@ function addRecord(event) {
     <!-- HTML for Tabs -->
     <div id="tabs" class="container mt-4">
         <ul>
-            <li><a href="#walkin">Walk-in</a></li>
+            <!-- <li><a href="#walkin">Walk-in</a></li> -->
             <li><a href="#new">New</a></li>
             <li><a href="#approved">Approved</a></li>
             <li><a href="#disapproved">Disapproved</a></li>
@@ -242,7 +242,7 @@ function addRecord(event) {
         </ul>
         
         <!-- Walk-in Tab -->
-        <div id="walkin">
+        <!-- <div id="walkin">
             <table id="walkinTable" class="display" style="width:100%">
                 <thead>
                     <tr>
@@ -264,7 +264,7 @@ function addRecord(event) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        </div>
+        </div> -->
 
         <!-- New Tab -->
         <div id="new">

@@ -215,14 +215,14 @@ function addRecord(event) {
     
     <div id="tabs" class="container mt-4">
         <ul>
-            <li><a href="#walkin">Walk-in</a></li>
+            <!-- <li><a href="#walkin">Walk-in</a></li> -->
             <li><a href="#new">New</a></li>
             <li><a href="#approved">Approved</a></li>
             <li><a href="#disapproved">Disapproved</a></li>
             <li><a href="#done">Done</a></li>
         </ul>
 
-        <div id="walkin">
+        <!-- <div id="walkin">
             <table id="walkinTable" class="display" style="width:100%">
                 <thead>
                     <tr>
@@ -252,7 +252,7 @@ function addRecord(event) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        </div>
+        </div> -->
 
         <!-- Repeat similar structure for other sections (new, approved, disapproved, done) -->
 
