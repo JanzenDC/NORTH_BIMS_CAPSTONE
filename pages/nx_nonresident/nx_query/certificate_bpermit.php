@@ -24,10 +24,12 @@ function logAction($conn, $action, $user) {
     $stmt->bind_param("sss", $user, $logdate, $action);
     $stmt->execute();
 }
+
 $userID = $_SESSION['user']['id'];
+
 switch ($action) {
     case 'create':
-        // Retrieve form data
+        // Retrieve form data for certificate creation
         $owner_fname = mysqli_real_escape_string($conn, $_POST['fname'] ?? '');
         $owner_mname = mysqli_real_escape_string($conn, $_POST['mname'] ?? '');
         $owner_lname = mysqli_real_escape_string($conn, $_POST['lname'] ?? '');
@@ -46,7 +48,7 @@ switch ($action) {
         $note = mysqli_real_escape_string($conn, $_POST['note'] ?? '');
         $status = mysqli_real_escape_string($conn, $_POST['status'] ?? '');
 
-        // Prepare the SQL query
+        // Prepare the SQL query to insert certificate
         $sql = "INSERT INTO business_cert (ownerid, owner_fname, owner_mname, owner_lname, owner_suffix, businessName, typeOfBusiness, businessAddress, street, barangay, municipality, province, date_issued, amount, status, cert_amount, date_of_pickup, note) 
                 VALUES ('$userID', '$owner_fname', '$owner_mname', '$owner_lname', '$owner_suffix', '$businessName', '$typeOfBusiness', '$businessAddress', '$street', '$barangay', '$municipality', '$province', '$date_issued', '$amount', '$status', '$cert_amount', '$date_of_pickup', '$note')";
 
@@ -61,8 +63,32 @@ switch ($action) {
         } else {
             $response['message'] = 'Failed to add certificate: ' . mysqli_error($conn);
         }
-        
         break;
+    
+    case 'delete':
+        // Retrieve the certificate ID to be deleted
+        $certificateId = $_POST['id'] ?? '';
+
+        if ($certificateId && is_numeric($certificateId)) {
+            // Prepare the SQL query to delete the certificate by ID
+            $sql = "DELETE FROM business_cert WHERE id = ? AND ownerid = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $certificateId, $userID);
+
+            if ($stmt->execute()) {
+                $response['success'] = true;
+                $response['message'] = 'Certificate deleted successfully!';
+                logAction($conn, "Deleted certificate with ID $certificateId", $_SESSION['user']['username']);
+            } else {
+                $response['message'] = 'Failed to delete certificate: ' . mysqli_error($conn);
+            }
+
+            $stmt->close();
+        } else {
+            $response['message'] = 'Invalid certificate ID.';
+        }
+        break;
+
     default:
         $response['message'] = "Invalid action.";
 }

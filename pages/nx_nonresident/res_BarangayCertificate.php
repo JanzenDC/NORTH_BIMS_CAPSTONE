@@ -47,7 +47,7 @@ $treeView = $page;
         <main class="flex-1 p-6 overflow-y-auto mb-8">
              <?php 
             // Include the corresponding page content
-            include_once("../nx_residentpage/nx_barangay_certs/{$page}.php"); 
+            include_once("../nx_nonresident/nx_barangay_certs/{$page}.php"); 
             ?>
         </main>
     </div>

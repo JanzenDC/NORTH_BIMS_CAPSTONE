@@ -44,8 +44,8 @@ $(document).ready(function() {
     $("#addCertificateDialog").dialog({
         autoOpen: false,
         modal: true,
-        width: 700,
-        height:  500,
+        width: 400,
+        height:  555,
 
         buttons: {
             Cancel: function() {
@@ -104,6 +104,68 @@ $(document).ready(function() {
             }
         });
     });
+
+    $(document).on('click', '.deleteButton', function() {
+        var certificateId = $(this).data('id');
+        
+        // SweetAlert confirmation prompt
+        swal({
+            title: "Are you sure?",
+            text: "Do you really want to delete this certificate?",
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "Cancel",
+                    value: null,
+                    visible: true,
+                    className: "btn btn-secondary",
+                    closeModal: true
+                },
+                confirm: {
+                    text: "Yes, delete it!",
+                    value: true,
+                    visible: true,
+                    className: "btn btn-danger",
+                    closeModal: true
+                }
+            }
+        }).then((willDelete) => {
+            if (willDelete) {
+                // Send AJAX request to delete the record
+                $.ajax({
+                    url: 'nx_query/certificate_bpermit.php?action=delete',
+                    type: 'POST',
+                    data: { id: certificateId },
+                    success: function(response) {
+                        // Check if deletion was successful
+                        if (response.success) {
+                            swal("Deleted!", "Certificate deleted successfully.", {
+                                icon: "success",
+                            }).then(() => {
+                                location.reload(); // Reload the page or update the UI
+                            });
+                        } else {
+                            swal("Error", "Failed to delete the certificate.", {
+                                icon: "error",
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX error:', status, error);
+                        swal("Error", "There was an error processing your request.", {
+                            icon: "error",
+                        });
+                    }
+                });
+            } else {
+                // If the user cancels, just show a message
+                swal("Your certificate is safe!", {
+                    icon: "info",
+                });
+            }
+        });
+    });
+
 });
 
 ///////////// CRUD ////////////////////
@@ -172,39 +234,11 @@ function addRecord(event) {
 
     <div id="tabs" class="container mt-4">
         <ul>
-            <li><a href="#walkin">Walk-in</a></li>
             <li><a href="#new">New</a></li>
             <li><a href="#approved">Approved</a></li>
             <li><a href="#disapproved">Disapproved</a></li>
-            <li><a href="#done">Done</a></li>
         </ul>
 
-        <div id="walkin">
-            <table id="walkinTable" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Owner Name</th>
-                        <th>Business Name</th>
-                        <th>Address</th>
-                        <th>Type of Business</th>
-                        <th>Certificate Amount</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($walkinData as $data): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($data['owner_fname'] . ' ' . $data['owner_lname']); ?></td>
-                        <td><?php echo htmlspecialchars($data['businessName']); ?></td>
-                        <td><?php echo htmlspecialchars($data['businessAddress']); ?></td>
-                        <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
-                        <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
-                        <td><?php echo htmlspecialchars($data['status']); ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
 
 
         <div id="new">
@@ -216,21 +250,27 @@ function addRecord(event) {
                         <th>Address</th>
                         <th>Type of Business</th>
                         <th>Status</th>
+                        <th>Action</th> <!-- Add Action column for Delete -->
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($newData as $data): ?>
-                    <tr>
+                    <tr data-id="<?php echo $data['id']; ?>">
                         <td><?php echo htmlspecialchars($data['owner_fname'] . ' ' . $data['owner_lname']); ?></td>
                         <td><?php echo htmlspecialchars($data['businessName']); ?></td>
                         <td><?php echo htmlspecialchars($data['businessAddress']); ?></td>
                         <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
                         <td><?php echo htmlspecialchars($data['status']); ?></td>
+                        <td>
+                            <button class="deleteButton bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50" data-id="<?php echo $data['id']; ?>">Delete</button>
+                        </td>
+
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
+
 
 
         <div id="approved">
@@ -284,37 +324,6 @@ function addRecord(event) {
                 </tbody>
             </table>
         </div>
-
-        <div id="done">
-            <table id="doneTable" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Business Name</th>
-                        <th>Address</th>
-                        <th>Type of Business</th>
-                        <th>Date Issued</th>
-                        <th>Certificate Amount</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($doneData as $data): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($data['businessName']); ?></td>
-                        <td><?php echo htmlspecialchars($data['businessAddress']); ?></td>
-                        <td><?php echo htmlspecialchars($data['typeOfBusiness']); ?></td>
-                        <td><?php echo htmlspecialchars($data['date_issued']); ?></td>
-                        <td><?php echo htmlspecialchars($data['cert_amount']); ?></td>
-                        <td>
-                            <div class="bg-green-400 p-2 text-center rounded-full border border-green-700 text-white">
-                                <?php echo htmlspecialchars($row['status']); ?>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
     </div>
 </div>
 
@@ -325,31 +334,33 @@ function addRecord(event) {
 <div id="loadingIndicator" class="hidden">Loading...</div>
 <div id="addCertificateDialog" title="Request" style="display:none;">
     <form id="addCertificateForm" onsubmit="addRecord(event)">
-        <h2 class="text-xl font-semibold mb-4">Request</h2>
-        <input type="text" id="status" name="status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 disabled" value="New">
+        <input type="text" id="status" name="status" class=" hidden mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 disabled" value="New" readonly>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Personal Information -->
-            <div class="col-span-1">
+            <div class="col-span-1 hidden">
                 <h3 class="text-lg font-medium mb-2">Personal Information</h3>
                 <label for="fname" class="block">First Name:</label>
-                <input type="text" id="fname" name="fname" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
+                <input type="text" id="fname" name="fname" readonly value="<?= $_SESSION['user']['fname']; ?>" class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
 
                 <label for="mname" class="block mt-2">Middle Name:</label>
-                <input type="text" id="mname" name="mname" class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
+                <input type="text" id="mname" name="mname" readonly value="<?= $_SESSION['user']['mname']; ?>" class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
 
                 <label for="lname" class="block mt-2">Last Name:</label>
-                <input type="text" id="lname" name="lname" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
+                <input type="text" id="lname" name="lname" readonly value="<?= $_SESSION['user']['lname']; ?>" class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
             </div>
 
             <!-- Business Information -->
             <div class="col-span-1">
-                <h3 class="text-lg font-medium mb-2">Business Information</h3>
+                <label for="typeOfBusiness" class="block">Type of Business:</label>
+                <input type="text" id="typeOfBusiness" name="typeOfBusiness" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
+
+                <label for="dateIssued" class="mt-2 hidden">Date Issued:</label>
+                <input type="date" id="dateIssued" name="dateIssued" required class=" hidden mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2" readonly>
+
                 <label for="businessName" class="block">Business Name:</label>
                 <input type="text" id="businessName" name="businessName" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
 
-                <label for="businessAddress" class="block mt-2">Business Address:</label>
-                <input type="text" id="businessAddress" name="businessAddress" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
 
                 <label for="street" class="block mt-2">Street:</label>
                 <select id="street" name="street" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
@@ -362,77 +373,28 @@ function addRecord(event) {
                     <option value="Calumpit">Calumpit</option>
                     <option value="Acasia">Acasia</option>
                 </select>
+
+                <label for="municipality" class="block">Municipality:</label>
+                <input type="text" id="municipality" name="municipality" value="Gabaldon" readonly class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
+
+                <label for="province" class="block mt-2">Province:</label>
+                <input type="text" id="province" name="province" value="Nueva Ecija" readonly class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
             </div>
 
-            <!-- Business Type and Certificate Info -->
-            <div class="col-span-1">
-                <h3 class="text-lg font-medium mb-2">Certificate Information</h3>
-                <label for="typeOfBusiness" class="block">Type of Business:</label>
-                <input type="text" id="typeOfBusiness" name="typeOfBusiness" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
-
-                <label for="certAmount" class="block mt-2">Certificate Amount:</label>
-                <input type="text" id="certAmount" name="certAmount" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
-
-                <label for="dateIssued" class="block mt-2">Date Issued:</label>
-                <input type="date" id="dateIssued" name="dateIssued" required class="mt-1 block w-64 border border-gray-300 rounded-md shadow-sm p-2">
-            </div>
         </div>
 
         <button type="submit" class="mt-6 w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600">Request</button>
     </form>
 </div>
 
-
-<!-- EDIT CERT -->
-<div id="editCertificateDialog" title="Edit Certificate" style="display:none;">
-    <div class="space-y-4">
-        <input type="hidden" id="editCertId" name="certId">
-
-        <div>
-            <label for="editBusinessName" class="block text-sm font-medium text-gray-700">Business Name:</label>
-            <input type="text" id="editBusinessName" name="businessName" required 
-                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500" 
-                   placeholder="Enter business name">
-        </div>
-
-        <div>
-            <label for="editAddress" class="block text-sm font-medium text-gray-700">Address:</label>
-            <input type="text" id="editAddress" name="address" required 
-                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500" 
-                   placeholder="Enter address">
-        </div>
-
-        <div>
-            <label for="editTypeOfBusiness" class="block text-sm font-medium text-gray-700">Type of Business:</label>
-            <input type="text" id="editTypeOfBusiness" name="typeOfBusiness" required 
-                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500" 
-                   placeholder="Enter type of business">
-        </div>
-
-        <div>
-            <label for="editCertAmount" class="block text-sm font-medium text-gray-700">Certificate Amount:</label>
-            <input type="text" id="editCertAmount" name="certAmount" required 
-                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500" 
-                   placeholder="Enter certificate amount">
-        </div>
-
-        <button id="updateButton" type="button" 
-                class="mt-4 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-            Update
-        </button>
-    </div>
-</div>
-
-
-<div id="editNoteDialog" title="Edit Note" style="display:none;">
-    <form id="editNoteForm">
-        <input type="hidden" id="editNoteId" name="id">
-        <div class="mb-4">
-            <label for="editNote" class="block text-sm font-medium text-gray-700">Note:</label>
-            <textarea id="editNote" name="note" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500"></textarea>
-        </div>
-        <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
-            Save Note
-        </button>
-    </form>
-</div>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+                const dateIssuedInput = document.getElementById('dateIssued');
+                
+                // Get the current date in yyyy-mm-dd format
+                const currentDate = new Date().toISOString().split('T')[0];
+                
+                // Set the value of the input to the current date
+                dateIssuedInput.value = currentDate;
+        });
+</script>
