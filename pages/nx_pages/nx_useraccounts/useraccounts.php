@@ -29,14 +29,18 @@ $conn->close();
     <hr class="mt-3 mb-5">
     <!-- <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Official</button> -->
 
-    <div class="filter-container mb-4">
-        <label for="account_type_filter" class="mr-2">Account Type:</label>
-        <select id="account_type_filter">
-            <option value="">All</option>
-            <option value="0">Non Resident</option>
-            <option value="1">Resident</option>
-        </select>
+    <div class="filter-container mb-6 flex items-center space-x-4">
+        <!-- Account Type Filter -->
+        <div class="flex items-center">
+            <label for="account_type_filter" class="mr-2 text-sm font-medium text-gray-700">Account Type:</label>
+            <select id="account_type_filter" class="form-select block w-48 p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                <option value="">All</option>
+                <option value="0">Non Resident</option>
+                <option value="1">Resident</option>
+            </select>
+        </div>
     </div>
+
 
     <table id="officials-table" style="width: 100%;" class="cell-border hover">
         <thead>
@@ -47,8 +51,6 @@ $conn->close();
                 <th>Contact</th>
                 <th>Birthday</th>
                 <th>Account Type</th>
-                <th>Approved</th>
-                
                 <th>Actions</th>
             </tr>
         </thead>
@@ -56,7 +58,17 @@ $conn->close();
         <?php foreach ($data as $official): ?> 
             <tr data-id="<?= $official['id'] ?>">
                 <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
-                <td><?= htmlspecialchars($official['full_name']) ?>
+                <td>
+                    <div><?= htmlspecialchars($official['full_name']) ?></div>
+                    <div>
+                        <span class="badge 
+                            <?= $official['isApproved'] == '1' ? 'bg-green-500' : 'bg-red-500' ?> 
+                            text-white text-sm px-2 py-1 rounded-full">
+                            <?= $official['isApproved'] == '1' ? 'Approved' : 'Disapproved' ?>
+                        </span>
+                    </div>
+                </td>
+
             </td>
                 <td><?= htmlspecialchars($official['email']) ?></td>
                 <td><?= htmlspecialchars($official['contact']) ?></td>
@@ -65,20 +77,22 @@ $conn->close();
                 <span class="hidden">
                     <?= htmlspecialchars($official['account_type'] == 0 ? '0' : '1') ?>
                 </span>
-                </td> <!-- Ensure this is visible -->
-                <td>
-                    <input type="checkbox" class="peer sr-only opacity-0" id="toggle-<?= $official['id'] ?>" <?= $official['isApproved'] ? 'checked' : '' ?> onclick="event.preventDefault(); toggleApproval(<?= $official['id'] ?>, !this.checked)" />
-                    <label for="toggle-<?= $official['id'] ?>" class="relative flex h-6 w-11 cursor-pointer items-center rounded-full bg-gray-400 transition-colors duration-300 peer-checked:bg-green-500" onclick="event.preventDefault(); event.stopPropagation(); toggleApproval(<?= $official['id'] ?>, !this.previousElementSibling.checked)">
-                        <span class="absolute h-5 w-5 rounded-full bg-white shadow transition-transform duration-300 <?= $official['isApproved'] ? 'translate-x-5' : 'translate-x-0' ?>"></span>
-                        <span class="sr-only">Enable</span>
-                    </label>
                 </td>
-                <td>
+                <td class="flex space-x-2">
                     <button class="bg-red-500 text-white px-4 py-2 rounded mb-4 mt-2" title="Delete" onclick="deleteRecord(<?= $official['id'] ?>)">
                         <i class="fas fa-trash"></i>
                     </button>
+                    <button 
+                        class="toggle-approval-button <?= $official['isApproved'] == '1' ? 'bg-purple-500' : 'bg-yellow-500' ?> text-white px-4 py-2 rounded mb-4 mt-2" 
+                        title="<?= $official['isApproved'] == '1' ? 'Disapprove' : 'Approve' ?>" 
+                        data-approved="<?= $official['isApproved'] ?>" 
+                        onclick="toggleApproval(<?= $official['id'] ?>, <?= $official['isApproved'] == '1' ? 'true' : 'false' ?>)">
+                        <i class="fa-regular <?= $official['isApproved'] == '1' ? 'fa-thumbs-down' : 'fa-thumbs-up' ?>"></i>
+                    </button>
+
+
                     <?php if ($_SESSION['user']['isAdmin'] == '2'): ?>
-                        <?php if ($official['isAdmin'] == '1'): // Assuming '1' indicates admin ?>
+                        <?php if ($official['isAdmin'] == '1'): ?>
                             <button onclick="removeAdmin(<?= $official['id'] ?>)" title='Remove Admin' class="bg-red-300 text-white px-4 py-2 rounded mb-4 mt-2">
                                 <i class="fas fa-user-times"></i>
                             </button>
@@ -88,8 +102,8 @@ $conn->close();
                             </button>
                         <?php endif; ?>
                     <?php endif; ?>
-
                 </td>
+
             </tr>
         <?php endforeach; ?>
         </tbody>
@@ -325,17 +339,21 @@ function removeAdmin(id) {
 }
 
 function toggleApproval(id, isApproved) {
-  // Prevent the default checkbox behavior
+  // Prevent the default button behavior
   event.preventDefault();
-  
-  const checkbox = document.getElementById(`toggle-${id}`);
-  const label = checkbox.nextElementSibling;
 
+  // Get the button element
+  const button = event.target.closest('button');
+  
+  const newApprovalState = isApproved ? false : true; // Toggle approval state
+
+  // Determine the action text based on current approval state
+  const actionText = newApprovalState ? "approve" : "disapprove";
+  const iconClass = newApprovalState ? "fa-thumbs-up" : "fa-thumbs-down";
+  
   swal({
     title: "Are you sure?",
-    text: isApproved
-      ? "You will approve this user!"
-      : "You will disapprove this user!",
+    text: `You will ${actionText} this user!`,
     icon: "warning",
     buttons: true,
     dangerMode: true,
@@ -345,14 +363,17 @@ function toggleApproval(id, isApproved) {
         url: "nx_query/manage_residents.php?action=update&id=" + id,
         type: "POST",
         contentType: "application/json", // Set content type to JSON
-        data: JSON.stringify({ isApproved: isApproved }), // Send data as JSON
+        data: JSON.stringify({ isApproved: newApprovalState }), // Send data as JSON
         success: function (response) {
           if (response.success) {
-            // Update the visual state only after successful server response
-            checkbox.checked = isApproved;
-            label.classList.toggle('peer-checked:bg-green-500', isApproved);
-            label.querySelector('span').classList.toggle('translate-x-5', isApproved);
-            label.querySelector('span').classList.toggle('translate-x-0', !isApproved);
+            // Update the button appearance after successful server response
+            button.setAttribute('title', newApprovalState ? 'Disapprove' : 'Approve');
+            button.setAttribute('data-approved', newApprovalState);
+            
+            // Update the icon to match the new state
+            const icon = button.querySelector('i');
+            icon.classList.remove(newApprovalState ? 'fa-thumbs-down' : 'fa-thumbs-up');
+            icon.classList.add(newApprovalState ? 'fa-thumbs-up' : 'fa-thumbs-down');
             
             swal("Status updated successfully!", {
               icon: "success",
@@ -370,11 +391,14 @@ function toggleApproval(id, isApproved) {
         },
       });
     } else {
-      // Reset the checkbox state if the user cancels the action
-      checkbox.checked = !isApproved;
+      // Optionally reset the button's visual state if the user cancels
+      const icon = button.querySelector('i');
+      icon.classList.remove(newApprovalState ? 'fa-thumbs-up' : 'fa-thumbs-down');
+      icon.classList.add(isApproved ? 'fa-thumbs-up' : 'fa-thumbs-down');
     }
   });
 }
+
 
 </script>
 
