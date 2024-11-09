@@ -90,20 +90,15 @@ $monthTagalog = isset($months[$month]) ? $months[$month] : $month;
                     </h1>
                 </div>
 
-                <div style="margin: 85px 100px 0 100px; font-size: small;">
-                                    <h1>TO WHOM IT MAY CONCERN:</h1>
-                                    <p style="font-style: italic; font-size: 12px; margin-top: 3px; margin-bottom: 10px;">(SA KANINO ITO MAARING MANGALAP)</p>
-                                    <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>This is to certify that <b>MARICAR SOMERA, 43 years old</b> resident of Purok Banaba,</div>
-                                    <div style="font-style: italic; font-size: 12px; margin-left: 100px;">(Ito ay nagpapatunay na si) (residente ng Purok Banaba),</div>
-
-                                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Barangay North Poblacion, Gabaldon, Nueva Ecija. This further certify that <b>MARICAR SOMERA,</b> the above name person belongs to indigent families as per record kept in this Barangay.</div>
-                                    <div style="font-style: italic; font-size: 12px; margin-left: -16px;">(Ito rin ay nagpapatunay na si)</div>
-
-                                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This certification is issued upon request of <b>MARICAR SOMERA,</b> for medical assistance purposes and for whatever legal purposes it may serve.</div>
+                <div style="margin: 85px 100px 0 100px;">
+                    <h1>TO WHOM IT MAY CONCERN:</h1>
+                    <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>This is to certify that <b>MARICAR SOMERA, 43 years old</b> resident of Purok Banaba,</div>
+                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Barangay North Poblacion, Gabaldon, Nueva Ecija. This further certify that <b>MARICAR SOMERA,</b> the above name person belongs to indigent families as per record kept in this Barangay.</div>
+                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This certification is issued upon request of <b>MARICAR SOMERA,</b> for medical assistance purposes and for whatever legal purposes it may serve.</div>
 
                     <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Given this <?= $day ?><sup><?= $suffix ?></sup> day of <?= $month ?>, <?= $year ?>, here at Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
-                    <div style="font-style: italic; word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Ibinigay ito sa <?= $dayInWords ?> araw ng <?= $monthTagalog ?>, <?= $year ?> dito sa Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
                 </div>
+
 
 
                 <div>
