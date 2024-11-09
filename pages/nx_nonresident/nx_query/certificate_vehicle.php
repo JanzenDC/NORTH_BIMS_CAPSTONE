@@ -63,13 +63,14 @@ switch ($action) {
         $status = 'New';
 
         // Construct the SQL query
-        $query = "INSERT INTO vehicle_cert (
+        $query = "INSERT INTO vehicle_cert ( sellerID,
                     sellerName, sellerAddress, amount, amount_words, 
                     buyerName, buyerAddress, make, plateNum, 
                     engineNum, chasisNum, denomination, fuel, 
                     bodyType, crNo, date, witness, 
                     locationTran, cert_amount, status, created_by
                 ) VALUES (
+                    '$userid',
                     '$sellerName', '$sellerAddress', '$amount', '$amount_words', 
                     '$buyerName', '$buyerAddress', '$make', '$plateNum', 
                     '$engineNum', '$chasisNum', '$denomination', '$fuel', 
