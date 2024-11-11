@@ -647,7 +647,7 @@ session_start();
               1: ['contact', 'email', 'password_holder'], // Step 2
               2: ['house_no', 'street', 'barangay', 'municipality', 'province'], // Step 3
               3: ['occupation', 'civil_status'], // Step 4
-              4: ['id_type', 'id_file', 'id_number', 'emergency_contact', 'privacy_agreement'] // Step 5
+              4: ['id_type', 'id_file', 'emergency_contact', 'privacy_agreement'] // Step 5
           };
 
           const requiredFields = fields[step];
