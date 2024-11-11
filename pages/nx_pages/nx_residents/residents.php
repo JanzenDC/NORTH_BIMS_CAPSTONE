@@ -22,31 +22,7 @@ if ($resuktSqks->num_rows > 0) {
 // Close the database connection
 $conn->close();
 ?>
-<style>
-    .tab-button {
-        padding: 0.5rem 1rem;
-        border: 1px solid #e2e8f0;
-        border-bottom: none;
-        background-color: #f8fafc;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .tab-button:hover {
-        background-color: #edf2f7;
-    }
-    .tab-button.active {
-        background-color: #ffffff;
-        border-bottom: 2px solid #4299e1;
-        font-weight: bold;
-        color: #2b6cb0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .tab-content {
-        border: 1px solid #e2e8f0;
-        padding: 1rem;
-        background-color: #ffffff;
-    }
-</style>
+
 <div class="p-3 w-full bg-white">
     <h1 class="text-3xl font-bold">Residents</h1>
     <hr class="mt-3 mb-5">
@@ -100,10 +76,11 @@ $conn->close();
         <h2 class="text-lg font-semibold mb-4">Create Resident</h2>
         
         <div class="flex mb-4">
-            <button onclick="showTab('createPersonalInfo')" class="tab-button active">Personal Info</button>
-            <button onclick="showTab('createAddressInfo')" class="tab-button">Address Info</button>
-            <button onclick="showTab('createOtherInfo')" class="tab-button">Other Info</button>
+            <button onclick="showTab('createPersonalInfo')" class="tab-button bg-gray-200 text-gray-800 border-gray-300 px-4 py-2 rounded-md focus:outline-none" data-tab="createPersonalInfo">Personal Info</button>
+            <button onclick="showTab('createAddressInfo')" class="tab-button bg-gray-200 text-gray-800 border-gray-300 px-4 py-2 rounded-md focus:outline-none" data-tab="createAddressInfo">Address Info</button>
+            <button onclick="showTab('createOtherInfo')" class="tab-button bg-gray-200 text-gray-800 border-gray-300 px-4 py-2 rounded-md focus:outline-none" data-tab="createOtherInfo">Other Info</button>
         </div>
+
         
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
             <div id="createPersonalInfo" class="tab-content">
@@ -464,20 +441,31 @@ function showTab(tabId) {
     const tabs = document.querySelectorAll('.tab-content');
     const buttons = document.querySelectorAll('.tab-button');
 
+    // Hide all tabs first
     tabs.forEach(tab => {
         tab.classList.add('hidden');
-        if (tab.id === tabId) {
-            tab.classList.remove('hidden');
-        }
     });
 
+    // Show the selected tab
+    const activeTab = document.getElementById(tabId);
+    if (activeTab) {
+        activeTab.classList.remove('hidden');
+    }
+
+    // Remove 'active' class from all buttons
     buttons.forEach(button => {
-        button.classList.remove('active');
-        if (button.textContent === tabId.replace(/([A-Z])/g, ' $1').trim().replace(/^(create|edit)/, '')) {
-            button.classList.add('active');
-        }
+        button.classList.remove('bg-blue-500', 'text-white', 'border-blue-600');
+        button.classList.add('bg-gray-200', 'text-gray-800', 'border-gray-300');
     });
+
+    // Add active class to the selected button
+    const activeButton = Array.from(buttons).find(button => button.dataset.tab === tabId);
+    if (activeButton) {
+        activeButton.classList.add('bg-blue-500', 'text-white', 'border-blue-600');
+        activeButton.classList.remove('bg-gray-200', 'text-gray-800', 'border-gray-300');
+    }
 }
+
 document.getElementById('addBday').addEventListener('change', function() {
     const birthday = new Date(this.value);
     const today = new Date();

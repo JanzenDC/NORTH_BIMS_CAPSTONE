@@ -105,6 +105,7 @@
     height: 400px;
     border-radius: 10px;
     overflow: hidden;
+    margin-top: 50px;
   }
   
   .emergency-contacts {
@@ -212,6 +213,7 @@
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    height: 600px;
   }
   
   .facebook-link {
@@ -330,18 +332,17 @@
       </form>
       
   
-        <div class="social-media-container">
-          <h2>Connect With Us</h2>
-          <a href="https://www.facebook.com/barangaynorthpoblacion.gabaldon" class="facebook-link" target="_blank">
-            <svg class="facebook-icon" viewBox="0 0 24 24">
-              <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/>
-            </svg>
-            Follow Us on Facebook
-          </a>
-        </div>
+
       </div>
-      
-      <div class="map-container">
+      <div class="social-media-container">
+        <h2>Connect With Us</h2>
+        <a href="https://www.facebook.com/barangaynorthpoblacion.gabaldon" class="facebook-link" target="_blank">
+          <svg class="facebook-icon" viewBox="0 0 24 24">
+            <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z"/>
+          </svg>
+          Follow Us on Facebook
+        </a>
+        <div class="map-container">
         <iframe 
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3845.507769307113!2d121.3302655741667!3d15.457096055536185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x339749f585e13ddf%3A0x452246bfd6837f2f!2sBarangay%20hall!5e0!3m2!1sen!2sph!4v1730462958314!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
           width="100%"
@@ -352,6 +353,8 @@
           referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
+      </div>
+
     </div>
   
     <script>

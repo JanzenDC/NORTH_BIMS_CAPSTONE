@@ -33,6 +33,7 @@ $treeView = $page;
     <?php 
         include_once "../headers.php"
     ?>
+    
 </head>
 <body class="bg-gray-100 overflow-y-hidden">
     <?php

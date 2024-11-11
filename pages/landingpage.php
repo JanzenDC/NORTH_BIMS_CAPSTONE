@@ -89,13 +89,17 @@
       align-items: center;
       justify-content: center;
       background: linear-gradient(
-        rgba(46, 125, 50, 0.9),
-        rgba(27, 94, 32, 0.9)
-      );
+          rgba(46, 125, 50, 0.5), /* Reduced opacity from 0.9 to 0.5 */
+          rgba(27, 94, 32, 0.5)  /* Reduced opacity from 0.9 to 0.5 */
+        ),
+        url('../assets/images/background_BIMS.jpg'); /* Background image URL */
+      background-size: cover;
+      background-position: center;
       color: white;
       text-align: center;
       padding: 0 1rem;
     }
+
 
     .hero-content {
       max-width: 800px;
@@ -232,7 +236,7 @@
     <nav class="navbar">
       <ul>
         <li class="logo">
-          <img src="north.png" width="120" height="40" />
+          <img src="../assets/images/north.png" width="120" height="40" />
         </li>
         <li><a href="index.php" class="active">Home</a></li>
         <li><a href="about.php">About</a></li>

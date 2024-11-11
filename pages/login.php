@@ -34,68 +34,8 @@ session_start();
     display: flex;
     flex-direction: column;
   }
-  .navbar {
-  background-color: var(--primary-green);
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-}
 
-.navbar ul {
-  list-style: none;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
 
-.navbar li {
-  margin-left: 2rem;
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  position: relative;
-}
-
-.navbar a:hover {
-  color: var(--light-green);
-}
-
-.navbar a.active {
-  background-color: var(--dark-green);
-  color: var(--light-green);
-}
-
-.navbar a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: var(--light-green);
-  border-radius: 2px;
-}
-
-.logo {
-  margin-right: auto;
-  display: flex;
-  align-items: center;
-}
-
-.logo img {
-  height: 40px;
-  width: auto;
-}
-  
   .container {
     position: relative;
     width: 800px;
@@ -462,17 +402,18 @@ session_start();
   </style>
   
   <body>
-    <nav class="navbar">
-      <ul>
-        <li class="logo">
-          <img src="../assets/images/north.png" width="120" height="40">
-        </li>
-        <li><a href="landingpage.php">Home</a></li>
-        <li><a href="about.php">About</a></li>
-        <li><a href="login.php" class="active">Sign In</a></li>
-        <li><a href="contact.php">Contact Us</a></li>
-      </ul>
-    </nav>
+<nav class="navbar" style="background-color: var(--primary-green); padding: 1rem 2rem; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); position: fixed; width: 100%; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center;">
+  <div class="logo" style="display: flex; align-items: center;">
+    <img src="../assets/images/north.png" width="120" height="40" style="height: 40px; width: auto;">
+  </div>
+  <ul style="list-style: none; display: flex; margin: 0; padding: 0; align-items: center; margin-left: auto;">
+    <li style="margin-left: 2rem;"><a href="landingpage.php" style="color: white; text-decoration: none; font-weight: 500; transition: color 0.3s ease; padding: 0.5rem 1rem; border-radius: 4px; position: relative;">Home</a></li>
+    <li style="margin-left: 2rem;"><a href="about.php" style="color: white; text-decoration: none; font-weight: 500; transition: color 0.3s ease; padding: 0.5rem 1rem; border-radius: 4px; position: relative;">About</a></li>
+    <li style="margin-left: 2rem;"><a href="login.php" class="active" style="color: white; text-decoration: none; font-weight: 500; transition: color 0.3s ease; padding: 0.5rem 1rem; border-radius: 4px; position: relative; background-color: var(--dark-green); color: var(--light-green);">Sign In</a></li>
+    <li style="margin-left: 2rem;"><a href="contact.php" style="color: white; text-decoration: none; font-weight: 500; transition: color 0.3s ease; padding: 0.5rem 1rem; border-radius: 4px; position: relative;">Contact Us</a></li>
+  </ul>
+</nav>
+
   
     <div class="container" id="container">
       <div class="form-container sign-up-container">
@@ -558,7 +499,7 @@ session_start();
                 </select>
                 <h3>Identification Card:</h3>
                 <input type="file" name="id_file" accept="image/*" />
-                <input type="text" name="id_number" placeholder="ID Number" />
+                <!-- <input type="text" name="id_number" placeholder="ID Number" /> -->
                 <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
                 <div style="margin-top: 10px; display: flex; gap: 10px;">
                     <input type="checkbox" name="privacy_agreement" required>

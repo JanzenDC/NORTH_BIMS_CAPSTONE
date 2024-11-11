@@ -26,7 +26,7 @@ $conn->close();
     <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Sangguniang Kabataan</button>
 
 
-    <table id="officials-table" class="display w-full">
+    <table id="officials-table" class="display" style="width: 100%">
         <thead>
             <tr>
                 <th>Image</th>
@@ -121,6 +121,7 @@ $conn->close();
 $(document).ready(function() {
     const table = $('#officials-table').DataTable({
         pageLength: 4,
+        scrollX: true,
         lengthMenu: [4, 10, 25, 50]
     });
 });

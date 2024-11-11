@@ -32,7 +32,7 @@ $conn->close();
     <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Official</button>
 
 
-    <table id="officials-table" class="display w-full">
+    <table id="officials-table" class="display" style="width: 100%">
         <thead>
             <tr>
                 <th>Image</th>
@@ -67,7 +67,7 @@ $conn->close();
 
 <!-- Create Official Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+    <div class="bg-white rounded-lg shadow-lg p-6">
         <i class="fa-solid text-sm fa-x float-right cursor-pointer" onclick="closeModal('createModal')" style="color:red;"></i>
         <h1 class="text-xl font-bold mb-4">Add Barangay Official</h1>
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
@@ -203,7 +203,8 @@ $conn->close();
 $(document).ready(function() {
     const table = $('#officials-table').DataTable({
         pageLength: 6,
-        lengthMenu: [6, 10, 25, 50]
+        lengthMenu: [6, 10, 25, 50],
+        scrollX: true,
     });
 });
 

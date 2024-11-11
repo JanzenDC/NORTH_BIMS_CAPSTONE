@@ -26,7 +26,7 @@ $conn->close();
     <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Purok Leader</button>
 
 
-    <table id="officials-table" class="display w-full">
+    <table id="officials-table" class="display" style="width: 100%">
         <thead>
             <tr>
                 <th>Image</th>
@@ -62,7 +62,7 @@ $conn->close();
 <!-- MODALS SECTION -->
 <!-- Create Purok Leader Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+    <div class="bg-white rounded-lg shadow-lg p-6">
         <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Create Purok Leader</h2>
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
@@ -121,6 +121,7 @@ $conn->close();
 $(document).ready(function() {
     const table = $('#officials-table').DataTable({
         pageLength: 4,
+        scrollX: true,
         lengthMenu: [4, 10, 25, 50]
     });
 });
