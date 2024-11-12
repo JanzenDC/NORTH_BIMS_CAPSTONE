@@ -152,7 +152,7 @@ $conn->close();
 
                     <label for="addEmploymentStatus">Employment Status</label>
                     <select name="employment_status" id="addEmploymentStatus" class="block w-full mb-2 p-2 border rounded">
-                        <option value="" disabled selected>Employment Status</option>
+                        <option value="-1" disabled selected>Employment Status</option>
                         <option value="Employed">Employed</option>
                         <option value="Unemployed">Unemployed</option>
                         <option value="Self-employed">Self-employed</option>
@@ -191,6 +191,7 @@ $conn->close();
     </div>
 </div>
 
+
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4" style="height: 80vh; overflow-y: auto;">
@@ -198,34 +199,29 @@ $conn->close();
         <h2 class="text-lg font-semibold mb-4">Edit Resident</h2>
 
         <div class="flex mb-4">
-            <button onclick="showTab('editPersonalInfo')" class="tab-button active">Personal Info</button>
-            <button onclick="showTab('editAddressInfo')" class="tab-button">Address Info</button>
-            <button onclick="showTab('editOtherInfo')" class="tab-button">Other Info</button>
+            <button onclick="showTab('editPersonalInfo')" class="tab-button bg-gray-200 text-gray-800 border-gray-300 px-4 py-2 rounded-md focus:outline-none" data-tab="editPersonalInfo">Personal Info</button>
+            <button onclick="showTab('editAddressInfo')" class="tab-button bg-gray-200 text-gray-800 border-gray-300 px-4 py-2 rounded-md focus:outline-none" data-tab="editAddressInfo">Address Info</button>
+            <button onclick="showTab('editOtherInfo')" class="tab-button bg-gray-200 text-gray-800 border-gray-300 px-4 py-2 rounded-md focus:outline-none" data-tab="editOtherInfo">Other Info</button>
         </div>
 
         <form id="editForm" enctype="multipart/form-data">
             <input type="hidden" id="editId" name="resident_id">
 
-            <div id="editPersonalInfo" class="tab-content">
+            <div id="editPersonalInfo" class="tab-content hidden">
+                <!-- Personal Info Fields -->
                 <div class="grid grid-cols-2 gap-4">
                     <label for="editFname">First Name</label>
                     <input type="text" id="editFname" name="fname" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editMname">Middle Name</label>
                     <input type="text" id="editMname" name="mname" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editLname">Last Name</label>
                     <input type="text" id="editLname" name="lname" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editSuffix">Suffix</label>
                     <input type="text" id="editSuffix" name="suffix" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editBday">Birthday</label>
                     <input type="date" id="editBday" name="bday" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editAge">Age</label>
                     <input type="number" id="editAge" name="age" class="block w-full mb-2 p-2 border rounded" readonly>
-
                     <label for="editGender">Gender</label>
                     <select id="editGender" name="gender" class="block w-full mb-2 p-2 border rounded">
                         <option value="" disabled selected>Select Gender</option>
@@ -233,35 +229,29 @@ $conn->close();
                         <option value="Female">Female</option>
                         <option value="Other">Other</option>
                     </select>
-
                     <label for="editBirthplace">Birthplace</label>
                     <input type="text" id="editBirthplace" name="birthplace" class="block w-full mb-2 p-2 border rounded">
                 </div>
             </div>
 
             <div id="editAddressInfo" class="tab-content hidden">
+                <!-- Address Info Fields -->
                 <div class="grid grid-cols-2 gap-4">
                     <label for="editHouseNo">House Number</label>
                     <input type="number" id="editHouseNo" name="houseNo" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editPurok">Purok</label>
                     <input type="text" id="editPurok" name="purok" class="block w-full mb-2 p-2 border rounded">
-
-                    <!-- <label for="editStreet">Street</label>
-                    <input type="text" id="editStreet" name="street" class="block w-full mb-2 p-2 border rounded"> -->
-
                     <label for="editBrgy">Barangay</label>
                     <input type="text" id="editBrgy" name="brgy" disabled value="North Poblacion" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editMunicipality">Municipality</label>
                     <input type="text" id="editMunicipality" name="municipality" disabled value="Gabaldon" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editProvince">Province</label>
                     <input type="text" id="editProvince" name="province" disabled value="Nueva Ecija" class="block w-full mb-2 p-2 border rounded">
                 </div>
             </div>
 
             <div id="editOtherInfo" class="tab-content hidden">
+                <!-- Other Info Fields -->
                 <div class="grid grid-cols-2 gap-4">
                     <label for="editCivilStatus">Civil Status</label>
                     <select id="editCivilStatus" name="civil_status" class="block w-full mb-2 p-2 border rounded">
@@ -271,42 +261,34 @@ $conn->close();
                         <option value="Widowed">Widowed</option>
                         <option value="Divorced">Divorced</option>
                     </select>
-
                     <label for="editYearStayed">Years Stayed</label>
                     <input type="text" id="editYearStayed" name="year_stayed" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editEmploymentStatus">Employment Status</label>
                     <select id="editEmploymentStatus" name="employment_status" class="block w-full mb-2 p-2 border rounded">
-                        <option value="" disabled selected>Employment Status</option>
+                        <option value="-1" disabled selected>Employment Status</option>
                         <option value="Employed">Employed</option>
                         <option value="Unemployed">Unemployed</option>
                         <option value="Self-employed">Self-employed</option>
                         <option value="Student">Student</option>
                     </select>
-
                     <label for="editEducation">Educational Attainment</label>
                     <input type="text" id="editEducation" name="education" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editOccupation">Occupation</label>
                     <input type="text" id="editOccupation" name="occupation" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editHeadFam">Head of Family?</label>
                     <select id="editHeadFam" name="head_fam" class="block w-full mb-2 p-2 border rounded">
                         <option value="" disabled selected>Head of Family?</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                     </select>
-
                     <label for="editVoter">Voter?</label>
                     <select id="editVoter" name="voter" class="block w-full mb-2 p-2 border rounded">
                         <option value="" disabled selected>Voter?</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                     </select>
-
                     <label for="editRelation">Relation to Head of Family</label>
                     <input type="text" id="editRelation" name="relation" class="block w-full mb-2 p-2 border rounded">
-
                     <label for="editImage">ID Image</label>
                     <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
                     <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100%; max-width:100px; height:auto;">
@@ -317,6 +299,7 @@ $conn->close();
         </form>
     </div>
 </div>
+
 
 <div id="viewModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full mx-4">

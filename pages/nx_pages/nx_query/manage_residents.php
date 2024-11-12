@@ -111,22 +111,20 @@ switch ($action) {
         $data = $_POST;
 
         // // Validate required fields
-        // $requiredFields = [
-        //     'resident_id', 'fname', 'mname', 'lname', 'suffix', 'bday', 
-        //     'age', 'houseNo', 'purok', 'brgy', 'municipality', 
-        //     'province', 'civil_status', 'year_stayed', 'education', 
-        //     'gender', 'birthplace', 'head_fam', 'occupation', 'voter',
-        //     'relation', 'employment_status'
-        // ];
+        $requiredFields = [
+            'resident_id', 'fname', 'mname', 'lname', 'suffix', 'bday', 
+            'age', 'houseNo', 'head_fam', 'occupation', 'voter',
+            'relation', 'employment_status'
+        ];
 
-        // foreach ($requiredFields as $field) {
-        //     if (empty($data[$field])) {
-        //         $response['message'] = "Field '$field' is required.";
-        //         logAction($conn, "Failed to update resident: $response[message]", $user);
-        //         echo json_encode($response);
-        //         exit;
-        //     }
-        // }
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $response['message'] = "Field '$field' is required.";
+                logAction($conn, "Failed to update resident: $response[message]", $user);
+                echo json_encode($response);
+                exit;
+            }
+        }
 
         // Sanitize and capitalize names
         $fname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $data['fname']));
