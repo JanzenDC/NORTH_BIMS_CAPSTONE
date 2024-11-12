@@ -1,255 +1,364 @@
-<html><head><base href="." />
+<html>
+<head>
+  <base href="." />
   <style>
-  :root {
-    --primary-green: #2E7D32;
-    --light-green: #81C784;
-    --dark-green: #1B5E20;
-    --accent: #F1F8E9;
-  }
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  body {
-    background-color: var(--accent);
-    padding-top: 60px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .contact-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    width: 90%;
-  }
-  .navbar {
-  background-color: var(--primary-green);
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-}
+    :root {
+      --primary-green: #2E7D32;
+      --light-green: #81C784;
+      --dark-green: #1B5E20;
+      --accent: #F1F8E9;
+    }
 
-.navbar ul {
-  list-style: none;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-.navbar li {
-  margin-left: 2rem;
-}
+    body {
+      background-color: var(--accent);
+      padding-top: 60px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  position: relative;
-}
+    .contact-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 90%;
+    }
 
-.navbar a:hover {
-  color: var(--light-green);
-}
+    /* Mobile-specific width adjustments */
+    @media (max-width: 768px) {
+      .contact-container {
+        grid-template-columns: 1fr; /* Stack columns vertically on small screens */
+        width: 95%; /* Increase width to use more available space */
+        padding: 1rem; /* Reduce padding on smaller screens */
+      }
 
-.navbar a.active {
-  background-color: var(--dark-green);
-  color: var(--light-green);
-}
+      .contact-info,
+      .map-container,
+      .emergency-contacts {
+        width: 400px; /* Ensure content occupies full width */
+        margin-top: 1rem;
+        padding: 1rem;
+      }
 
-.navbar a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: var(--light-green);
-  border-radius: 2px;
-}
+      .contact-button {
+        width: 100%; /* Button spans full width */
+        flex-direction: column; /* Stack button contents vertically */
+        gap: 0.5rem;
+      }
 
-.logo {
-  margin-right: auto;
-  display: flex;
-  align-items: center;
-}
+      .contact-form {
+        width: 400px; /* Form width adjusts to full screen */
+        padding: 1rem;
+      }
 
-.logo img {
-  height: 40px;
-  width: auto;
-}
-  .contact-info {
-    padding: 2rem;
-  }
-  
-  .map-container {
-    width: 100%;
-    height: 400px;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 50px;
-  }
-  
-  .emergency-contacts {
-    margin-top: 2rem;
-  }
-  
-  .contact-button {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    margin: 1rem 0;
-    background: var(--accent);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    color: var(--dark-green);
-  }
-  
-  .contact-button:hover {
-    background: var(--light-green);
-    transform: translateY(-2px);
-  }
-  
-  .contact-icon {
-    width: 24px;
-    height: 24px;
-    fill: var(--primary-green);
-  }
-  
-  h2 {
-    color: var(--dark-green);
-    margin-bottom: 1rem;
-  }
-  
-  p {
-    margin-bottom: 1rem;
-    line-height: 1.6;
-  }
-  
-  .contact-form {
-    width: 100%;
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: var(--accent);
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-  
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--dark-green);
-    font-weight: 500;
-  }
-  
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid var(--light-green);
-    border-radius: 4px;
-    font-size: 1rem;
-    background: white;
-  }
-  
-  .form-group textarea {
-    resize: vertical;
-    min-height: 150px;
-  }
-  
-  .form-group select {
-    cursor: pointer;
-  }
-  
-  .submit-btn {
-    width: 100%;
-    background: var(--primary-green);
-    color: white;
-    padding: 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-  }
-  
-  .submit-btn:hover {
-    background: var(--dark-green);
-    transform: translateY(-2px);
-  }
-  
-  .social-media-container {
-    margin-top: 2rem;
-    padding: 1rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    height: 600px;
-  }
-  
-  .facebook-link {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: #4267B2;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-  }
-  
-  .facebook-link:hover {
-    background: #365899;
-    transform: translateY(-2px);
-  }
-  
-  .facebook-icon {
-    width: 24px;
-    height: 24px;
-    fill: white;
-  }
+      .contact-form .form-group input,
+      .contact-form .form-group textarea,
+      .contact-form .form-group select {
+        padding: 0.6rem; /* Adjust padding for mobile screens */
+        width: 100%; /* Ensure form elements take full width */
+      }
+
+      .map-container {
+        height: 300px; /* Reduce map height on mobile */
+      }
+
+      h2 {
+        font-size: 1.5rem; /* Reduce heading size on small screens */
+      }
+
+      p {
+        font-size: 1rem; /* Adjust text size for readability on mobile */
+      }
+
+      .social-media-container {
+        width: 430px; /* Social media container width adjusts to screen size */
+        height: auto; /* Allow social media container to adjust height */
+        padding: 1rem;
+      }
+
+      .facebook-link {
+        flex-direction: column; /* Stack Facebook link contents vertically */
+        align-items: center;
+      }
+    }
+
+    .navbar {
+      background-color: var(--primary-green);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .navbar li {
+      margin-left: 2rem;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    /* Mobile menu icon */
+    .menu-icon {
+      display: none;
+      cursor: pointer;
+      margin-left: auto;
+      padding: 0.5rem;
+    }
+
+    .menu-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--primary-green);
+        flex-direction: column;
+        padding: 1rem 0;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .navbar li {
+        margin: 0.5rem 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      .navbar a {
+        display: block;
+        padding: 0.75rem 1rem;
+      }
+
+      .navbar a:hover {
+        background-color: var(--dark-green);
+      }
+
+      .logo {
+        display: block !important;
+        margin-right: 300px !important;
+      }
+    }
+
+    .logo {
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .contact-info {
+      padding: 2rem;
+    }
+
+    .map-container {
+      width: 100%;
+      height: 400px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 50px;
+    }
+
+    .emergency-contacts {
+      margin-top: 2rem;
+    }
+
+    .contact-button {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--dark-green);
+    }
+
+    .contact-button:hover {
+      background: var(--light-green);
+      transform: translateY(-2px);
+    }
+
+    .contact-icon {
+      width: 24px;
+      height: 24px;
+      fill: var(--primary-green);
+    }
+
+    h2 {
+      color: var(--dark-green);
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .contact-form {
+      width: 100%;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: var(--accent);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--dark-green);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--light-green);
+      border-radius: 4px;
+      font-size: 1rem;
+      background: white;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 150px;
+    }
+
+    .form-group select {
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--primary-green);
+      color: white;
+      padding: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: var(--dark-green);
+      transform: translateY(-2px);
+    }
+
+    .social-media-container {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      height: 600px;
+    }
+
+    .facebook-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: #4267B2;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .facebook-link:hover {
+      background: #365899;
+      transform: translateY(-2px);
+    }
+
+    .facebook-icon {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
   </style>
   
   <body>
     <nav class="navbar">
       <ul>
         <li class="logo">
-          <img src="../assets/images/north.png" width="120" height="40">
+          <img src="../assets/images/north.png" width="120" height="40" />
         </li>
-        <li><a href="landingpage.php">Home</a></li>
-        <li><a href="about.php">About</a></li>
-        <li><a href="login.php">Sign In</a></li>
-        <li><a href="contact.php" class="active">Contact Us</a></li>
+        <div class="menu-icon" onclick="toggleMenu()">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </div>
+        <div class="nav-links">
+          <li><a href="index.php" class="active">Home</a></li>
+          <li><a href="about.php">About</a></li>
+          <li><a href="login.php">Sign In</a></li>
+          <li><a href="contact.php">Contact Us</a></li>
+        </div>
       </ul>
     </nav>
   
@@ -444,6 +553,29 @@
                 this.value = this.value.replace(/\b\w/g, char => char.toUpperCase());
             });
     </script>
+    <script>
+                  function toggleMenu() {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.classList.toggle('active');
+      }
 
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        const navLinks = document.querySelector('.nav-links');
+        const menuIcon = document.querySelector('.menu-icon');
+        
+        if (!menuIcon.contains(event.target) && !navLinks.contains(event.target)) {
+          navLinks.classList.remove('active');
+        }
+      });
+
+      // Close menu when window is resized above mobile breakpoint
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+          const navLinks = document.querySelector('.nav-links');
+          navLinks.classList.remove('active');
+        }
+      });
+    </script>
   </body>
   </html>

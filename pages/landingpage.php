@@ -52,24 +52,64 @@
       position: relative;
     }
 
-    .navbar a:hover {
-      color: var(--light-green);
+    /* Add new mobile menu styles */
+    .menu-icon {
+      display: none;
+      cursor: pointer;
+      margin-left: auto;
+      padding: 0.5rem;
     }
 
-    .navbar a.active {
-      background-color: var(--dark-green);
-      color: var(--light-green);
+    .menu-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
     }
 
-    .navbar a.active::after {
-      content: "";
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background-color: var(--light-green);
-      border-radius: 2px;
+    .nav-links {
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--primary-green);
+        flex-direction: column;
+        padding: 1rem 0;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .navbar li {
+        margin: 0.5rem 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      .navbar a {
+        display: block;
+        padding: 0.75rem 1rem;
+      }
+
+      .navbar a:hover {
+        background-color: var(--dark-green);
+      }
+
+      .logo {
+        display: block !important;
+        margin-right: 300px !important;
+      }
     }
 
     .logo {
@@ -238,10 +278,17 @@
         <li class="logo">
           <img src="../assets/images/north.png" width="120" height="40" />
         </li>
-        <li><a href="index.php" class="active">Home</a></li>
-        <li><a href="about.php">About</a></li>
-        <li><a href="login.php">Sign In</a></li>
-        <li><a href="contact.php">Contact Us</a></li>
+        <div class="menu-icon" onclick="toggleMenu()">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </div>
+        <div class="nav-links">
+          <li><a href="index.php" class="active">Home</a></li>
+          <li><a href="about.php">About</a></li>
+          <li><a href="login.php">Sign In</a></li>
+          <li><a href="contact.php">Contact Us</a></li>
+        </div>
       </ul>
     </nav>
 
@@ -333,6 +380,28 @@
           behavior: "smooth",
         });
       }
+            function toggleMenu() {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.classList.toggle('active');
+      }
+
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        const navLinks = document.querySelector('.nav-links');
+        const menuIcon = document.querySelector('.menu-icon');
+        
+        if (!menuIcon.contains(event.target) && !navLinks.contains(event.target)) {
+          navLinks.classList.remove('active');
+        }
+      });
+
+      // Close menu when window is resized above mobile breakpoint
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+          const navLinks = document.querySelector('.nav-links');
+          navLinks.classList.remove('active');
+        }
+      });
     </script>
   </body>
 </html>

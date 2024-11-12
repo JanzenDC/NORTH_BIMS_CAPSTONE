@@ -18,56 +18,107 @@
     background-color: var(--accent);
     padding-top: 60px;
   }
-  .navbar {
-  background-color: var(--primary-green);
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-}
+    .navbar {
+      background-color: var(--primary-green);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
 
-.navbar ul {
-  list-style: none;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
 
-.navbar li {
-  margin-left: 2rem;
-}
+    .navbar li {
+      margin-left: 2rem;
+    }
 
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  position: relative;
-}
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      position: relative;
+    }
 
-.navbar a:hover {
-  color: var(--light-green);
-}
+    /* Add new mobile menu styles */
+    .menu-icon {
+      display: none;
+      cursor: pointer;
+      margin-left: auto;
+      padding: 0.5rem;
+    }
 
-.navbar a.active {
-  background-color: var(--dark-green);
-  color: var(--light-green);
-}
+    .menu-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
 
-.navbar a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: var(--light-green);
-  border-radius: 2px;
-}
+    .nav-links {
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+            .menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+
+      .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+      }
+      .menu-icon {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--primary-green);
+        flex-direction: column;
+        padding: 1rem 0;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .navbar li {
+        margin: 0.5rem 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      .navbar a {
+        display: block;
+        padding: 0.75rem 1rem;
+      }
+
+      .navbar a:hover {
+        background-color: var(--dark-green);
+      }
+
+      .logo {
+        display: block !important;
+        margin-right: 300px !important;
+      }
+    }
 
 .logo {
   margin-right: auto;
@@ -180,12 +231,19 @@
     <nav class="navbar">
       <ul>
         <li class="logo">
-          <img src="../assets/images/north.png" width="120" height="40">
+          <img src="../assets/images/north.png" width="120" height="40" />
         </li>
-        <li><a href="landingpage.php">Home</a></li>
-        <li><a href="about.php" class="active">About</a></li>
-        <li><a href="login.php">Sign In</a></li>
-        <li><a href="contact.php">Contact Us</a></li>
+        <div class="menu-icon" onclick="toggleMenu()">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </div>
+        <div class="nav-links">
+          <li><a href="index.php" class="active">Home</a></li>
+          <li><a href="about.php">About</a></li>
+          <li><a href="login.php">Sign In</a></li>
+          <li><a href="contact.php">Contact Us</a></li>
+        </div>
       </ul>
     </nav>
   
@@ -235,5 +293,29 @@
         </div>
       </div>
     </div>
+    <script>
+                  function toggleMenu() {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.classList.toggle('active');
+      }
+
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        const navLinks = document.querySelector('.nav-links');
+        const menuIcon = document.querySelector('.menu-icon');
+        
+        if (!menuIcon.contains(event.target) && !navLinks.contains(event.target)) {
+          navLinks.classList.remove('active');
+        }
+      });
+
+      // Close menu when window is resized above mobile breakpoint
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+          const navLinks = document.querySelector('.nav-links');
+          navLinks.classList.remove('active');
+        }
+      });
+    </script>
   </body>
   </html>
