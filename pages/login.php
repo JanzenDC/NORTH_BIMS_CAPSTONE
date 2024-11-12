@@ -418,7 +418,7 @@ session_start();
     }
 
     .logo img {
-      height: 40px;
+      height: 50px;
       width: auto;
     }
 
@@ -510,8 +510,10 @@ session_start();
   <body>
   <nav class="navbar">
     <div class="logo">
-      <img src="../assets/images/north.png" alt="Logo">
-    </div>
+        <li class="logo">
+          <img src="../assets/images/north.png" width="120" height="40" />
+          <img src="../assets/images/bims_north.png" width="120" height="40" />
+        </li>    </div>
     <div class="menu-toggle">
       <span></span>
       <span></span>
@@ -649,13 +651,11 @@ session_start();
       <div class="overlay-container">
         <div class="overlay">
           <div class="overlay-panel overlay-left">
-              <img src="../assets/images/bims_north.png" alt="Logo" style="width: 150px; margin-bottom: 5px;">
-              <h1 style="color: white">Welcome Back!</h1>
-              <p>Please login with your personal info</p>
-              <button class="ghost" id="signIn">Sign In</button>
+            <h1 style="color: white">Welcome Back!</h1>
+            <p>Please login with your personal info</p>
+            <button class="ghost" id="signIn">Sign In</button>
           </div>
           <div class="overlay-panel overlay-right">
-            <img src="../assets/images/bims_north.png" alt="Logo" style="width: 150px; margin-bottom: 5px;">
             <h1 style="color: white">Hello!</h1>
             <p>Enter your personal details and start journey with us</p>
             <button class="ghost" id="signUp">Sign Up</button>

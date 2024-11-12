@@ -119,7 +119,7 @@
     }
 
     .logo img {
-      height: 40px;
+      height: 50px;
       width: auto;
     }
 
@@ -277,6 +277,7 @@
       <ul>
         <li class="logo">
           <img src="../assets/images/north.png" width="120" height="40" />
+          <img src="../assets/images/bims_north.png" width="120" height="40" />
         </li>
         <div class="menu-icon" onclick="toggleMenu()">
           <svg viewBox="0 0 24 24">
