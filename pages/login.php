@@ -545,7 +545,7 @@ session_start();
             
             <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 1: Personal Information</h3>
-                <select name="registration_status" required>
+                <select name="registration_status" id="registration_status" required onchange="changeStreetField()">
                     <option value="" disabled selected>Account Type</option>
                     <option value="0">Non-Resident</option>
                     <option value="1">Resident</option>
@@ -579,7 +579,9 @@ session_start();
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 3: Address</h3>
                 <input type="text" name="house_no" placeholder="House Number"  />
-                <input type="text" name="street" placeholder="Street"  />
+                <div id="street_container">
+                    <input type="text" name="street" placeholder="Street" id="street" />
+                </div>
                 <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
                 <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
                 <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
@@ -664,6 +666,45 @@ session_start();
     </div>
   
     <script>
+      function changeStreetField() {
+        const registrationStatus = document.getElementById('registration_status').value;
+        const streetContainer = document.getElementById('street_container');
+        
+        // Clear the current street input field
+        streetContainer.innerHTML = '';
+
+        if (registrationStatus === '1') {
+            // Create dropdown list for Resident
+            const streetSelect = document.createElement('select');
+            streetSelect.name = 'street';
+            streetSelect.id = 'street';
+
+            const options = [
+                'Acadia (Villa Gabriel)', 'Mulawin', 'Camagong', 'Banaba', 
+                'Narra', 'Calumpit', 'Mabolo'
+            ];
+
+            options.forEach(function(option) {
+                const opt = document.createElement('option');
+                opt.value = option;
+                opt.textContent = option;
+                streetSelect.appendChild(opt);
+            });
+
+            // Append the select dropdown to the container
+            streetContainer.appendChild(streetSelect);
+        } else {
+            // Create text input for Non-Resident
+            const streetInput = document.createElement('input');
+            streetInput.type = 'text';
+            streetInput.name = 'street';
+            streetInput.placeholder = 'Street';
+            streetInput.id = 'street';
+
+            // Append the text input to the container
+            streetContainer.appendChild(streetInput);
+        }
+    }
     function toggleSignInPassword() {
       const passwordInput = document.getElementById('signin_password');
       const toggleIcon = document.querySelector('.sign-in-container .password-toggle');
