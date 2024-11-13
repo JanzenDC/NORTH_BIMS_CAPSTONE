@@ -416,5 +416,3 @@ function toggleApproval(id, currentApprovalState, button) {
   });
 }
 </script>
-
-

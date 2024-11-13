@@ -613,7 +613,6 @@ session_start();
                 <h3>Identification Card:</h3>
                 <input type="file" name="id_file" accept="image/*" />
                 <!-- <input type="text" name="id_number" placeholder="ID Number" /> -->
-                <input type="text" name="emergency_contact" placeholder="Emergency Contact" />
                 <div style="margin-top: 10px; display: flex; gap: 10px;">
                     <input type="checkbox" name="privacy_agreement" required>
                     <label for="privacy_agreement">
