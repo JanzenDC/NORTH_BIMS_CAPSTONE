@@ -82,8 +82,8 @@ $conn->close();
                 </div>
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input  type="text" name="mname" id="addMname">
-                        <span class="text-bold">Middlename</span>
+                        <input type="text" name="mname" id="addMname" maxlength="2" pattern="[A-Z]{1,2}" title="Please enter up to 2 uppercase letters only." style="text-transform: uppercase;">
+                        <span class="text-bold">Middle Initial</span>
                     </label>
                 </div>
                 <div>
@@ -106,7 +106,15 @@ $conn->close();
                 </div>
                 <div>
                     <label class="text-field-outlined w-full">
-                        <input type="number" pattern="\d{1,11}" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11);" name="contact" id="addContact" required>
+                        <input 
+                            type="text" 
+                            maxlength="11" 
+                            oninput="this.value = this.value.replace(/\D/g, '').slice(0, 11);" 
+                            onblur="formatToPhNumber(this)" 
+                            name="contact" 
+                            id="addContact" 
+                            required 
+                        >
                         <span class="text-bold">Contact Number</span>
                     </label>
                 </div>
@@ -167,9 +175,14 @@ $conn->close();
                 </div>
                 <div>
                     <label for="editBday" class="block text-sm font-semibold mb-1">Birthdate</label>
-                    <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+                    <input 
+                        type="text" 
+                        id="editBday" 
+                        name="bday" 
+                        class="block w-full p-2 border rounded" 
+                        placeholder="MM-DD-YYYY"
+                        oninput="formatDate(this)">
                 </div>
-            </div>
 
             <!-- Image Upload Section in Full Width -->
             <div class="mb-4">
@@ -215,11 +228,11 @@ function capitalizeFirstLetter(event) {
     const value = event.target.value;
     event.target.value = value.charAt(0).toUpperCase() + value.slice(1);
 }
-    function formatContactNumber(event) {
-        let value = event.target.value;
-
-        if (value.startsWith('09')) {
-            event.target.value = '+63' + value.slice(2);
+    function formatToPhNumber(input) {
+        const value = input.value;
+        if (value.length === 11) {
+            const formattedValue = `+63 ${value.slice(1, 4)} ${value.slice(4, 7)} ${value.slice(7)}`;
+            input.value = formattedValue;
         }
     }
 document.addEventListener('DOMContentLoaded', () => {
@@ -254,6 +267,16 @@ function closeModal(modalId) {
                 button.classList.add('active');
             }
         });
+    }
+       function formatDate(input) {
+        let value = input.value.replace(/\D/g, '').slice(0, 8); // Remove non-digits and limit to 8 characters
+        if (value.length >= 5) {
+            value = value.replace(/^(\d{2})(\d{1,2})$/, '$1-$2'); // Format as MM-DD
+        }
+        if (value.length >= 7) {
+            value = value.replace(/^(\d{2})-(\d{2})(\d{1,4})$/, '$1-$2-$3'); // Format as MM-DD-YYYY
+        }
+        input.value = value;
     }
 
     // Initialize to show the first tab

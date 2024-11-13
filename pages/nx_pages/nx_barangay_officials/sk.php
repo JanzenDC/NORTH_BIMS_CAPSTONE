@@ -65,19 +65,25 @@ $conn->close();
     <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
         <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Create Sangguniang Kabataan</h2>
-        <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
+        <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();" class="grid grid-cols-2 gap-4">
+            <!-- First Column -->
             <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+            <input type="text" name="mname" id="addMname" placeholder="Middle Initial" class="block w-full mb-2 p-2 border rounded" maxlength="2" pattern="[A-Za-z]{2}" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '')">
             <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
             <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" value="Kagawad" required oninput="capitalizeFirstLetter(this)">
+
+            <!-- Second Column -->
             <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" required oninput="formatPhoneNumber(this)">
-            <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" required>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Create</button>
+            <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" value="Kagawad" required oninput="capitalizeFirstLetter(this)">
+            <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded">
+            <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded">
+            
+            <!-- Submit Button (spanning both columns) -->
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded col-span-2">Create</button>
         </form>
     </div>
 </div>
+
 
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
