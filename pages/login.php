@@ -550,10 +550,10 @@ session_start();
                     <option value="0">Non-Resident</option>
                     <option value="1">Resident</option>
                 </select>
-                <input type="text" name="fname" placeholder="First Name" onchange="capitalizeFirstLetter(this)" />
-                <input type="text" name="mname" placeholder="Middle Name" onchange="capitalizeFirstLetter(this)" />
-                <input type="text" name="lname" placeholder="Last Name" onchange="capitalizeFirstLetter(this)" />
-                <input type="text" name="suffix" placeholder="Suffix" maxlength="1" pattern="[A-Za-z]" onchange="capitalizeFirstLetter(this)" />
+                <input type="text" name="fname" placeholder="First Name" oninput="capitalizeFirstLetter(this)" />
+                <input type="text" name="mname" placeholder="Middle Initials" maxlength="2" oninput="capitalizeTwoLetters(this)" />
+                <input type="text" name="lname" placeholder="Last Name" oninput="capitalizeFirstLetter(this)" />
+                <input type="text" name="suffix" placeholder="Suffix" maxlength="1" pattern="[A-Za-z]" oninput="capitalizeFirstLetter(this)" />
                 <input type="date" name="date_of_birth" id="date_of_birth" placeholder="Birth Date"  />
                 <input type="number" name="age" id="age" placeholder="Age"  readonly />
             </div>
@@ -561,7 +561,7 @@ session_start();
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 2: Login and Contact Details</h3>
-                <input type="text" name="contact" placeholder="Phone Number" maxlength="12" />
+                <input type="text" name="contact" placeholder="Phone Number" maxlength="11" />
 
                 <input type="email" name="email" placeholder="Email" />
                 <div class="password-container" style="margin-bottom: 50px;">
@@ -579,11 +579,23 @@ session_start();
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 3: Address</h3>
                 <input type="text" name="house_no" placeholder="House Number"  />
-                <input type="text" name="street" placeholder="Street"  />
+                <label for="street">Street</label>
+                <select name="street" id="street">
+                    <option value="" disabled selected>Select your street</option>
+                    <option value="Main St">Main St</option>
+                    <option value="Broadway">Broadway</option>
+                    <option value="Elm St">Elm St</option>
+                    <option value="Maple Ave">Maple Ave</option>
+                    <option value="Oak St">Oak St</option>
+                    <!-- Add more options as needed -->
+                </select>
+                <input type="text" name="street" id="street-input" placeholder="Enter your street" style="display: none;" />
                 <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
                 <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
                 <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
             </div>
+
+            
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 4: Additional Information</h3>
@@ -692,6 +704,7 @@ session_start();
         toggleIcon.classList.add('fa-eye');
       }
     }
+    
 
     function checkPasswordStrength(password) {
       let strength = 0;
@@ -747,10 +760,17 @@ session_start();
       }
     });
 
-      // Capitalize first letter
       function capitalizeFirstLetter(input) {
-          const value = input.value.toLowerCase();
-          input.value = value.charAt(0).toUpperCase() + value.slice(1);
+        input.value = input.value
+          .toLowerCase()
+          .replace(/\b\w/g, function(match) {
+            return match.toUpperCase();
+          });
+      }
+
+      function capitalizeTwoLetters(input) {
+        // Limit the value to 2 characters and capitalize both letters
+        input.value = input.value.toUpperCase().slice(0, 2);
       }
 
       function validateStep(step) {
