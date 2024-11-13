@@ -287,9 +287,9 @@
           </div>
           <div class="vision">
             <h3>Goal</h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</p>
+            <p>"Magkaroon ng pantay-pantay na pagkakataong makamtam ang mga pangunahing pangangailangan sa pamamagitan ng isang mahusay na pamamahala."</p>
             <br>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</p>        
+            <p>"Magkaroon ng mga programing pangkabuhayan."</p>        
           </div>
         </div>
       </div>
