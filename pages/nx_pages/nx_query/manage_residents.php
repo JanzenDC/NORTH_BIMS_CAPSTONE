@@ -200,6 +200,19 @@ switch ($action) {
             logAction($conn, "Failed to delete resident ID $id: $response[message]", $user);
         }
         break;
+    case 'deletes':
+        // Delete a resident by ID
+        $id = (int)$_GET['id'];
+        $query = "DELETE FROM tblregistered_account WHERE id = $id";
+        if (mysqli_query($conn, $query)) {
+            $response['success'] = true;
+            $response['message'] = "Resident deleted successfully.";
+            logAction($conn, "Deleted resident ID $id", $user);
+        } else {
+            $response['message'] = "Error deleting Resident: " . mysqli_error($conn);
+            logAction($conn, "Failed to delete resident ID $id: $response[message]", $user);
+        }
+        break;
     case 'setAdmin':
         // Set a resident as an admin
         $id = (int)$_GET['id'];
@@ -227,6 +240,43 @@ switch ($action) {
         } else {
             $response['message'] = "Error removing admin: " . mysqli_error($conn);
         }
+        break;
+    case 'setapprove':
+        // Get the raw POST data
+        $inputData = json_decode(file_get_contents('php://input'), true);
+
+        if (isset($inputData['isApproved'])) {
+            $isApproved = $inputData['isApproved']; // This is now the desired state
+            $id = (int)$_GET['resident_id'];
+            
+            // Convert boolean to integer (1 or 0)
+            $newApprovalState = $isApproved ? 1 : 0;
+            
+            // Update the 'IsApproved' field in the tblregistered_account
+            $query = "UPDATE tblregistered_account SET isApproved = ? WHERE id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ii", $newApprovalState, $id);
+
+            if ($stmt->execute()) {
+                $response = [
+                    'success' => true,
+                    'message' => "User approval status updated successfully.",
+                    'data' => ['newApprovalState' => $newApprovalState]
+                ];
+                logAction($conn, "Toggled approval status for user ID $id to $newApprovalState", $user);
+            } else {
+                $response = [
+                    'success' => false,
+                    'message' => "Error updating approval status: " . mysqli_error($conn)
+                ];
+            }
+        } else {
+            $response = [
+                'success' => false,
+                'message' => "Missing 'isApproved' in request data"
+            ];
+        }
+
         break;
     default:
         $response['message'] = "Invalid action.";

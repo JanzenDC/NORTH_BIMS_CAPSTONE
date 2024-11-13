@@ -36,7 +36,7 @@ $result = $conn->query($sql);
         <?php include_once("../nx_sidebar/sidebar.php"); ?>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-6 overflow-y-auto mb-16">
             <h1 class="text-xl font-bold mb-6">Steps in Requesting Barangay Certificates</h1>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div class="card bg-blue-200 rounded-lg shadow-lg p-4">

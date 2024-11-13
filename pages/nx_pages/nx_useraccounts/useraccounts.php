@@ -86,7 +86,7 @@ $conn->close();
                         class="toggle-approval-button <?= $official['isApproved'] == '1' ? 'bg-purple-500' : 'bg-yellow-500' ?> text-white px-4 py-2 rounded mb-4 mt-2" 
                         title="<?= $official['isApproved'] == '1' ? 'Disapprove' : 'Approve' ?>" 
                         data-approved="<?= $official['isApproved'] ?>" 
-                        onclick="toggleApproval(<?= $official['id'] ?>, <?= $official['isApproved'] == '1' ? 'true' : 'false' ?>)">
+                        onclick="toggleApproval(<?= $official['id'] ?>, <?= $official['isApproved'] == '1' ? 'true' : 'false' ?>, this)">
                         <i class="fa-regular <?= $official['isApproved'] == '1' ? 'fa-thumbs-down' : 'fa-thumbs-up' ?>"></i>
                     </button>
 
@@ -255,7 +255,7 @@ function deleteRecord(id) {
     }).then((willDelete) => {
         if (willDelete) {
             $.ajax({
-                url: 'nx_query/manage_residents.php?action=delete&id=' + id,
+                url: 'nx_query/manage_residents.php?action=deletes&id=' + id,
                 type: 'DELETE',
                 success: function(response) {
                     if (response.success) {
@@ -338,18 +338,18 @@ function removeAdmin(id) {
     });
 }
 
-function toggleApproval(id, isApproved) {
-  // Prevent the default button behavior
-  event.preventDefault();
+function toggleApproval(id, currentApprovalState, button) {
+  // Now we're passing the button directly
+  if (!button) {
+    console.error("Button element not found");
+    return;
+  }
 
-  // Get the button element
-  const button = event.target.closest('button');
+  // The new state should be the opposite of the current state
+  const newApprovalState = !currentApprovalState;
   
-  const newApprovalState = isApproved ? false : true; // Toggle approval state
-
-  // Determine the action text based on current approval state
+  // Determine the action text based on new approval state
   const actionText = newApprovalState ? "approve" : "disapprove";
-  const iconClass = newApprovalState ? "fa-thumbs-up" : "fa-thumbs-down";
   
   swal({
     title: "Are you sure?",
@@ -360,46 +360,61 @@ function toggleApproval(id, isApproved) {
   }).then((willProceed) => {
     if (willProceed) {
       $.ajax({
-        url: "nx_query/manage_residents.php?action=update&id=" + id,
+        url: "nx_query/manage_residents.php?action=setapprove&resident_id=" + id,
         type: "POST",
-        contentType: "application/json", // Set content type to JSON
-        data: JSON.stringify({ isApproved: newApprovalState }), // Send data as JSON
-        success: function (response) {
-          if (response.success) {
-            // Update the button appearance after successful server response
-            button.setAttribute('title', newApprovalState ? 'Disapprove' : 'Approve');
-            button.setAttribute('data-approved', newApprovalState);
+        contentType: "application/json",
+        data: JSON.stringify({ isApproved: newApprovalState }),
+        success: function(response) {
+          try {
+            // Parse the response if it's a string
+            const result = typeof response === 'string' ? JSON.parse(response) : response;
             
-            // Update the icon to match the new state
-            const icon = button.querySelector('i');
-            icon.classList.remove(newApprovalState ? 'fa-thumbs-down' : 'fa-thumbs-up');
-            icon.classList.add(newApprovalState ? 'fa-thumbs-up' : 'fa-thumbs-down');
-            
-            swal("Status updated successfully!", {
-              icon: "success",
-            });
-          } else {
-            swal("Error: " + response.message, {
+            if (result.success) {
+              // Update button classes
+              button.classList.remove(currentApprovalState ? 'bg-purple-500' : 'bg-yellow-500');
+              button.classList.add(newApprovalState ? 'bg-purple-500' : 'bg-yellow-500');
+              
+              // Update button title
+              button.setAttribute('title', newApprovalState ? 'Disapprove' : 'Approve');
+              button.setAttribute('data-approved', newApprovalState ? '1' : '0');
+              
+              // Update icon
+              const icon = button.querySelector('i');
+              if (icon) {
+                icon.classList.remove('fa-thumbs-up', 'fa-thumbs-down');
+                icon.classList.add(newApprovalState ? 'fa-thumbs-down' : 'fa-thumbs-up');
+              }
+              
+              swal("Status updated successfully!", {
+                icon: "success",
+              });
+              
+              // Optionally reload the page or update the UI
+              setTimeout(() => {
+                location.reload();
+              }, 1500);
+            } else {
+              swal("Error: " + (result.message || "Unknown error"), {
+                icon: "error",
+              });
+            }
+          } catch (e) {
+            console.error("Error parsing response:", e);
+            swal("Error processing response", {
               icon: "error",
             });
           }
         },
-        error: function () {
-          swal("Error updating record.", {
+        error: function(xhr, status, error) {
+          console.error("Ajax error:", error);
+          swal("Error updating record: " + error, {
             icon: "error",
           });
-        },
+        }
       });
-    } else {
-      // Optionally reset the button's visual state if the user cancels
-      const icon = button.querySelector('i');
-      icon.classList.remove(newApprovalState ? 'fa-thumbs-up' : 'fa-thumbs-down');
-      icon.classList.add(isApproved ? 'fa-thumbs-up' : 'fa-thumbs-down');
     }
   });
 }
-
-
 </script>
 
 
