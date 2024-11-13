@@ -218,7 +218,10 @@ $conn->close();
 
           <div class="bg-gray-100 p-6 rounded-lg shadow-md">
             <h3 class="font-medium text-gray-700 mb-2">Identification File</h3>
-            <p id="viewIdFilePreview" class="text-gray-600">-</p>
+            <p id="viewIdFilePreview" class="text-gray-600 group"></p>
+
+
+
           </div>
         </div>
       </div>
@@ -315,18 +318,26 @@ function viewRecord(id) {
             // Display ID file if exists
             const idFilePreview = document.getElementById('viewIdFilePreview');
             if (official.id_file) {
+                // Create an anchor tag for the image link to open in a new tab
+                const a = document.createElement('a');
+                a.href = "../../assets/images/id/" + official.id_file;  // Path to the ID file
+                a.target = "_blank";  // Open in new tab when clicked
+
+                // Create the image element for preview
                 const img = document.createElement('img');
-                img.src = official.id_file;  // Set the source to the file path
+                img.src = a.href;  // Set the source to the file path
                 img.alt = 'ID File Preview';
 
-                // Set fixed dimensions using JavaScript
+                // Set fixed dimensions and styles
                 img.style.width = '150px';  // Adjust width as needed
                 img.style.height = 'auto';  // Maintains aspect ratio
                 img.style.maxHeight = '200px';  // Optional: set a maximum height
+                img.classList.add('transition-transform', 'duration-300', 'ease-in-out', 'transform', 'hover:scale-110');
 
-                // Clear any previous content and append the image
-                idFilePreview.innerHTML = '';
-                idFilePreview.appendChild(img);
+                // Clear any previous content and append the image inside the anchor
+                idFilePreview.innerHTML = '';  // Clear any previous content
+                idFilePreview.appendChild(a);  // Append the anchor to the paragraph
+                a.appendChild(img);  // Append the image inside the anchor
             } else {
                 idFilePreview.textContent = 'No ID file uploaded';
             }
@@ -343,6 +354,8 @@ function viewRecord(id) {
         });
     });
 }
+
+
 
   function showTab(tabName) {
     // Hide all tabs
