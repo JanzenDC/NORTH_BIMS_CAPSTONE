@@ -581,16 +581,9 @@ session_start();
                 <input type="text" name="house_no" placeholder="House Number"  />
 
                 <label for="street">Street</label>
-                <select name="street" id="street">
-                    <option value="" disabled selected>Select your street</option>
-                    <option value="Main St">Main St</option>
-                    <option value="Broadway">Broadway</option>
-                    <option value="Elm St">Elm St</option>
-                    <option value="Maple Ave">Maple Ave</option>
-                    <option value="Oak St">Oak St</option>
-                    <!-- Add more options as needed -->
-                </select>
-                <input type="text" name="street" id="street-input" placeholder="Enter your street" style="display: none;" />
+                <div id='street_container'>
+                  <input type="text" name="street" id="street" placeholder="Enter your street" style="display: none;" />
+                </div>
                 <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
                 <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
                 <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
