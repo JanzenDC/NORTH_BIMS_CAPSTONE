@@ -276,50 +276,52 @@ case 'setapprove':
             logAction($conn, "Toggled approval status for user ID $id to $newApprovalState", $user);
 
             // Fetch the user's contact number
-            $contactQuery = "SELECT contact_number FROM tblregistered_account WHERE id = ?";
-            $contactStmt = $conn->prepare($contactQuery);
-            $contactStmt->bind_param("i", $id);
-            $contactStmt->execute();
-            $contactResult = $contactStmt->get_result();
+// Ensure $id is an integer to prevent SQL injection
+$id = (int) $id;
 
-            if ($contactResult->num_rows > 0) {
-                $contact = $contactResult->fetch_assoc();
-                $contactNumber = $contact['contact_number'];
+// Query to get the contact number
+$contactQuery = "SELECT contact_number FROM tblregistered_account WHERE id = $id";
+$contactResult = $conn->query($contactQuery);
 
-                // Send SMS via Telerivet
-                $message = "Your certificate has been approved.";
+if ($contactResult && $contactResult->num_rows > 0) {
+    $contact = $contactResult->fetch_assoc();
+    $contactNumber = $contact['contact_number'];
 
-                    $api_key = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
-                    $project_id = 'PJ3d74c709991602b6';
-                    
-                $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
-                $data = [
-                    'to_number' => $contactNumber,  // The recipient's phone number
-                    'content' => $message,  // The message to send
-                ];
+    // Send SMS via Telerivet
+    $message = "Your certificate has been approved.";
 
-                // Use cURL to send the request
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    "X-Telerivet-API-Key: $api_key",
-                    "Content-Type: application/json"
-                ]);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $api_key = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
+    $project_id = 'PJ3d74c709991602b6';
+    
+    $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
+    $data = [
+        'to_number' => $contactNumber,  // The recipient's phone number
+        'content' => $message,  // The message to send
+    ];
 
-                // Execute and check for errors in the Telerivet API request
-                $telerivet_response = curl_exec($ch);
-                if ($telerivet_response === false) {
-                    $error = curl_error($ch);
-                    logAction($conn, "Telerivet API failed to send message to user ID $id: $error", $user);
-                    $response['message'] = "Error sending SMS notification: " . $error;
-                }
-                curl_close($ch);
-            } else {
-                $response['message'] = "User's contact number not found.";
-                logAction($conn, "Failed to retrieve contact number for user ID $id", $user);
-            }
+    // Use cURL to send the request
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "X-Telerivet-API-Key: $api_key",
+        "Content-Type: application/json"
+    ]);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    // Execute and check for errors in the Telerivet API request
+    $telerivet_response = curl_exec($ch);
+    if ($telerivet_response === false) {
+        $error = curl_error($ch);
+        logAction($conn, "Telerivet API failed to send message to user ID $id: $error", $user);
+        $response['message'] = "Error sending SMS notification: " . $error;
+    }
+    curl_close($ch);
+} else {
+    $response['message'] = "User's contact number not found.";
+    logAction($conn, "Failed to retrieve contact number for user ID $id", $user);
+}
+
         } else {
             $response = [
                 'success' => false,
