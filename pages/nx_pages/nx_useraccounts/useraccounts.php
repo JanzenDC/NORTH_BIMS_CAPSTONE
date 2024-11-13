@@ -79,6 +79,10 @@ $conn->close();
                 </span>
                 </td>
                 <td class="flex space-x-2">
+                    
+                    <button class="bg-black text-white px-4 py-2 rounded mb-4 mt-2" title="View" onclick="viewRecord(<?= $official['id'] ?>)">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
                     <button class="bg-red-500 text-white px-4 py-2 rounded mb-4 mt-2" title="Delete" onclick="deleteRecord(<?= $official['id'] ?>)">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -131,35 +135,99 @@ $conn->close();
     </div>
 </div>
 
-<!-- Edit Official Modal -->
-<div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
-        <span class="cursor-pointer float-right" onclick="closeModal('editModal')">&times;</span>
-        <h2 class="text-lg font-semibold mb-4">Edit Official</h2>
-        <form id="editForm" enctype="multipart/form-data">
-            <input type="hidden" id="editId" name="id">
+<div id="viewModal" class="fixed z-50 inset-0 overflow-y-auto hidden">
+  <div class="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-4xl">
+      <div class="flex justify-between items-start mb-6 p-4">
+        <h2 class="text-2xl font-bold text-gray-800">View Registered Account</h2>
+        <button type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none" onclick="closeModal('viewModal')">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
 
-            <!-- Name Fields -->
-            <div class="flex mb-4">
-                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mr-2 p-2 border rounded" required>
-                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mr-2 p-2 border rounded">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required>
-            </div>
+      <!-- Tabs -->
+      <div class="mb-6">
+        <nav class="flex space-x-4">
+          <button class="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded-t-lg active:text-gray-800 active:border-b-2 active:border-gray-800" onclick="showTab('personal-info')">Personal Info</button>
+          <button class="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded-t-lg active:text-gray-800 active:border-b-2 active:border-gray-800" onclick="showTab('contact-info')">Contact Info</button>
+          <button class="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded-t-lg active:text-gray-800 active:border-b-2 active:border-gray-800" onclick="showTab('account-info')">Account Info</button>
+          <button class="text-gray-500 hover:text-gray-700 font-medium py-2 px-4 rounded-t-lg active:text-gray-800 active:border-b-2 active:border-gray-800" onclick="showTab('other-info')">Other Info</button>
+        </nav>
+      </div>
 
-            <!-- Other Fields in Two Columns -->
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded">
-                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required>
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required>
-                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
-            </div>
+      <!-- Tab Content -->
+      <div id="personal-info-tab" class="block p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+            <h3 class="font-medium text-gray-700 mb-2">Full Name</h3>
+            <p id="viewFname" class="text-gray-600">-</p>
+            <p id="viewMname" class="text-gray-600">-</p>
+            <p id="viewLname" class="text-gray-600">-</p>
+            <p id="viewSuffix" class="text-gray-600">-</p>
+          </div>
 
-            <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
-            <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded" onclick="updateRecord()">Update</button>
-        </form>
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+            <h3 class="font-medium text-gray-700 mb-2">Birth Details</h3>
+            <p><strong>Birthday:</strong> <span id="viewBday" class="text-gray-600">-</span></p>
+            <p><strong>Age:</strong> <span id="viewAge" class="text-gray-600">-</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="contact-info-tab" class="hidden p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+            <h3 class="font-medium text-gray-700 mb-2">Contact & Address</h3>
+            <p><strong>Contact:</strong> <span id="viewContact" class="text-gray-600">-</span></p>
+            <p><strong>House No:</strong> <span id="viewHouseNo" class="text-gray-600">-</span></p>
+            <p><strong>Street:</strong> <span id="viewStreet" class="text-gray-600">-</span></p>
+            <p><strong>Barangay:</strong> <span id="viewBrgy" class="text-gray-600">-</span></p>
+            <p><strong>Municipality:</strong> <span id="viewMunicipality" class="text-gray-600">-</span></p>
+            <p><strong>Province:</strong> <span id="viewProvince" class="text-gray-600">-</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="account-info-tab" class="hidden p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+            <h3 class="font-medium text-gray-700 mb-2">Account Information</h3>
+            <p><strong>Email:</strong> <span id="viewEmail" class="text-gray-600">-</span></p>
+            <p><strong>Username:</strong> <span id="viewUsername" class="text-gray-600">-</span></p>
+            <p><strong>ID Type:</strong> <span id="viewIdType" class="text-gray-600">-</span></p>
+            <p><strong>Account Type:</strong> <span id="viewAccountType" class="text-gray-600">-</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="other-info-tab" class="hidden p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+            <h3 class="font-medium text-gray-700 mb-2">Gender & Status</h3>
+            <p><strong>Gender:</strong> <span id="viewGender" class="text-gray-600">-</span></p>
+            <p><strong>Admin Status:</strong> <span id="viewIsAdmin" class="text-gray-600">-</span></p>
+            <p><strong>Approval Status:</strong> <span id="viewIsApproved" class="text-gray-600">-</span></p>
+          </div>
+
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+            <h3 class="font-medium text-gray-700 mb-2">Profile Image</h3>
+            <img id="viewImagePreview" src="" alt="Profile Image" class="mb-2" style="display:none; max-width: 150px; height: auto;">
+          </div>
+
+          <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+            <h3 class="font-medium text-gray-700 mb-2">Identification File</h3>
+            <p id="viewIdFilePreview" class="text-gray-600">-</p>
+          </div>
+        </div>
+      </div>
+
+
     </div>
+  </div>
 </div>
+
 
 
 
@@ -209,41 +277,84 @@ function closeModal(modalId) {
             }
         });
     }
-
+    showTab('personal-info')
     // Initialize to show the first tab
     showTab('personalInfo');
 // CRUD
-// function editRecord(id) {
-    
-//     $.get('nx_query/manage_officials.php?action=get&id=' + id, function(response) {
-//         if (response.success) {
-//             const official = response.data;
-//             document.getElementById('editId').value = official.id;
-//             document.getElementById('editFname').value = official.fname;
-//             document.getElementById('editMname').value = official.mname;
-//             document.getElementById('editLname').value = official.lname;
-//             document.getElementById('editSuffix').value = official.suffix;
-//             document.getElementById('editPosition').value = official.position;
-//             document.getElementById('editContact').value = official.contact;
-//             document.getElementById('editBday').value = official.bday;
+function viewRecord(id) {
+    $.get('nx_query/manage_residents.php?action=gets&id=' + id, function(response) {
+        if (response.success) {
+            const official = response.data;
 
-//             // Set up the image preview
-//             const imagePreview = document.getElementById('editImagePreview');
-//             imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
-//             imagePreview.style.display = 'block'; // Show the image preview
+            // Display data in the modal
+            document.getElementById('viewFname').textContent = official.fname;
+            document.getElementById('viewMname').textContent = official.mname;
+            document.getElementById('viewLname').textContent = official.lname;
+            document.getElementById('viewSuffix').textContent = official.suffix;
+            document.getElementById('viewBday').textContent = official.bday;
+            document.getElementById('viewAge').textContent = official.age;
+            document.getElementById('viewContact').textContent = official.contact;
+            document.getElementById('viewHouseNo').textContent = official.houseNo;
+            document.getElementById('viewStreet').textContent = official.street;
+            document.getElementById('viewBrgy').textContent = official.brgy;
+            document.getElementById('viewMunicipality').textContent = official.municipality;
+            document.getElementById('viewProvince').textContent = official.province;
+            document.getElementById('viewEmail').textContent = official.email;
+            document.getElementById('viewUsername').textContent = official.username;
+            document.getElementById('viewIdType').textContent = official.id_type;
+            document.getElementById('viewAccountType').textContent = official.account_type === 1 ? 'Resident' : 'Non-Resident';
+            document.getElementById('viewGender').textContent = official.gender === 1 ? 'Male' : 'Female';
+            document.getElementById('viewIsAdmin').textContent = official.isAdmin ? 'Yes' : 'No';
+            document.getElementById('viewIsApproved').textContent = official.isApproved ? 'Approved' : 'Not Approved';
 
-//             openModal('editModal');
-//         } else {
-//             swal("Error: " + response.message, {
-//                 icon: "error",
-//             });
-//         }
-//     }).fail(function() {
-//         swal("Error retrieving record.", {
-//             icon: "error",
-//         });
-//     });
-// }
+            // Display profile image if available
+            const imagePreview = document.getElementById('viewImagePreview');
+            imagePreview.src = '../../assets/images/pfp/' + official.image;
+            imagePreview.style.display = 'block'; // Show the image preview
+
+            // Display ID file if exists
+            const idFilePreview = document.getElementById('viewIdFilePreview');
+            if (official.id_file) {
+                const img = document.createElement('img');
+                img.src = official.id_file;  // Set the source to the file path
+                img.alt = 'ID File Preview';
+
+                // Set fixed dimensions using JavaScript
+                img.style.width = '150px';  // Adjust width as needed
+                img.style.height = 'auto';  // Maintains aspect ratio
+                img.style.maxHeight = '200px';  // Optional: set a maximum height
+
+                // Clear any previous content and append the image
+                idFilePreview.innerHTML = '';
+                idFilePreview.appendChild(img);
+            } else {
+                idFilePreview.textContent = 'No ID file uploaded';
+            }
+
+            openModal('viewModal');
+        } else {
+            swal("Error: " + response.message, {
+                icon: "error",
+            });
+        }
+    }).fail(function() {
+        swal("Error retrieving record.", {
+            icon: "error",
+        });
+    });
+}
+
+  function showTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('[id$="-tab"]').forEach(tab => tab.classList.add('hidden'));
+
+    // Show the selected tab
+    document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+
+    // Add active class to the selected tab button
+    document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active:text-gray-800', 'active:border-b-2', 'active:border-gray-800'));
+    document.querySelector(`.nav-tab[onclick="showTab('${tabName}')"]`).classList.add('active:text-gray-800', 'active:border-b-2', 'active:border-gray-800');
+  }
 
 function deleteRecord(id) {
     swal({

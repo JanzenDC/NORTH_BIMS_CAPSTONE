@@ -44,7 +44,22 @@ switch ($action) {
             logAction($conn, "Failed to retrieve resident ID $id: Resident not found", $user);
         }
         break;
-
+    case 'gets':
+        // Read a resident by ID
+        $id = (int)$_GET['id'];
+        $query = "SELECT * FROM tblregistered_account WHERE id = $id";
+        $result = mysqli_query($conn, $query);
+        $resident = mysqli_fetch_assoc($result);
+        
+        if ($resident) {
+            $response['success'] = true;
+            $response['data'] = $resident;
+            logAction($conn, "Retrieved resident ID $id", $user);
+        } else {
+            $response['message'] = "Resident not found.";
+            logAction($conn, "Failed to retrieve resident ID $id: Resident not found", $user);
+        }
+        break;
     case 'create':
         $data = $_POST;
 
