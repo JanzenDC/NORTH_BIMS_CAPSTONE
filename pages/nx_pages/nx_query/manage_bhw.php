@@ -26,30 +26,41 @@ $user = $_SESSION['user']['username'];
 
 switch ($action) {
     case 'create':
-        // Create
-        $fname = mysqli_real_escape_string($conn, $_POST['fname']);
-        $mname = mysqli_real_escape_string($conn, $_POST['mname']);
-        $lname = mysqli_real_escape_string($conn, $_POST['lname']);
-        $suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
-        $position = mysqli_real_escape_string($conn, $_POST['position']);
-        $contact = mysqli_real_escape_string($conn, $_POST['contact']);
-        $bday = mysqli_real_escape_string($conn, $_POST['bday']);
-        $image = $_FILES['image']['name'];
+// Create
+$fname = mysqli_real_escape_string($conn, $_POST['fname']);
+$mname = mysqli_real_escape_string($conn, $_POST['mname']);
+$lname = mysqli_real_escape_string($conn, $_POST['lname']);
+$suffix = mysqli_real_escape_string($conn, $_POST['suffix']);
+$position = mysqli_real_escape_string($conn, $_POST['position']);
+$contact = mysqli_real_escape_string($conn, $_POST['contact']);
+$bday = mysqli_real_escape_string($conn, $_POST['bday']);
 
-        if (move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image")) {
-            $query = "INSERT INTO tblhealthworker (fname, mname, lname, suffix, position, contact, bday, image) 
-                      VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
-            if (mysqli_query($conn, $query)) {
-                $response['success'] = true;
-                $response['message'] = "Health Worker created successfully.";
-                logAction($conn, "Created Health Worker: $fname $lname", $user);
-            } else {
-                $response['message'] = "Error creating Health Worker: " . mysqli_error($conn);
-            }
-        } else {
-            $response['message'] = "Error uploading image.";
-        }
-        break;
+// Check if an image is uploaded
+if ($_FILES['image']['error'] == UPLOAD_ERR_NO_FILE) {
+    // No image uploaded, use a default image
+    $image = '../../../assets/images/pfp/default.jpg'; // Set default image name
+} else {
+    // Image uploaded, move it to the desired directory
+    $image = $_FILES['image']['name'];
+    if (!move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image")) {
+        $response['message'] = "Error uploading image.";
+        logAction($conn, "Failed to upload image for Health Worker: $response[message]", $user);
+        exit; // Stop the execution if image upload fails
+    }
+}
+
+// Insert data into the database
+$query = "INSERT INTO tblhealthworker (fname, mname, lname, suffix, position, contact, bday, image) 
+          VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
+if (mysqli_query($conn, $query)) {
+    $response['success'] = true;
+    $response['message'] = "Health Worker created successfully.";
+    logAction($conn, "Created Health Worker: $fname $lname", $user);
+} else {
+    $response['message'] = "Error creating Health Worker: " . mysqli_error($conn);
+    logAction($conn, "Failed to create Health Worker: " . mysqli_error($conn), $user);
+}
+break;
 
     case 'get':
         // Read

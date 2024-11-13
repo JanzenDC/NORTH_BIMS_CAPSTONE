@@ -29,31 +29,42 @@ function capitalizeFirstLetter($string) {
 $action = $_GET['action'] ?? '';
 $user = $_SESSION['user']['username']; 
 switch ($action) {
-    case 'create':
-        // Create
-        $fname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['fname']));
-        $mname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['mname']));
-        $lname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['lname']));
-        $suffix = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['suffix']));
-        $position = mysqli_real_escape_string($conn, $_POST['position']);
-        $contact = mysqli_real_escape_string($conn, $_POST['contact']);
-        $bday = mysqli_real_escape_string($conn, $_POST['bday']);
-        $image = $_FILES['image']['name'];
+case 'create':
+    // Create
+    $fname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['fname']));
+    $mname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['mname']));
+    $lname = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['lname']));
+    $suffix = capitalizeFirstLetter(mysqli_real_escape_string($conn, $_POST['suffix']));
+    $position = mysqli_real_escape_string($conn, $_POST['position']);
+    $contact = mysqli_real_escape_string($conn, $_POST['contact']);
+    $bday = mysqli_real_escape_string($conn, $_POST['bday']);
 
-        if (move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image")) {
-            $query = "INSERT INTO tblofficial (fname, mname, lname, suffix, position, contact, bday, image) 
-                      VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
-            if (mysqli_query($conn, $query)) {
-                $response['success'] = true;
-                $response['message'] = "Officials created successfully.";
-                logAction($conn, "Created Official: $fname $lname", $user);
-            } else {
-                $response['message'] = "Error creating Officials: " . mysqli_error($conn);
-            }
-        } else {
+    // Check if an image is uploaded
+    if ($_FILES['image']['error'] == UPLOAD_ERR_NO_FILE) {
+        // No image uploaded, use a default image
+    $image = '../../../assets/images/pfp/default.jpg'; // Set default image name
+    } else {
+        // Image uploaded, move it to the desired directory
+        $image = $_FILES['image']['name'];
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image")) {
             $response['message'] = "Error uploading image.";
+            logAction($conn, "Failed to upload image for Official: $response[message]", $user);
+            exit; // Stop the execution if image upload fails
         }
-        break;
+    }
+
+    // Insert data into the database
+    $query = "INSERT INTO tblofficial (fname, mname, lname, suffix, position, contact, bday, image) 
+              VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
+    if (mysqli_query($conn, $query)) {
+        $response['success'] = true;
+        $response['message'] = "Officials created successfully.";
+        logAction($conn, "Created Official: $fname $lname", $user);
+    } else {
+        $response['message'] = "Error creating Officials: " . mysqli_error($conn);
+    }
+    break;
+
 
     case 'get':
         // Read

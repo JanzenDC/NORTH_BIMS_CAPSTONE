@@ -56,7 +56,7 @@ switch ($action) {
         $purok = capitalizeFirstLetter(mysqli_real_escape_string($conn, $data['purok']));
 
         // Handle image upload
-        $imageName = 'default.png';
+        $imageName = '../../../assets/images/pfp/default.jpg';
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $imageName = basename($_FILES['image']['name']);
             $targetDir = "../../../assets/images/Identification_card/";

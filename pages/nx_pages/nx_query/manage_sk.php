@@ -30,48 +30,61 @@ function logAction($conn, $action, $user) {
 
 switch ($action) {
     case 'create':
-        // Create
-        $fname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['fname']));
-        $mname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['mname']));
-        $lname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['lname']));
-        $suffix = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['suffix']));
-        $position = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['position']));
-        $contact = mysqli_real_escape_string($conn, $_POST['contact']);
-        $bday = mysqli_real_escape_string($conn, $_POST['bday']);
-        $image = $_FILES['image']['name'];
+// Create
+$fname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['fname']));
+$mname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['mname']));
+$lname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['lname']));
+$suffix = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['suffix']));
+$position = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['position']));
+$contact = mysqli_real_escape_string($conn, $_POST['contact']);
+$bday = mysqli_real_escape_string($conn, $_POST['bday']);
 
-        if (move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image")) {
-            $query = "INSERT INTO tblkabataan (fname, mname, lname, suffix, position, contact, bday, image) 
-                      VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
-            if (mysqli_query($conn, $query)) {
-                $response['success'] = true;
-                $response['message'] = "Sangguniang Kabataan created successfully.";
-                logAction($conn, "Created Sangguniang Kabataan: $fname $lname", $user);
-            } else {
-                $response['message'] = "Error creating Sangguniang Kabataan: " . mysqli_error($conn);
-                logAction($conn, "Failed to create Sangguniang Kabataan: " . mysqli_error($conn), $user);
-            }
-        } else {
-            $response['message'] = "Error uploading image.";
-            logAction($conn, "Failed to upload image for Sangguniang Kabataan: $response[message]", $user);
-        }
-        break;
+// Check if an image was uploaded
+if ($_FILES['image']['error'] == UPLOAD_ERR_NO_FILE) {
+    // No image uploaded, use a default image
+    $image = '../../../assets/images/pfp/default.jpg'; // Set default image name
+} else {
+    // Image uploaded, move it to the desired directory
+    $image = $_FILES['image']['name'];
+    if (move_uploaded_file($_FILES['image']['tmp_name'], "../../../assets/images/pfp/$image")) {
+        // Successfully uploaded image
+    } else {
+        $response['message'] = "Error uploading image.";
+        logAction($conn, "Failed to upload image for Sangguniang Kabataan: $response[message]", $user);
+        exit; // Stop the execution if image upload fails
+    }
+}
 
-    case 'get':
-        // Read
-        $id = (int)$_GET['id'];
-        $query = "SELECT * FROM tblkabataan WHERE id = $id";
-        $result = mysqli_query($conn, $query);
-        $official = mysqli_fetch_assoc($result);
-        if ($official) {
-            $response['success'] = true;
-            $response['data'] = $official;
-            logAction($conn, "Retrieved Sangguniang Kabataan ID $id", $user);
-        } else {
-            $response['message'] = "Sangguniang Kabataan not found.";
-            logAction($conn, "Failed to retrieve Sangguniang Kabataan ID $id: Not found", $user);
-        }
-        break;
+// Insert data into the database
+$query = "INSERT INTO tblkabataan (fname, mname, lname, suffix, position, contact, bday, image) 
+          VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
+if (mysqli_query($conn, $query)) {
+    $response['success'] = true;
+    $response['message'] = "Sangguniang Kabataan created successfully.";
+    logAction($conn, "Created Sangguniang Kabataan: $fname $lname", $user);
+} else {
+    $response['message'] = "Error creating Sangguniang Kabataan: " . mysqli_error($conn);
+    logAction($conn, "Failed to create Sangguniang Kabataan: " . mysqli_error($conn), $user);
+}
+
+break;
+
+case 'get':
+    // Read
+    $id = (int)$_GET['id'];
+    $query = "SELECT * FROM tblkabataan WHERE id = $id";
+    $result = mysqli_query($conn, $query);
+    $official = mysqli_fetch_assoc($result);
+    if ($official) {
+        $response['success'] = true;
+        $response['data'] = $official;
+        logAction($conn, "Retrieved Sangguniang Kabataan ID $id", $user);
+    } else {
+        $response['message'] = "Sangguniang Kabataan not found.";
+        logAction($conn, "Failed to retrieve Sangguniang Kabataan ID $id: Not found", $user);
+    }
+    break;
+
 
     case 'update':
         // Update

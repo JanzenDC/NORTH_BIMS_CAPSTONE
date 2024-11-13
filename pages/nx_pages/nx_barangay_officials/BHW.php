@@ -71,9 +71,9 @@ $conn->close();
             <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
             <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
             <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" value="BHW" required oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" required oninput="formatPhoneNumber(this)">
-            <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" required>
+            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" oninput="formatPhoneNumber(this)">
+            <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded">
+            <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded">
             <button type="submit" class="bg-blue-500 text-white p-2 rounded">Create</button>
         </form>
     </div>

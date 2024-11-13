@@ -103,9 +103,9 @@ $conn->close();
             <!-- Other Fields in Two Columns -->
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required oninput="formatPhoneNumber(this)">
-                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" oninput="formatPhoneNumber(this)">
+                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded">
             </div>
 
             <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
