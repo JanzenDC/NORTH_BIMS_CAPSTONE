@@ -241,43 +241,100 @@ switch ($action) {
             $response['message'] = "Error removing admin: " . mysqli_error($conn);
         }
         break;
-    case 'setapprove':
-        // Get the raw POST data
-        $inputData = json_decode(file_get_contents('php://input'), true);
+case 'setapprove':
+    // Get the raw POST data
+    $inputData = json_decode(file_get_contents('php://input'), true);
 
-        if (isset($inputData['isApproved'])) {
-            $isApproved = $inputData['isApproved']; // This is now the desired state
-            $id = (int)$_GET['resident_id'];
-            
-            // Convert boolean to integer (1 or 0)
-            $newApprovalState = $isApproved ? 1 : 0;
-            
-            // Update the 'IsApproved' field in the tblregistered_account
-            $query = "UPDATE tblregistered_account SET isApproved = ? WHERE id = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("ii", $newApprovalState, $id);
+    if (isset($inputData['isApproved'])) {
+        $isApproved = $inputData['isApproved']; // This is now the desired state
+        $id = (int)$_GET['resident_id'];
 
-            if ($stmt->execute()) {
-                $response = [
-                    'success' => true,
-                    'message' => "User approval status updated successfully.",
-                    'data' => ['newApprovalState' => $newApprovalState]
+        // Validate resident ID
+        if ($id <= 0) {
+            $response = [
+                'success' => false,
+                'message' => "Invalid resident ID"
+            ];
+            echo json_encode($response);
+            exit;
+        }
+
+        // Convert boolean to integer (1 or 0)
+        $newApprovalState = $isApproved ? 1 : 0;
+
+        // Update the 'IsApproved' field in the tblregistered_account
+        $query = "UPDATE tblregistered_account SET isApproved = ? WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ii", $newApprovalState, $id);
+
+        if ($stmt->execute()) {
+            $response = [
+                'success' => true,
+                'message' => "User approval status updated successfully.",
+                'data' => ['newApprovalState' => $newApprovalState]
+            ];
+            logAction($conn, "Toggled approval status for user ID $id to $newApprovalState", $user);
+
+            // Fetch the user's contact number
+            $contactQuery = "SELECT contact_number FROM tblregistered_account WHERE id = ?";
+            $contactStmt = $conn->prepare($contactQuery);
+            $contactStmt->bind_param("i", $id);
+            $contactStmt->execute();
+            $contactResult = $contactStmt->get_result();
+
+            if ($contactResult->num_rows > 0) {
+                $contact = $contactResult->fetch_assoc();
+                $contactNumber = $contact['contact_number'];
+
+                // Send SMS via Telerivet
+                $message = "Your certificate has been approved.";
+
+                    $api_key = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
+                    $project_id = 'PJ3d74c709991602b6';
+                    
+                $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
+                $data = [
+                    'to_number' => $contactNumber,  // The recipient's phone number
+                    'content' => $message,  // The message to send
                 ];
-                logAction($conn, "Toggled approval status for user ID $id to $newApprovalState", $user);
+
+                // Use cURL to send the request
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "X-Telerivet-API-Key: $api_key",
+                    "Content-Type: application/json"
+                ]);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                // Execute and check for errors in the Telerivet API request
+                $telerivet_response = curl_exec($ch);
+                if ($telerivet_response === false) {
+                    $error = curl_error($ch);
+                    logAction($conn, "Telerivet API failed to send message to user ID $id: $error", $user);
+                    $response['message'] = "Error sending SMS notification: " . $error;
+                }
+                curl_close($ch);
             } else {
-                $response = [
-                    'success' => false,
-                    'message' => "Error updating approval status: " . mysqli_error($conn)
-                ];
+                $response['message'] = "User's contact number not found.";
+                logAction($conn, "Failed to retrieve contact number for user ID $id", $user);
             }
         } else {
             $response = [
                 'success' => false,
-                'message' => "Missing 'isApproved' in request data"
+                'message' => "Error updating approval status: " . mysqli_error($conn)
             ];
         }
+    } else {
+        $response = [
+            'success' => false,
+            'message' => "Missing 'isApproved' in request data"
+        ];
+    }
 
-        break;
+    break;
+
     default:
         $response['message'] = "Invalid action.";
         logAction($conn, "Invalid action attempted: $action", $user);
