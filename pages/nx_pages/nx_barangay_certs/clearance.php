@@ -539,7 +539,7 @@ function disapproveCert(targetID) {
 </script>
 
 <div class="p-3 w-full bg-white">
-    <h1 class="text-3xl font-bold">Clearance List</h1>
+    <h1 class="text-3xl font-bold">Clearance Certificate</h1>
     <hr>
 
     <div>

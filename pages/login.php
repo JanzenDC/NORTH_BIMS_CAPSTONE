@@ -418,7 +418,7 @@ session_start();
     }
 
     .logo img {
-      height: 40px;
+      height: 50px;
       width: auto;
     }
 
@@ -510,8 +510,10 @@ session_start();
   <body>
   <nav class="navbar">
     <div class="logo">
-      <img src="../assets/images/north.png" alt="Logo">
-    </div>
+        <li class="logo">
+          <img src="../assets/images/north.png" width="120" height="40" />
+          <img src="../assets/images/bims_north.png" width="120" height="40" />
+        </li>    </div>
     <div class="menu-toggle">
       <span></span>
       <span></span>

@@ -25,7 +25,7 @@ $conn->close();
 ?>
 
 <div class="p-3 w-full bg-white">
-    <h1 class="text-3xl font-bold">Residents</h1>
+    <h1 class="text-3xl font-bold">User Accounts</h1>
     <hr class="mt-3 mb-5">
     <!-- <button onclick="openModal('createModal')" class="bg-green-500 text-white px-4 py-2 rounded mb-4 mt-2">Add Official</button> -->
 

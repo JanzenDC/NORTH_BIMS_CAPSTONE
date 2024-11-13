@@ -194,7 +194,7 @@
     }
 
     .logo img {
-      height: 40px;
+      height: 50px;
       width: auto;
     }
 
@@ -347,6 +347,7 @@
       <ul>
         <li class="logo">
           <img src="../assets/images/north.png" width="120" height="40" />
+          <img src="../assets/images/bims_north.png" width="120" height="40" />
         </li>
         <div class="menu-icon" onclick="toggleMenu()">
           <svg viewBox="0 0 24 24">
@@ -354,10 +355,10 @@
           </svg>
         </div>
         <div class="nav-links">
-          <li><a href="index.php" class="active">Home</a></li>
+          <li><a href="landingpage.php">Home</a></li>
           <li><a href="about.php">About</a></li>
           <li><a href="login.php">Sign In</a></li>
-          <li><a href="contact.php">Contact Us</a></li>
+          <li><a href="contact.php"  class="active">Contact Us</a></li>
         </div>
       </ul>
     </nav>

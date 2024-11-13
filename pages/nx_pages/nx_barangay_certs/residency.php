@@ -454,7 +454,7 @@ function disapproveCert(targetID) {
 </script>
 
 <div class="p-3 w-full bg-white">
-    <h1 class="text-3xl font-bold">Residency Cert list</h1>
+    <h1 class="text-3xl font-bold">Residency Certificate</h1>
     <hr class="mb-3 mt-3">
 
     <div>

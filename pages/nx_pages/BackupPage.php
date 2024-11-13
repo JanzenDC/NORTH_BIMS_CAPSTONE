@@ -16,7 +16,7 @@ $user = $_SESSION['user'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Backup</title>
     <?php 
         include_once "../headers.php";
     ?>
@@ -40,11 +40,11 @@ $user = $_SESSION['user'];
 
         <main class="flex-1 p-6 overflow-y-auto mb-24">
             <div class='p-4 bg-white h-full'>
-                <h1 class="text-xl font-bold mb-4">Backup Database</h1>
+                <h1 class="text-xl font-bold mb-4">Backup Data</h1>
                 <!-- Backup Button -->
                 <form action="nx_query/backup.php" method="post" class='mb-3'>
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                        Backup Database
+                        Backup
                     </button>
                 </form>
 

@@ -119,7 +119,7 @@
     }
 
     .logo img {
-      height: 40px;
+      height: 50px;
       width: auto;
     }
 
@@ -132,7 +132,7 @@
           rgba(46, 125, 50, 0.5), /* Reduced opacity from 0.9 to 0.5 */
           rgba(27, 94, 32, 0.5)  /* Reduced opacity from 0.9 to 0.5 */
         ),
-        url('../assets/images/background_BIMS.jpg'); /* Background image URL */
+        url('../assets/images/bims2.jpg'); /* Background image URL */
       background-size: cover;
       background-position: center;
       color: white;
@@ -277,6 +277,7 @@
       <ul>
         <li class="logo">
           <img src="../assets/images/north.png" width="120" height="40" />
+          <img src="../assets/images/bims_north.png" width="120" height="40" />
         </li>
         <div class="menu-icon" onclick="toggleMenu()">
           <svg viewBox="0 0 24 24">
@@ -284,7 +285,7 @@
           </svg>
         </div>
         <div class="nav-links">
-          <li><a href="index.php" class="active">Home</a></li>
+          <li><a href="landingpage.php" class="active">Home</a></li>
           <li><a href="about.php">About</a></li>
           <li><a href="login.php">Sign In</a></li>
           <li><a href="contact.php">Contact Us</a></li>
