@@ -59,19 +59,19 @@ session_start();
     transition: all 0.6s ease-in-out;
   }
   
-  .sign-in-container {
-    left: 0;
-    width: 50%;
-    z-index: 2;
-  }
-  
-    .sign-up-container {
-      transform: translateX(100%);
-      left: 0;
-      width: 50%;
-      opacity: 0;
-      z-index: 1;
-    }
+.sign-in-container {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.sign-up-container {
+  transform: translateX(100%);
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
   
   
   .container.right-panel-active .sign-in-container {
@@ -957,9 +957,7 @@ session_start();
       };
 
       // Trigger sign up view on page load
-      window.addEventListener('load', () => {
-          container.classList.add('right-panel-active');
-      });
+
 
       // Initialize toastr messages if any
       $(document).ready(function() {
