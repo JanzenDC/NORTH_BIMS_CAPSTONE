@@ -471,6 +471,24 @@ session_start();
     }
 
     @media screen and (max-width: 768px) {
+      .step {
+        margin-left: -15px;
+      }
+      .container {
+        width: 380px;
+      }
+
+      .form-container {
+        padding: 1px;
+      }
+
+      input {
+        padding: 2px;
+      }
+      select {
+        padding: 2px;
+      }
+
       .menu-toggle {
         display: flex;
       }
