@@ -111,7 +111,7 @@ switch ($action) {
             // Check if the ownerid is valid (not zero)
             if ($ownerid != 0) {
                 // Fetch the resident_id and contact from tblregistered_account
-                $contactQuery = "SELECT resident_id, contact FROM tblregistered_account WHERE id = $ownerid";
+                $contactQuery = "SELECT * FROM tblregistered_account WHERE id = $ownerid";
                 $contactResult = mysqli_query($conn, $contactQuery);
 
                 if ($contactResult && mysqli_num_rows($contactResult) > 0) {

@@ -207,7 +207,7 @@ case 'setAsApprove':
         $ownerid = $ownerData['ownerid'];
 
         if ($ownerid != 0) {
-            $contactQuery = "SELECT resident_id, contact FROM tblregistered_account WHERE id = $ownerid";
+            $contactQuery = "SELECT * FROM tblregistered_account WHERE id = $ownerid";
             $contactResult = mysqli_query($conn, $contactQuery);
 
             if ($contactResult && mysqli_num_rows($contactResult) > 0) {
