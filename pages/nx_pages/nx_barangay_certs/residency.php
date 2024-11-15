@@ -53,25 +53,19 @@ $(document).ready(function() {
     // Initialize all tables with the same configuration
     $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable, #residentTable').DataTable(tableConfig);
 
-    // Initialize jQuery UI Tabs
-    Swal.fire({
-    title: 'Loading...',
-    html: 'Please wait while the content is loading.',
-    allowOutsideClick: false,
-    didOpen: () => {
-        Swal.showLoading();
-    }
+    swal({
+    title: "Loading...",
+    text: "Please wait while the content is loading.",
+    buttons: false,
+    closeOnClickOutside: false,
+    closeOnEsc: false
     });
 
     setTimeout(() => {
-    Swal.close();  
-        $("#tabs").tabs({
-            active: 0, // Set first tab as active by default
-            heightStyle: "content", // Adjust height based on content
-            show: { effect: "fadeIn", duration: 200 },
-            hide: { effect: "fadeOut", duration: 200 }
-        });
-    }, 2000); 
+    swal.close();
+    $("#tabs").tabs();
+    }, 2000);
+
 
     // Initialize the resident dialog
     $("#residentDialog").dialog({

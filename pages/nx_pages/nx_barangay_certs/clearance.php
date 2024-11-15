@@ -79,26 +79,19 @@ $(document).ready(function() {
     // Initialize all tables with the same configuration
     $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable, #residentTable').DataTable(tableConfig);
 
-    // Initialize jQuery UI Tabs
-    Swal.fire({
-    title: 'Loading...',
-    html: 'Please wait while the content is loading.',
-    allowOutsideClick: false,
-    didOpen: () => {
-        Swal.showLoading();
-    }
-    });
+swal({
+  title: "Loading...",
+  text: "Please wait while the content is loading.",
+  buttons: false,
+  closeOnClickOutside: false,
+  closeOnEsc: false
+});
 
-    // Set a timeout to close the Swal loading effect and initialize tabs
-    setTimeout(() => {
-    Swal.close();  // Close the Swal dialog
-        $("#tabs").tabs({
-            active: 0, // Set first tab as active by default
-            heightStyle: "content", // Adjust height based on content
-            show: { effect: "fadeIn", duration: 200 },
-            hide: { effect: "fadeOut", duration: 200 }
-        });
-    }, 2000); // Adjust the delay as needed (e.g., 2000 ms = 2 seconds)
+setTimeout(() => {
+  swal.close();
+  $("#tabs").tabs();
+}, 2000);
+
 
 // DIALOGS
     // Initialize the dialog
