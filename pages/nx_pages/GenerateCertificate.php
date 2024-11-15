@@ -46,6 +46,8 @@ $treeView = $page;
 
         <!-- Main Content -->
         <main class="flex-1 p-6 ">
+            <button onclick="history.back()" class="bg-gray-500 text-white px-4 py-2 rounded mr-2">Go Back</button>
+
             <button onclick="printDiv('contents')" class="bg-blue-500 text-white px-4 py-2 rounded">Print</button>
              <?php 
             // Include the corresponding page content

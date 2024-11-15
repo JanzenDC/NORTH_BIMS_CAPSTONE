@@ -240,21 +240,6 @@
       }
     }
 
-    .scroll-down {
-      position: absolute;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      cursor: pointer;
-      animation: bounce 2s infinite;
-    }
-
-    .scroll-down svg {
-      width: 40px;
-      height: 40px;
-      fill: white;
-    }
-
     @keyframes bounce {
       0%,
       20%,
@@ -310,47 +295,6 @@
       </div>
     </section>
 
-    <section class="features">
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
-              />
-            </svg>
-          </div>
-          <h3>Resident Management</h3>
-          <p>
-            Easily manage resident information and maintain accurate records
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
-              />
-            </svg>
-          </div>
-          <h3>Document Processing</h3>
-          <p>Streamline document requests and certification processes</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"
-              />
-            </svg>
-          </div>
-          <h3>Service Tracking</h3>
-          <p>Monitor and track various barangay services effectively</p>
-        </div>
-      </div>
-    </section>
 
     <script>
       // Add active class to current page
