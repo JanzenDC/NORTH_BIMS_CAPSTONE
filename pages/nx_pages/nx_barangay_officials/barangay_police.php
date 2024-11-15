@@ -62,53 +62,146 @@ $conn->close();
 <!-- MODALS SECTION -->
 <!-- Create Official Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+    <div class="bg-white rounded-lg shadow-lg p-6 md:w-1/3 h-[500px] overflow-y-auto">
         <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Create Barangay Tanod/Police</h2>
         <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
-            <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" value="Barangay Tanod" required oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" required oninput="formatPhoneNumber(this)">
-            <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" required>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Create</button>
+            
+            <!-- Two-column Grid Layout -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="addFname" class="block mb-1">First Name</label>
+                    <input type="text" name="fname" id="addFname" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                </div>
+                <div>
+                    <label for="addMname" class="block mb-1">Middle Name</label>
+                    <input type="text" name="mname" id="addMname" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+                </div>
+                <div>
+                    <label for="addLname" class="block mb-1">Last Name</label>
+                    <input type="text" name="lname" id="addLname" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                </div>
+                <div>
+                    <label for="addSuffix" class="block mb-1">Suffix</label>
+                    <input type="text" name="suffix" id="addSuffix" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+                </div>
+            </div>
+
+            <!-- Two-column Grid Layout for Position, Contact, and Date of Birth -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="addPosition" class="block mb-1">Position</label>
+                    <input type="text" name="position" id="addPosition" class="block w-full p-2 border rounded" value="Barangay Tanod" required oninput="capitalizeFirstLetter(this)">
+                </div>
+                <div>
+                    <label for="addContact" class="block mb-1">Contact</label>
+                    <input type="text" name="contact" id="addContact" class="block w-full p-2 border rounded" required oninput="formatPhoneNumber(this)">
+                </div>
+                <div>
+                    <label for="addBday" class="block mb-1">Birthdate</label>
+                    <input type="date" name="bday" id="addBday" class="block w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label for="addImage" class="block mb-1">Image</label>
+                    <input type="file" name="image" id="addImage" class="block w-full p-2 border rounded" required>
+                </div>
+            </div>
+
+            <!-- Schedule Section -->
+            <div class="mb-4">
+                <label for="addSchedule" class="block mb-1">Schedule</label>
+                <select name="schedule" id="addSchedule" class="block w-full p-2 border rounded" required>
+                    <option value="">Select Days</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </div>
+
+
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded mt-4">Create</button>
         </form>
     </div>
 </div>
 
+
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+    <div class="bg-white rounded-lg shadow-lg p-6 md:w-1/3 h-[500px] overflow-y-auto">
         <span class="cursor-pointer float-right" onclick="closeModal('editModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Edit Official</h2>
         <form id="editForm" enctype="multipart/form-data">
             <input type="hidden" id="editId" name="id">
 
             <!-- Name Fields -->
-            <div class="flex mb-4">
-                <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mr-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mr-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="editFname" class="block mb-1">First Name</label>
+                    <input type="text" id="editFname" name="fname" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                </div>
+                <div>
+                    <label for="editMname" class="block mb-1">Middle Name</label>
+                    <input type="text" id="editMname" name="mname" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+                </div>
+                <div>
+                    <label for="editLname" class="block mb-1">Last Name</label>
+                    <input type="text" id="editLname" name="lname" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                </div>
+                <div>
+                    <label for="editSuffix" class="block mb-1">Suffix</label>
+                    <input type="text" id="editSuffix" name="suffix" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
+                </div>
             </div>
 
             <!-- Other Fields in Two Columns -->
             <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editPosition" name="position" placeholder="Position" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required oninput="formatPhoneNumber(this)">
-                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+                <div>
+                    <label for="editPosition" class="block mb-1">Position</label>
+                    <input type="text" id="editPosition" name="position" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                </div>
+                <div>
+                    <label for="editContact" class="block mb-1">Contact</label>
+                    <input type="text" id="editContact" name="contact" class="block w-full p-2 border rounded" required oninput="formatPhoneNumber(this)">
+                </div>
+                <div>
+                    <label for="editBday" class="block mb-1">Birthdate</label>
+                    <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label for="editImage" class="block mb-1">Image</label>
+                    <input type="file" id="editImage" name="image" class="block w-full p-2 border rounded">
+                    <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
+                </div>
             </div>
 
-            <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
-            <img id="editImagePreview" src="" alt="Current Image" class="mb-2" style="display:none; width:100px; height:auto;">
-            <button type="submit" id="updateButton" class="bg-blue-500 text-white p-2 rounded">Update</button>
+            <!-- Schedule Section -->
+            <div class="mb-4">
+                <label for="editSchedule" class="block mb-1">Schedule</label>
+                <select name="schedule" id="editSchedule" class="block w-full p-2 border rounded" required>
+                    <option value="">Select Day</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
 
+            </div>
+
+            <button type="submit" id="updateButton" class="bg-blue-500 text-white p-2 rounded mt-4">Update</button>
         </form>
     </div>
 </div>
+
+
+
+
 
 
 
@@ -174,6 +267,7 @@ function editRecord(id) {
     $.get('nx_query/manage_tanod.php?action=get&id=' + id, function(response) {
         if (response.success) {
             const official = response.data;
+            console.log(official)
             document.getElementById('editId').value = official.id;
             document.getElementById('editFname').value = official.fname;
             document.getElementById('editMname').value = official.mname;
@@ -182,7 +276,7 @@ function editRecord(id) {
             document.getElementById('editPosition').value = official.position;
             document.getElementById('editContact').value = official.contact;
             document.getElementById('editBday').value = official.bday;
-
+            document.getElementById('editSchedule').value = official.sched;
             // Set up the image preview
             const imagePreview = document.getElementById('editImagePreview');
             imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
@@ -250,7 +344,7 @@ function updateRecord(event) {
     const position = document.getElementById('editPosition').value;
     const contact = document.getElementById('editContact').value;
     const bday = document.getElementById('editBday').value;
-
+    const schedule = document.getElementById('editSchedule').value;
     // Create FormData object for file uploads if needed
     const formData = new FormData();
     formData.append('id', id);
@@ -261,7 +355,8 @@ function updateRecord(event) {
     formData.append('position', position);
     formData.append('contact', contact);
     formData.append('bday', bday);
-    
+    formData.append('schedule', schedule);
+
     // If you have an image to upload
     const imageInput = document.getElementById('editImage'); // Assuming you have an input for the image
     if (imageInput.files.length > 0) {
