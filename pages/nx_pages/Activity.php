@@ -53,6 +53,7 @@ if ($resultAct->num_rows > 0) {
                         <thead>
                             <tr>
                                 <th>Image</th>
+                                <th>Specific Day</th>
                                 <th>Date of Acitivity</th>
                                 <th>Description</th>
                                 <th>Activty</th>
@@ -63,6 +64,7 @@ if ($resultAct->num_rows > 0) {
                                 <?php foreach ($activityData as $row): ?>
                                 <tr>
                                     <td><img src="../../assets/images/activity/<?= $row['image'] ?>" alt="" class='w-10'></td>
+                                    <td><?php echo htmlspecialchars($row['recurring_days']); ?></td>
                                     <td><?php echo htmlspecialchars($row['dateofactivity']); ?></td>
                                     <td><?php echo htmlspecialchars($row['description']); ?></td>
                                     <td><?php echo htmlspecialchars($row['activity']); ?></td>
@@ -86,8 +88,25 @@ if ($resultAct->num_rows > 0) {
     </div>
 
     <div id="activityDialog" title="Add Activity" class="p-4 bg-white rounded shadow-lg" style="display:none;">
-        <label for="activityDate" class="block text-sm font-medium text-gray-700 mt-2">Date:</label>
-        <input type="date" id="activityDate" name="activityDate" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+         <div class="mt-4">
+            <label for="recurring_days" class="block text-sm font-medium text-gray-700">Activity Type:</label>
+            <select id="recurring_days" name="recurring_days" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <option value="specificDate">Specific Day</option>
+                <option value="weekly">Every Monday</option>
+                <option value="weekly">Every Tuesday</option>
+                <option value="weekly">Every Wednesday</option>
+                <option value="weekly">Every Thursday</option>
+                <option value="weekly">Every Friday</option>
+                <option value="weekly">Every Saturday</option>
+                <option value="weekly">Every Sunday</option>
+            </select>
+        </div>
+        
+        <div class="mt-4" id="specificDateField">
+            <label for="activityDate" class="block text-sm font-medium text-gray-700 mt-2">Date:</label>
+            <input type="date" id="activityDate" name="activityDate" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+        </div>
+
 
         <label for="activityName" class="block text-sm font-medium text-gray-700 mt-2">Activity Name:</label>
         <input type="text" id="activityName" name="activityName" placeholder="Enter Activity Name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
@@ -102,6 +121,20 @@ if ($resultAct->num_rows > 0) {
 
     <div id="editActivityDialog" title="Edit Activity" class="p-4 bg-white rounded shadow-lg" style="display:none;">
         <input type="hidden" id="editActivityId">
+        <!-- Weekly Recurrence Field -->
+        <div class="mt-4 hidden" id="editWeeklyField">
+            <label for="editActivityDay" class="block text-sm font-medium text-gray-700">Select Day:</label>
+            <select id="editActivityDay" name="editActivityDay" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <option value="Monday">Every Monday</option>
+                <option value="Tuesday">Every Tuesday</option>
+                <option value="Wednesday">Every Wednesday</option>
+                <option value="Thursday">Every Thursday</option>
+                <option value="Friday">Every Friday</option>
+                <option value="Saturday">Every Saturday</option>
+                <option value="Sunday">Every Sunday</option>
+            </select>
+        </div>
+        
         <label for="editActivityDate" class="block text-sm font-medium text-gray-700 mt-2">Date:</label>
         <input type="date" id="editActivityDate" name="editActivityDate" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
 

@@ -36,6 +36,7 @@ switch ($action) {
     $lname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['lname']));
     $suffix = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['suffix']));
     $position = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['position']));
+    $schedule = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['sched']));
     $contact = mysqli_real_escape_string($conn, $_POST['contact']);
     $bday = mysqli_real_escape_string($conn, $_POST['bday']);
     $schedule = mysqli_real_escape_string($conn, $_POST['schedule']);
@@ -75,8 +76,8 @@ switch ($action) {
     }
 
     // Insert the data into the database
-    $query = "INSERT INTO tbltanod
-              VALUES ('','$fname', '$mname', '$lname', '$suffix', '$position', '$schedule', '$contact', '','','','','','','$bday', '$image')";
+    $query = "INSERT INTO tbltanod (fname, mname, lname, suffix, position, contact, bday, image) 
+              VALUES ('$fname', '$mname', '$lname', '$suffix', '$position', '$contact', '$bday', '$image')";
     if (mysqli_query($conn, $query)) {
         $response['success'] = true;
         $response['message'] = "Official created successfully.";
@@ -111,7 +112,6 @@ switch ($action) {
         $lname = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['lname']));
         $suffix = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['suffix']));
         $position = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['position']));
-        $schedule = mysqli_real_escape_string($conn, capitalizeFirstLetter($_POST['schedule']));
         $contact = mysqli_real_escape_string($conn, $_POST['contact']);
         $bday = mysqli_real_escape_string($conn, $_POST['bday']);
         
@@ -131,10 +131,10 @@ switch ($action) {
 
         // Build the update query
         if ($image) {
-            $query = "UPDATE tbltanod SET fname='$fname', mname='$mname', lname='$lname', suffix='$suffix', sched = '$schedule',
+            $query = "UPDATE tbltanod SET fname='$fname', mname='$mname', lname='$lname', suffix='$suffix', 
                       position='$position', contact='$contact', bday='$bday', image='$image' WHERE id=$id";
         } else {
-            $query = "UPDATE tbltanod SET fname='$fname', mname='$mname', lname='$lname', suffix='$suffix', sched = '$schedule',
+            $query = "UPDATE tbltanod SET fname='$fname', mname='$mname', lname='$lname', suffix='$suffix', 
                       position='$position', contact='$contact', bday='$bday' WHERE id=$id";
         }
 

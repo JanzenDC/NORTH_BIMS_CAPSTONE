@@ -86,16 +86,16 @@ $conn->close();
             <div id="createPersonalInfo" class="tab-content">
                 <div class="grid grid-cols-2 gap-4">
                     <label for="addFname">First Name</label>
-                    <input type="text" name="fname" id="addFname" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" name="fname" id="addFname" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeWords(this)">
 
-                    <label for="addMname">Middle Name</label>
-                    <input type="text" name="mname" id="addMname" class="block w-full mb-2 p-2 border rounded">
+                    <label for="addMname">Middle Initial</label>
+                    <input type="text" name="mname" id="addMname" class="block w-full mb-2 p-2 border rounded" maxlength="2" oninput="capitalize(this)">
 
                     <label for="addLname">Last Name</label>
-                    <input type="text" name="lname" id="addLname" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" name="lname" id="addLname" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeWords(this)">
 
                     <label for="addSuffix">Suffix</label>
-                    <input type="text" name="suffix" id="addSuffix" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" name="suffix" id="addSuffix" class="block w-full mb-2 p-2 border rounded" maxlength="4" oninput="capitalizeWords(this)">
 
                     <label for="addBday">Birthday</label>
                     <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded">
@@ -112,7 +112,7 @@ $conn->close();
                     </select>
 
                     <label for="addBirthplace">Birthplace</label>
-                    <input type="text" name="birthplace" id="addBirthplace" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" name="birthplace" id="addBirthplace" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeWords(this)">
                 </div>
             </div>
 
@@ -120,8 +120,19 @@ $conn->close();
                 <div class="grid grid-cols-2 gap-4">
                     <label for="addHouseNo">House Number</label>
                     <input type="number" name="houseNo" id="addHouseNo" class="block w-full mb-2 p-2 border rounded">
-                    <label for="addPurok">Purok</label>
-                    <input type="text" name="purok" id="addPurok" class="block w-full mb-2 p-2 border rounded">
+                    <label for="addPurok">Street</label>
+                    <select name="purok" id="addPurok" class="block w-full mb-2 p-2 border rounded" required>
+                        <option value="" disabled selected>Select a Street</option>
+                        <option value="Acasia (Villa Gabriel)">Acasia (Villa Gabriel)</option>
+                        <option value="Mulawin">Mulawin</option>
+                        <option value="Kamagong">Kamagong</option>
+                        <option value="Banaba">Banaba</option>
+                        <option value="Narra">Narra</option>
+                        <option value="Calumpit">Calumpit</option>
+                        <option value="Mabolo">Mabolo</option>
+
+                    </select>
+
                     <!-- <label for="addStreet">Street</label>
                     <input type="text" name="street" id="addStreet" class="block w-full mb-2 p-2 border rounded"> -->
 
@@ -160,10 +171,20 @@ $conn->close();
                     </select>
 
                     <label for="addEducation">Educational Attainment</label>
-                    <input type="text" name="education" id="addEducation" class="block w-full mb-2 p-2 border rounded">
+                    <select name="education" id="addEducation" class="block w-full mb-2 p-2 border rounded" required>
+                        <option value="" disabled selected>Select Education</option>
+                        <option value="No Schooling Completed">No Schooling Completed</option>
+                        <option value="Elementary">Elementary</option>
+                        <option value="High School, Undergraduate">High School, Undergraduate</option>
+                        <option value="Highschool, Graduate">Vocational</option>
+                        <option value="College, Undergraduate">Highschool, Graduate</option>
+                        <option value="Bachelor's Degree">Bachelor's Degree</option>
+                        <option value="Master's Degree">Master's Degree</option>
+                        <option value="Doctorate Degree">Doctorate Degree</option>
+                    </select>
 
                     <label for="addOccupation">Occupation</label>
-                    <input type="text" name="occupation" id="addOccupation" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" name="occupation" id="addOccupation" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeWords(this)">
 
                     <label for="addHeadFam">Head of Family?</label>
                     <select name="head_fam" id="addHeadFam" class="block w-full mb-2 p-2 border rounded">
@@ -180,7 +201,7 @@ $conn->close();
                     </select>
 
                     <label for="addRelation">Relation to Head of Family</label>
-                    <input type="text" name="relation" id="addRelation" class="block w-full mb-2 p-2 border rounded">
+                    <input type="text" name="relation" id="addRelation" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeWords(this)">
                     <label for="addRelation">ID image:</label>
                     <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded">
                 </div>
@@ -212,7 +233,7 @@ $conn->close();
                 <div class="grid grid-cols-2 gap-4">
                     <label for="editFname">First Name</label>
                     <input type="text" id="editFname" name="fname" class="block w-full mb-2 p-2 border rounded">
-                    <label for="editMname">Middle Name</label>
+                    <label for="editMname">Middle Initial</label>
                     <input type="text" id="editMname" name="mname" class="block w-full mb-2 p-2 border rounded">
                     <label for="editLname">Last Name</label>
                     <input type="text" id="editLname" name="lname" class="block w-full mb-2 p-2 border rounded">
@@ -447,6 +468,15 @@ function showTab(tabId) {
         activeButton.classList.add('bg-blue-500', 'text-white', 'border-blue-600');
         activeButton.classList.remove('bg-gray-200', 'text-gray-800', 'border-gray-300');
     }
+}
+function capitalizeWords(input) {
+    input.value = input.value.replace(/\b\w/g, function(char) {
+        return char.toUpperCase();
+    });
+}
+
+function capitalize(input) {
+    input.value = input.value.toUpperCase();
 }
 
 document.getElementById('addBday').addEventListener('change', function() {
@@ -743,5 +773,3 @@ function viewRecord(id) {
 document.getElementById('editForm').addEventListener('submit', updateRecord);
 
 </script>
-
-
