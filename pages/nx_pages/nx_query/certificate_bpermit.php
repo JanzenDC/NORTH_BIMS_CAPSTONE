@@ -132,37 +132,31 @@ switch ($action) {
                         $api_key = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
                         $project_id = 'PJ3d74c709991602b6';
                         // Send the message using Telerivet API
-                    $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
-                    $data = [
-                        'to_number' => $contactNumber,
-                        'content' => $message,
-                    ];
+                        $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
+                        $data = [
+                            'to_number' => $contactNumber,
+                            'content' => $message,
+                        ];
 
-                    $options = [
-                        'http' => [
-                            'header'  => [
-                                "X-Telerivet-API-Key: $api_key",
-                                "Content-Type: application/json"
-                            ],
-                            'method'  => 'POST',
-                            'content' => json_encode($data),
-                            'ignore_errors' => true  // Gets response even if HTTP response code indicates an error
-                        ]
-                    ];
+                        $options = [
+                            'http' => [
+                                'header'  => [
+                                    "X-Telerivet-API-Key: $api_key",
+                                    "Content-Type: application/json"
+                                ],
+                                'method'  => 'POST',
+                                'content' => json_encode($data),
+                                'ignore_errors' => true  // Gets response even if HTTP response code indicates an error
+                            ]
+                        ];
 
-                    // Create the context
-                    $context = stream_context_create($options);
+                        // Create the context
+                        $context = stream_context_create($options);
 
-                    // Send the request
-                    $telerivet_response = file_get_contents($url, false, $context);
+                        // Send the request
+                        $telerivet_response = file_get_contents($url, false, $context);
 
-                    // Check for errors
-                    if ($telerivet_response === FALSE) {
-                        $response['message'] = "Error Sending Message";
-                    } else {
-                        $response['success'] = true;
-                        $response['message'] = "Message sent successfully: " . $telerivet_response;
-                    }
+
                     } else {
                         $response['message'] = "Error updating record: " . mysqli_error($conn);
                     }
