@@ -295,7 +295,7 @@ case 'setapprove':
 $id = (int) $id;
 
 // Query to get the contact number
-$contactQuery = "SELECT contact_number FROM tblregistered_account WHERE id = $id";
+$contactQuery = "SELECT contact FROM tblregistered_account WHERE id = $id";
 $contactResult = $conn->query($contactQuery);
 
 if ($contactResult && $contactResult->num_rows > 0) {
