@@ -373,11 +373,18 @@ function doneCert(targetID) {
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
-                    swal("Error marking record as done", "Please check the console for more details.", {
+                    console.error('AJAX Error Details:');
+                    console.log('Status Code:', xhr.status); // HTTP status code (e.g., 404, 500)
+                    console.log('Status Text:', xhr.statusText); // Textual representation of the status
+                    console.log('Response Text:', xhr.responseText); // Server's response body
+                    console.log('Error Thrown:', error); // Specific error thrown by jQuery
+                    console.log('AJAX Status:', status); // General AJAX status (e.g., 'error', 'timeout')
+
+                    swal("Error marking record as done", "An error occurred during the request. Please check the console for detailed information.", {
                         icon: "error",
                     });
                 }
+
             });
         } else {
             // If the user cancels, you can show a message or simply do nothing
@@ -481,7 +488,12 @@ function approveCert(targetID) {
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
+                    console.error('AJAX Error Details:');
+                    console.log('Status Code:', xhr.status); // HTTP status code (e.g., 404, 500)
+                    console.log('Status Text:', xhr.statusText); // Textual representation of the status
+                    console.log('Response Text:', xhr.responseText); // Server's response body
+                    console.log('Error Thrown:', error); // Specific error thrown by jQuery
+                    console.log('AJAX Status:', status); // General AJAX status (e.g., 'error', 'timeout')
                     swal("Error marking record as done", "Please check the console for more details.", {
                         icon: "error",
                     });
