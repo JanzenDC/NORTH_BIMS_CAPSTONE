@@ -5,6 +5,7 @@ header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
 session_start();
+require 'vendor/autoload.php';
 require "../../db_connect.php"; // Ensure this file establishes a MySQLi connection
 
 $response = [
@@ -79,22 +80,37 @@ switch ($action) {
                         $project_id = 'PJ3d74c709991602b6';
                         $message = "Your vehicle certification has been approved.";
 
-                        $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
-                        $data = [
-                            'to_number' => $contactNumber,
-                            'content' => $message,
-                        ];
+                    $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
+                    $data = [
+                        'to_number' => $contactNumber,
+                        'content' => $message,
+                    ];
 
-                        $ch = curl_init($url);
-                        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                            "X-Telerivet-API-Key: $api_key",
-                            "Content-Type: application/json"
-                        ]);
-                        curl_setopt($ch, CURLOPT_POST, true);
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        $telerivet_response = curl_exec($ch);
-                        curl_close($ch);
+                    $options = [
+                        'http' => [
+                            'header'  => [
+                                "X-Telerivet-API-Key: $api_key",
+                                "Content-Type: application/json"
+                            ],
+                            'method'  => 'POST',
+                            'content' => json_encode($data),
+                            'ignore_errors' => true  // Gets response even if HTTP response code indicates an error
+                        ]
+                    ];
+
+                    // Create the context
+                    $context = stream_context_create($options);
+
+                    // Send the request
+                    $telerivet_response = file_get_contents($url, false, $context);
+
+                    // Check for errors
+                    if ($telerivet_response === FALSE) {
+                        $response['message'] = "Error Sending Message";
+                    } else {
+                        $response['success'] = true;
+                        $response['message'] = "Message sent successfully: " . $telerivet_response;
+                    }
                     } else {
                         $response['message'] = "Error updating record: " . mysqli_error($conn);
                     }
