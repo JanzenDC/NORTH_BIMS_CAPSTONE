@@ -36,27 +36,36 @@ $doneData = $resultDone->fetch_all(MYSQLI_ASSOC);
 
 <script>
 $(document).ready(function() {
-    // Initialize DataTables
-    $('#walkinTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#newTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#approvedTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#disapprovedTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#doneTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#residentTable').DataTable({
-        "searching": true, // Enable the search feature
-    });
+    const tableConfig = {
+        scrollX: true,
+        searching: true,
+        responsive: true,
+        language: {
+            emptyTable: "No data available"
+        },
+        dom: '<"top"lf>rt<"bottom"ip><"clear">',
+        initComplete: function() {
+            $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+        }
+    };
+
+    // Initialize all tables with the same configuration
+    $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable, #residentTable').DataTable(tableConfig);
     // Initialize jQuery UI Tabs
-    $("#tabs").tabs();
+    Swal.fire({
+    title: 'Loading...',
+    html: 'Please wait while the content is loading.',
+    allowOutsideClick: false,
+    didOpen: () => {
+        Swal.showLoading();
+    }
+    });
+
+    // Set a timeout to close the Swal loading effect and initialize tabs
+    setTimeout(() => {
+    Swal.close();  // Close the Swal dialog
+    $("#tabs").tabs();  // Initialize jQuery UI tabs
+    }, 2000); // Adjust the delay as needed (e.g., 2000 ms = 2 seconds)
 
     // Initialize the resident dialog
     $("#residentDialog").dialog({

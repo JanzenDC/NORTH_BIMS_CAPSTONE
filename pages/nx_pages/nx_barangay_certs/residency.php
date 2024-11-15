@@ -30,8 +30,8 @@ $doneData = $resultDone->fetch_all(MYSQLI_ASSOC);
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
 <script>
@@ -53,12 +53,25 @@ $(document).ready(function() {
     // Initialize all tables with the same configuration
     $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable, #residentTable').DataTable(tableConfig);
 
-    $("#tabs").tabs({
-        active: 0, // Set first tab as active by default
-        heightStyle: "content", // Adjust height based on content
-        show: { effect: "fadeIn", duration: 200 },
-        hide: { effect: "fadeOut", duration: 200 }
+    // Initialize jQuery UI Tabs
+    Swal.fire({
+    title: 'Loading...',
+    html: 'Please wait while the content is loading.',
+    allowOutsideClick: false,
+    didOpen: () => {
+        Swal.showLoading();
+    }
     });
+
+    setTimeout(() => {
+    Swal.close();  
+        $("#tabs").tabs({
+            active: 0, // Set first tab as active by default
+            heightStyle: "content", // Adjust height based on content
+            show: { effect: "fadeIn", duration: 200 },
+            hide: { effect: "fadeOut", duration: 200 }
+        });
+    }, 2000); 
 
     // Initialize the resident dialog
     $("#residentDialog").dialog({
