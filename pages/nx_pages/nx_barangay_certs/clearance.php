@@ -63,13 +63,21 @@ if ($resultDone->num_rows > 0) {
 <script>
 $(document).ready(function() {
 
-    $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable, #residentTable').DataTable({
-        "scrollX": true,        // Enable horizontal scrolling
-        "searching": true,      // Enable the search feature
-        "language": {
-            "emptyTable": "No data available" // Custom message when no data is present
+    const tableConfig = {
+        scrollX: true,
+        searching: true,
+        responsive: true,
+        language: {
+            emptyTable: "No data available"
+        },
+        dom: '<"top"lf>rt<"bottom"ip><"clear">',
+        initComplete: function() {
+            $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
         }
-    });
+    };
+
+    // Initialize all tables with the same configuration
+    $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable, #residentTable').DataTable(tableConfig);
 
     // Initialize jQuery UI Tabs
 
