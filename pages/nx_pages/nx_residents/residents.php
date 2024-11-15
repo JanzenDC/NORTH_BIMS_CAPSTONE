@@ -261,7 +261,17 @@ $conn->close();
                     <label for="editHouseNo">House Number</label>
                     <input type="number" id="editHouseNo" name="houseNo" class="block w-full mb-2 p-2 border rounded">
                     <label for="editPurok">Purok</label>
-                    <input type="text" id="editPurok" name="purok" class="block w-full mb-2 p-2 border rounded">
+                    <select name="purok" id="editPurok" class="block w-full mb-2 p-2 border rounded" required>
+                        <option value="" disabled selected>Select a Street</option>
+                        <option value="Acasia (Villa Gabriel)">Acasia (Villa Gabriel)</option>
+                        <option value="Mulawin">Mulawin</option>
+                        <option value="Kamagong">Kamagong</option>
+                        <option value="Banaba">Banaba</option>
+                        <option value="Narra">Narra</option>
+                        <option value="Calumpit">Calumpit</option>
+                        <option value="Mabolo">Mabolo</option>
+
+                    </select>
                     <label for="editBrgy">Barangay</label>
                     <input type="text" id="editBrgy" name="brgy" disabled value="North Poblacion" class="block w-full mb-2 p-2 border rounded">
                     <label for="editMunicipality">Municipality</label>
@@ -293,7 +303,17 @@ $conn->close();
                         <option value="Student">Student</option>
                     </select>
                     <label for="editEducation">Educational Attainment</label>
-                    <input type="text" id="editEducation" name="education" class="block w-full mb-2 p-2 border rounded">
+                    <select name="education" id="editEducation" class="block w-full mb-2 p-2 border rounded" required>
+                        <option value="" disabled selected>Select Education</option>
+                        <option value="No Schooling Completed">No Schooling Completed</option>
+                        <option value="Elementary">Elementary</option>
+                        <option value="High School, Undergraduate">High School, Undergraduate</option>
+                        <option value="Highschool, Graduate">Vocational</option>
+                        <option value="College, Undergraduate">Highschool, Graduate</option>
+                        <option value="Bachelor's Degree">Bachelor's Degree</option>
+                        <option value="Master's Degree">Master's Degree</option>
+                        <option value="Doctorate Degree">Doctorate Degree</option>
+                    </select>
                     <label for="editOccupation">Occupation</label>
                     <input type="text" id="editOccupation" name="occupation" class="block w-full mb-2 p-2 border rounded">
                     <label for="editHeadFam">Head of Family?</label>
