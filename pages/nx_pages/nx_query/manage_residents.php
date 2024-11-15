@@ -300,7 +300,7 @@ $contactResult = $conn->query($contactQuery);
 
 if ($contactResult && $contactResult->num_rows > 0) {
     $contact = $contactResult->fetch_assoc();
-    $contactNumber = $contact['contact_number'];
+    $contactNumber = $contact['contact'];
 
     // Send SMS via Telerivet
     $message = "Your certificate has been approved.";
