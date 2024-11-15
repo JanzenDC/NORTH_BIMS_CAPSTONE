@@ -530,6 +530,10 @@ function toggleApproval(id, currentApprovalState, button) {
           }
         },
         error: function(xhr, status, error) {
+          console.error("AJAX request failed. Status:", status);
+          console.error("Error message:", error);
+          console.error("Response text:", xhr.responseText);
+          console.error("HTTP status code:", xhr.status);
           console.error("Ajax error:", error);
           swal("Error updating record: " + error, {
             icon: "error",
