@@ -31,15 +31,16 @@ $action = $_GET['action'] ?? '';
 switch ($action) {
     case 'create':
         try {
-            // Validate required fields
-            if (empty($_POST['activityDate']) || empty($_POST['activityName']) || empty($_POST['activityDescription'])) {
-                throw new Exception("All fields are required");
-            }
-            
+            // // Validate required fields
+            // if (empty($_POST['activityDate']) || empty($_POST['activityName']) || empty($_POST['activityDescription'])) {
+            //     throw new Exception("All fields are required");
+            // }
+            $recurring_days = mysqli_real_escape_string($conn, $_POST['recurring_days']);
             $activityType = mysqli_real_escape_string($conn, $_POST['recurring_days']);
             $activityDate = mysqli_real_escape_string($conn, $_POST['activityDate']);
             $activityName = mysqli_real_escape_string($conn, $_POST['activityName']);
-            $activityDescription = mysqli_real_escape_string($conn, $_POST['activityDescription']);
+             $activityDescription = mysqli_real_escape_string($conn, $_POST['activityDescription']);
+
             
             // Handle file upload
             if (!isset($_FILES['activityImage']) || $_FILES['activityImage']['error'] !== UPLOAD_ERR_OK) {
@@ -74,7 +75,7 @@ switch ($action) {
 
             // Database insert
             $sql = "INSERT INTO tblactivity (recurring_days, dateofactivity, activity, description, image) 
-                   VALUES (?, ?, ?, ?)";
+                   VALUES (?,?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("sssss",$activityType, $activityDate, $activityName, $activityDescription, $newImageName);
 
@@ -190,11 +191,12 @@ switch ($action) {
             $activityDate = mysqli_real_escape_string($conn, $_POST['activityDate']);
             $activityName = mysqli_real_escape_string($conn, $_POST['activityName']);
             $activityDescription = mysqli_real_escape_string($conn, $_POST['activityDescription']);
+            $activityDay = mysqli_real_escape_string($conn, $_POST['activityDay']);
             
             // Start with base query
-            $sql = "UPDATE tblactivity SET dateofactivity = ?, activity = ?, description = ?";
-            $params = [$activityDate, $activityName, $activityDescription];
-            $types = "sss";
+            $sql = "UPDATE tblactivity SET dateofactivity = ?, activity = ?, description = ?, recurring_days = ?";
+            $params = [$activityDate, $activityName, $activityDescription, $activityDay];
+            $types = "ssss";
             
             // Handle image upload if new image is provided
             if (isset($_FILES['activityImage']) && $_FILES['activityImage']['error'] === UPLOAD_ERR_OK) {

@@ -91,14 +91,14 @@ if ($resultAct->num_rows > 0) {
          <div class="mt-4">
             <label for="recurring_days" class="block text-sm font-medium text-gray-700">Activity Type:</label>
             <select id="recurring_days" name="recurring_days" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
-                <option value="specificDate">Specific Day</option>
-                <option value="weekly">Every Monday</option>
-                <option value="weekly">Every Tuesday</option>
-                <option value="weekly">Every Wednesday</option>
-                <option value="weekly">Every Thursday</option>
-                <option value="weekly">Every Friday</option>
-                <option value="weekly">Every Saturday</option>
-                <option value="weekly">Every Sunday</option>
+                <option value="Specific Date">Specific Day</option>
+                <option value="Every Monday">Every Monday</option>
+                <option value="Every Tuesday">Every Tuesday</option>
+                <option value="Every Wednesday">Every Wednesday</option>
+                <option value="Every Thursday">Every Thursday</option>
+                <option value="Every Friday">Every Friday</option>
+                <option value="Every Saturday">Every Saturday</option>
+                <option value="Every Sunday">Every Sunday</option>
             </select>
         </div>
         
@@ -179,6 +179,7 @@ $(document).ready(function() {
 
 function submitActivity() {
     // Validate form
+    const recurring_days = document.getElementById('recurring_days').value;
     const activityDate = document.getElementById('activityDate').value;
     const activityName = document.getElementById('activityName').value;
     const activityDescription = document.getElementById('activityDescription').value;
@@ -199,6 +200,7 @@ function submitActivity() {
     .then((willAdd) => {
         if (willAdd) {
             const formData = new FormData();
+            formData.append('recurring_days', recurring_days);
             formData.append('activityDate', activityDate);
             formData.append('activityName', activityName);
             formData.append('activityDescription', activityDescription);
@@ -253,7 +255,7 @@ function editApproved(id) {
                     $('#editActivityDate').val(result.data.dateofactivity);
                     $('#editActivityName').val(result.data.activity);
                     $('#editActivityDescription').val(result.data.description);
-                    
+                    $('#editActivityDay').val(result.data.recurring_days)
                     // Show current image
                     const imagePath = '../../assets/images/activity/' + result.data.image;
                     $('#currentActivityImage').attr('src', imagePath).removeClass('hidden');
@@ -299,7 +301,7 @@ function updateActivity() {
     const activityName = $('#editActivityName').val();
     const activityDescription = $('#editActivityDescription').val();
     const activityImage = $('#editActivityImage')[0].files[0];
-
+    const activityDay = $('#editActivityDay').val();
     if (!activityDate || !activityName || !activityDescription) {
         swal("Error!", "Date, name, and description are required", "error");
         return;
@@ -318,6 +320,7 @@ function updateActivity() {
             formData.append('id', id);
             formData.append('activityDate', activityDate);
             formData.append('activityName', activityName);
+            formData.append('activityDay', activityDay);
             formData.append('activityDescription', activityDescription);
             if (activityImage) {
                 formData.append('activityImage', activityImage);
