@@ -185,10 +185,6 @@ function submitActivity() {
     const activityDescription = document.getElementById('activityDescription').value;
     const activityImage = document.getElementById('activityImage').files[0];
 
-    if (!activityDate || !activityName || !activityDescription || !activityImage) {
-        swal("Error!", "All fields are required", "error");
-        return;
-    }
 
     swal({
         title: "Are you sure?",
@@ -302,10 +298,6 @@ function updateActivity() {
     const activityDescription = $('#editActivityDescription').val();
     const activityImage = $('#editActivityImage')[0].files[0];
     const activityDay = $('#editActivityDay').val();
-    if (!activityDate || !activityName || !activityDescription) {
-        swal("Error!", "Date, name, and description are required", "error");
-        return;
-    }
 
     swal({
         title: "Are you sure?",
