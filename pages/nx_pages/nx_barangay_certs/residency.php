@@ -45,7 +45,12 @@ $(document).ready(function() {
         }
     });
 
-    $("#tabs").tabs();
+    $("#tabs").tabs({
+        active: 0, // Set first tab as active by default
+        heightStyle: "content", // Adjust height based on content
+        show: { effect: "fadeIn", duration: 200 },
+        hide: { effect: "fadeOut", duration: 200 }
+    });
 
     // Initialize the resident dialog
     $("#residentDialog").dialog({

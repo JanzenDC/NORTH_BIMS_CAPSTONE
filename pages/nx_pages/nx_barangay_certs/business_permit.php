@@ -30,6 +30,7 @@ foreach ([$walkinQuery => &$walkinData, $newQuery => &$newData,
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
+
 <script>
 $(document).ready(function() {
     $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable').DataTable({
@@ -40,7 +41,13 @@ $(document).ready(function() {
     });
     
     // Initialize jQuery UI Tabs
-    $("#tabs").tabs();
+
+    $("#tabs").tabs({
+        active: 0, // Set first tab as active by default
+        heightStyle: "content", // Adjust height based on content
+        show: { effect: "fadeIn", duration: 200 },
+        hide: { effect: "fadeOut", duration: 200 }
+    });
 
 
     $("#addCertificateDialog").dialog({

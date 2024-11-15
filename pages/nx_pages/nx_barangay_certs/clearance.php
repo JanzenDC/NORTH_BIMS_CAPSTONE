@@ -54,12 +54,12 @@ if ($resultDone->num_rows > 0) {
     }
 }
 ?>
-
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
 <script>
 $(document).ready(function() {
 
@@ -72,7 +72,13 @@ $(document).ready(function() {
     });
 
     // Initialize jQuery UI Tabs
-    $("#tabs").tabs();
+
+    $("#tabs").tabs({
+        active: 0, // Set first tab as active by default
+        heightStyle: "content", // Adjust height based on content
+        show: { effect: "fadeIn", duration: 200 },
+        hide: { effect: "fadeOut", duration: 200 }
+    });
 // DIALOGS
     // Initialize the dialog
     $("#dialog").dialog({
