@@ -37,23 +37,12 @@ $doneData = $resultDone->fetch_all(MYSQLI_ASSOC);
 <script>
 $(document).ready(function() {
 
-    $('#walkinTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#newTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#approvedTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#disapprovedTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#doneTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#residentTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
+    $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable, #residentTable').DataTable({
+        "scrollX": true, // Enable horizontal scrolling
+        "searching": true, // Enable the search feature for all but walkinTable
+        "language": {
+            "emptyTable": "No data available" // Custom message when no data is present
+        }
     });
 
     $("#tabs").tabs();

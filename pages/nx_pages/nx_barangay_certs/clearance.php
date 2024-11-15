@@ -62,26 +62,15 @@ if ($resultDone->num_rows > 0) {
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Initialize DataTables for all tables
-    $('#walkinTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
+
+    $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable, #residentTable').DataTable({
+        "scrollX": true,        // Enable horizontal scrolling
+        "searching": true,      // Enable the search feature
+        "language": {
+            "emptyTable": "No data available" // Custom message when no data is present
+        }
     });
-    $('#newTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#approvedTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#disapprovedTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#doneTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
-    });
-    $('#residentTable').DataTable({
-        "searching": true, // Enable the search feature
-        "scrollX": true // Enable horizontal scrolling
-    });
+
     // Initialize jQuery UI Tabs
     $("#tabs").tabs();
 // DIALOGS

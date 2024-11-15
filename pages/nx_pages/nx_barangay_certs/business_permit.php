@@ -33,7 +33,10 @@ foreach ([$walkinQuery => &$walkinData, $newQuery => &$newData,
 <script>
 $(document).ready(function() {
     $('#walkinTable, #newTable, #approvedTable, #disapprovedTable, #doneTable').DataTable({
-        "scrollX": true // Enable horizontal scrolling
+        "scrollX": true // Enable horizontal scrolling,
+        "language": {
+            "emptyTable": "No data available" // Custom message when no data is present
+        }
     });
     
     // Initialize jQuery UI Tabs
