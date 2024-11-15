@@ -35,7 +35,8 @@ switch ($action) {
             if (empty($_POST['activityDate']) || empty($_POST['activityName']) || empty($_POST['activityDescription'])) {
                 throw new Exception("All fields are required");
             }
-
+            
+            $activityType = mysqli_real_escape_string($conn, $_POST['recurring_days']);
             $activityDate = mysqli_real_escape_string($conn, $_POST['activityDate']);
             $activityName = mysqli_real_escape_string($conn, $_POST['activityName']);
             $activityDescription = mysqli_real_escape_string($conn, $_POST['activityDescription']);
@@ -72,10 +73,10 @@ switch ($action) {
             }
 
             // Database insert
-            $sql = "INSERT INTO tblactivity (dateofactivity, activity, description, image) 
+            $sql = "INSERT INTO tblactivity (recurring_days, dateofactivity, activity, description, image) 
                    VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssss", $activityDate, $activityName, $activityDescription, $newImageName);
+            $stmt->bind_param("sssss",$activityType, $activityDate, $activityName, $activityDescription, $newImageName);
 
             if (!$stmt->execute()) {
                 throw new Exception("Database error: " . $stmt->error);
@@ -88,6 +89,7 @@ switch ($action) {
             $response['message'] = "Activity added successfully";
             $response['data'] = [
                 'id' => $stmt->insert_id,
+                'recurring_days' => $activityType,
                 'date' => $activityDate,
                 'name' => $activityName,
                 'description' => $activityDescription,

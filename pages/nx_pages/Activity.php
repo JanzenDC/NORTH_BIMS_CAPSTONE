@@ -89,8 +89,8 @@ if ($resultAct->num_rows > 0) {
 
     <div id="activityDialog" title="Add Activity" class="p-4 bg-white rounded shadow-lg" style="display:none;">
          <div class="mt-4">
-            <label for="ActivityDayActivityDay" class="block text-sm font-medium text-gray-700">Activity Type:</label>
-            <select id="ActivityDay" name="ActivityDay" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
+            <label for="recurring_days" class="block text-sm font-medium text-gray-700">Activity Type:</label>
+            <select id="recurring_days" name="recurring_days" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200">
                 <option value="specificDate">Specific Day</option>
                 <option value="weekly">Every Monday</option>
                 <option value="weekly">Every Tuesday</option>
