@@ -208,13 +208,26 @@ switch ($action) {
                         $projectId = 'PJ3d74c709991602b6';
                         $message = "Your certificate has been approved.";
 
-                        $api = new Telerivet_API($telerivetApiKey);
-                        $project = $api->initProjectById($projectId);
-                        $response = $project->sendMessage([
-                            'to_number' => $contactNumber,
-                            'content' => $message
-                        ]);
 
+                $api = new Telerivet_API($telerivetApiKey);
+                $project = $api->initProjectById($projectId);
+
+                try {
+                    $telerivetResponse = $project->sendMessage([
+                        'to_number' => $contactNumber,
+                        'content' => $message
+                    ]);
+
+                    // Check if the response indicates success
+                    if (isset($telerivetResponse->id)) {
+                        $response['message'] .= " Message sent successfully.";
+                    } else {
+                        $response['message'] .= " Message was not sent.";
+                    }
+                } catch (Exception $e) {
+                    // Handle any exceptions that may occur
+                    $response['message'] .= " An error occurred while sending the message: " . $e->getMessage();
+                }
 
                     } else {
                         $response['message'] = "Error updating record: " . mysqli_error($conn);
