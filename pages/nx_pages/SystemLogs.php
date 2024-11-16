@@ -51,7 +51,7 @@ if ($resultLogs->num_rows > 0) {
                         <tr>
                             <th>Username</th>
                             <th>Date</th>
-                            <th>Action</th>
+                            <th style="text-align: left;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
