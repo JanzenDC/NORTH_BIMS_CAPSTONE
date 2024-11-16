@@ -395,7 +395,9 @@ function approveCert(targetID) {
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX error:', status, error);
+                    console.log(xhr.responseText)
+                    console.log(status)
+                    console.log(error)
                     swal("Error marking record as done", "Please check the console for more details.", {
                         icon: "error",
                     });

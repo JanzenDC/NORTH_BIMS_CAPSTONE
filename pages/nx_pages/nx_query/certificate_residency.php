@@ -164,68 +164,69 @@ switch ($action) {
         }
         break;
 
-    case 'setAsApprove':
-        $id = $_POST['id'] ?? '';
-        if (empty($id)) {
-            $response['message'] = "ID is required to set the record as approved.";
-            break;
-        }
+case 'setAsApprove':
+    // Get ID from POST request and validate
+    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+    if ($id <= 0) {
+        $response['message'] = "Valid ID is required to set the record as approved.";
+        break;
+    }
 
-        $ownerQuery = "SELECT ownerid FROM residency_cert WHERE id = $id";
-        $ownerResult = mysqli_query($conn, $ownerQuery);
+    // Query to get the owner ID from residency_cert
+    $ownerQuery = "SELECT ownerId FROM residency_cert WHERE id = $id";
+    $ownerResult = mysqli_query($conn, $ownerQuery);
 
-        if ($ownerResult && mysqli_num_rows($ownerResult) > 0) {
-            $ownerData = mysqli_fetch_assoc($ownerResult);
-            $ownerid = $ownerData['ownerid'];
+    if ($ownerResult && mysqli_num_rows($ownerResult) > 0) {
+        $ownerData = mysqli_fetch_assoc($ownerResult);
+        $ownerid = $ownerData['ownerId'];
 
-            if ($ownerid != 0) {
-                $contactQuery = "SELECT resident_id, contact FROM tblregistered_account WHERE id = $ownerid";
-                $contactResult = mysqli_query($conn, $contactQuery);
+        // Query to fetch contact details from tblregistered_account
+        $contactQuery = "SELECT contact FROM tblregistered_account WHERE id = $ownerid";
+        $contactResult = mysqli_query($conn, $contactQuery);
 
-                if ($contactResult && mysqli_num_rows($contactResult) > 0) {
-                    $contactData = mysqli_fetch_assoc($contactResult);
-                    $contactNumber = $contactData['contact'];
+        if ($contactResult && mysqli_num_rows($contactResult) > 0) {
+            $contactData = mysqli_fetch_assoc($contactResult);
+            $contactNumber = $contactData['contact'];
 
-                    $updateQuery = "UPDATE residency_cert SET status = 'Approved' WHERE id = $id";
-                    if (mysqli_query($conn, $updateQuery)) {
-                        $response['success'] = true;
-                        $response['message'] = "Record marked as Approved successfully.";
-                        logAction($conn, "Approved residency certificate ID $id", $_SESSION['user']['username']);
+            // Update the status of the record to 'Approved'
+            $updateQuery = "UPDATE residency_cert SET status = 'Approved' WHERE id = $id";
+            if (mysqli_query($conn, $updateQuery)) {
+                $response['success'] = true;
+                $response['message'] = "Record marked as Approved successfully.";
+
 
                 // Send SMS via Telerivet
-                        $telerivetApiKey = 'H_RkO_06nvYxPfDda3r949iavvgJtEc0ZnBW';
-                        $projectId = 'PJ3d74c709991602b6';
-                        $message = "Your account has been approved.";
+                $telerivetApiKey = 'H_RkO_06nvYxPfDda3r949iavvgJtEc0ZnBW';
+                $projectId = 'PJ3d74c709991602b6';
+                $message = "Your account has been approved.";
 
-                        try {
-                            $api = new Telerivet_API($telerivetApiKey);
-                            $project = $api->initProjectById($projectId);
-                            $apiResponse = $project->sendMessage([
-                                'to_number' => $contactNumber,
-                                'content' => $message
-                            ]);
+                try {
+                    $api = new Telerivet_API($telerivetApiKey);
+                    $project = $api->initProjectById($projectId);
+                    $apiResponse = $project->sendMessage([
+                        'to_number' => $contactNumber,
+                        'content' => $message
+                    ]);
 
-                            if ($apiResponse->success) {
-                                $response['message'] .= " Notification sent successfully.";
-                            } else {
-                                $response['message'] .= " Notification failed to send.";
-                            }
-                        } catch (Exception $e) {
-                            $response['message'] .= " Telerivet error: " . $e->getMessage();
-                        }
+                    if ($apiResponse->success) {
+                        $response['message'] .= " Notification sent successfully.";
                     } else {
-                        $response['message'] = "Error updating record: " . mysqli_error($conn);
+                        $response['message'] .= " Notification failed to send.";
                     }
-                } else {
-                    $response['message'] = "No contact found for owner ID $ownerid.";
+                } catch (Exception $e) {
+                    $response['message'] .= " Telerivet error: " . $e->getMessage();
                 }
             } else {
-                $response['message'] = "Owner ID is zero, not sending Telerivet message.";
+                $response['message'] = "Error updating record: " . mysqli_error($conn);
             }
         } else {
-            $response['message'] = "No owner found for certificate ID $id.";
+            $response['message'] = "No contact found for owner ID $ownerid.";
         }
-        break;
+    } else {
+        $response['message'] = "No owner found for certificate ID $id.";
+    }
+    break;
+
 
 
     case 'setDisapproved':
