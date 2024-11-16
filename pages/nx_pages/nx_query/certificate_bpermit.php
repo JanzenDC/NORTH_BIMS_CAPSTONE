@@ -127,35 +127,21 @@ switch ($action) {
                         $response['message'] = "Record marked as Approved successfully.";
                         logAction($conn, "Approved certificate ID $id", $_SESSION['user']['username']);
 
-                        // Create the message
-                        $message = "Your certificate has been approved."; // Updated message
-                        $api_key = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
-                        $project_id = 'PJ3d74c709991602b6';
-                        // Send the message using Telerivet API
-                        $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
-                        $data = [
-                            'to_number' => $contactNumber,
-                            'content' => $message,
-                        ];
+                        $telerivetApiKey = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
+                        $projectId = 'PJ3d74c709991602b6';
+                        $message = "Your certificate has been approved.";
 
-                        $options = [
-                            'http' => [
-                                'header'  => [
-                                    "X-Telerivet-API-Key: $api_key",
-                                    "Content-Type: application/json"
-                                ],
-                                'method'  => 'POST',
-                                'content' => json_encode($data),
-                                'ignore_errors' => true  // Gets response even if HTTP response code indicates an error
-                            ]
-                        ];
-
-                        // Create the context
-                        $context = stream_context_create($options);
-
-                        // Send the request
-                        $telerivet_response = file_get_contents($url, false, $context);
-
+                        try {
+                            $api = new Telerivet_API($telerivetApiKey);
+                            $project = $api->initProjectById($projectId);
+                            $project->sendMessage([
+                                'to_number' => $userPhone,
+                                'content' => $message
+                            ]);
+                            $response['message'] = "SMS sent successfully.";
+                        } catch (Exception $e) {
+                            $response['message'] = "Error sending SMS: " . $e->getMessage();
+                        }
 
                     } else {
                         $response['message'] = "Error updating record: " . mysqli_error($conn);

@@ -192,41 +192,21 @@ switch ($action) {
                         $response['message'] = "Record marked as Approved successfully.";
                         logAction($conn, "Approved residency certificate ID $id", $_SESSION['user']['username']);
 
-                        $api_key = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
-                        $project_id = 'PJ3d74c709991602b6';
+                        $telerivetApiKey = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
+                        $projectId = 'PJ3d74c709991602b6';
                         $message = "Your certificate has been approved.";
 
-                     $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
-                    $data = [
-                        'to_number' => $contactNumber,
-                        'content' => $message,
-                    ];
-
-                    $options = [
-                        'http' => [
-                            'header'  => [
-                                "X-Telerivet-API-Key: $api_key",
-                                "Content-Type: application/json"
-                            ],
-                            'method'  => 'POST',
-                            'content' => json_encode($data),
-                            'ignore_errors' => true  // Gets response even if HTTP response code indicates an error
-                        ]
-                    ];
-
-                    // Create the context
-                    $context = stream_context_create($options);
-
-                    // Send the request
-                    $telerivet_response = file_get_contents($url, false, $context);
-
-                    // Check for errors
-                    if ($telerivet_response === FALSE) {
-                        $response['message'] = "Error Sending Message";
-                    } else {
-                        $response['success'] = true;
-                        $response['message'] = "Message sent successfully: " . $telerivet_response;
-                    }
+                        try {
+                            $api = new Telerivet_API($telerivetApiKey);
+                            $project = $api->initProjectById($projectId);
+                            $project->sendMessage([
+                                'to_number' => $userPhone,
+                                'content' => $message
+                            ]);
+                            $response['message'] = "SMS sent successfully.";
+                        } catch (Exception $e) {
+                            $response['message'] = "Error sending SMS: " . $e->getMessage();
+                        }
                     } else {
                         $response['message'] = "Error updating record: " . mysqli_error($conn);
                     }
