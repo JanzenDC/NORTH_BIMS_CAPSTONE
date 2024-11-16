@@ -647,7 +647,7 @@ session_start();
                 <div style="margin-top: 10px; display: flex; gap: 10px;">
                     <input type="checkbox" name="privacy_agreement" required>
                     <label for="privacy_agreement">
-                        Your privacy is important to us at Barangay Information Management System (BIMS). We collect and use your personal information solely to provide and enhance our services, and we safeguard it from unauthorized access. By using BIMS, you agree to our privacy policy.
+                      Your privacy matters to us at BIMS. We collect your information only to enhance our services and ensure its security. By using BIMS, you agree to our privacy policy.
                     </label>
                 </div>
             </div>
