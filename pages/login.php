@@ -563,8 +563,7 @@ session_start();
             
             <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 1: Personal Information</h3>
-                <select name="registration_status" id="registration_status" required onchange="toggleStreetField()">
-
+                <select name="registration_status" id="registration_status" required>
                     <option value="" disabled selected>Account Type</option>
                     <option value="0">Non-Resident</option>
                     <option value="1">Resident</option>
@@ -577,23 +576,20 @@ session_start();
                 <input type="number" name="age" id="age" placeholder="Age"  readonly />
             </div>
 
-
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 2: Login and Contact Details</h3>
                 <input type="text" name="contact" placeholder="Phone Number" maxlength="11" />
-
                 <input type="email" name="email" placeholder="Email" />
                 <div class="password-container" style="margin-bottom: 50px;">
-                  <div class="input-group">
-                    <input type="password" id="password_holder" name="password_holder" placeholder="Password" />
-                    <i class="fa fa-eye password-toggle"></i>
-                  </div>
-                  <div class="strength-indicator">
-                    <div id="strength-progress" class="strength-progress"></div>
-                  </div>
+                    <div class="input-group">
+                        <input type="password" id="password_holder" name="password_holder" placeholder="Password" />
+                        <i class="fa fa-eye password-toggle"></i>
+                    </div>
+                    <div class="strength-indicator">
+                        <div id="strength-progress" class="strength-progress"></div>
+                    </div>
                 </div>
             </div>
-
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 3: Address</h3>
@@ -618,16 +614,12 @@ session_start();
                     <input type="text" id="streetInput" name="street" placeholder="Enter your street">
                 </div>
 
-                <input type="text" name="street" id="street-input" placeholder="Enter your street" style="display: none;" />
                 <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
                 <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
                 <input type="text" name="province" placeholder="Province" value='Nueva Ecija' />
             </div>
 
-            
-
-            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
-                <h3>Step 4: Additional Information</h3>
+            <div class="step" style="overflow: auto; max-height: 300px; padding: 10px <h3>Step 4: Additional Information</h3>
                 <input type="text" name="occupation" placeholder="Occupation"  />
                 <select name="civil_status" required>
                     <option value="" disabled selected>Select Civil Status</option>
@@ -637,7 +629,6 @@ session_start();
                     <option value="widowed">Widowed</option>
                     <option value="separated">Separated</option>
                 </select>
-                
             </div>
 
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
@@ -652,24 +643,20 @@ session_start();
                     <option value="school id">School ID</option>
                 </select>
                 <h3>Identification Card:</h3>
-                <input type="file" name="id_file" accept="image/*" />
-                <!-- <input type="text" name="id_number" placeholder="ID Number" /> -->
+                <input type="file" name="id_file" accept="image/*" required/>
                 <div style="margin-top: 10px; display: flex; gap: 10px;">
                     <input type="checkbox" name="privacy_agreement" required>
                     <label for="privacy_agreement">
                         Your privacy is important to us at Barangay Information Management System (BIMS). We collect and use your personal information solely to provide and enhance our services, and we safeguard it from unauthorized access. By using BIMS, you agree to our privacy policy.
                     </label>
                 </div>
-
             </div>
-
 
             <div class="btn-group">
                 <button type="button" id="prevBtn" style="display: none;">Previous</button>
                 <button type="button" id="nextBtn">Next</button>
             </div>
         </form>
-
 
       </div>
       <div class="form-container sign-in-container">
@@ -704,20 +691,18 @@ session_start();
       </div>
     </div>
   
-    <script>
-      function toggleStreetField() {
-            const registrationStatus = document.querySelector('select[name="registration_status"]').value;
-            const streetSelect = document.getElementById('streetSelect');
-            const streetInput = document.getElementById('streetInput');
-
-            if (registrationStatus === "0") { // Non-Resident
-                streetSelect.style.display = 'none';
-                streetInput.style.display = 'block';
-            } else if (registrationStatus === "1") { // Resident
-                streetSelect.style.display = 'block';
-                streetInput.style.display = 'none';
-            }
-        } 
+  <script>
+    document.getElementById('registration_status').addEventListener('change', function() {
+        var streetSelectContainer = document.getElementById('streetSelectContainer');
+        var streetInputContainer = document.getElementById('streetInputContainer');
+        if (this.value === '0') { // Non-Resident
+            streetSelectContainer.style.display = 'none';
+            streetInputContainer.style.display = 'block';
+        } else if (this.value === '1') { // Resident
+            streetSelectContainer.style.display = 'block';
+            streetInputContainer.style.display = 'none';
+        }
+    });
     function toggleSignInPassword() {
       const passwordInput = document.getElementById('signin_password');
       const toggleIcon = document.querySelector('.sign-in-container .password-toggle');
