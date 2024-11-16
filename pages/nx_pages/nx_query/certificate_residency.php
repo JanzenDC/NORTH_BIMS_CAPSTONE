@@ -192,16 +192,27 @@ switch ($action) {
                         $response['message'] = "Record marked as Approved successfully.";
                         logAction($conn, "Approved residency certificate ID $id", $_SESSION['user']['username']);
 
+                // Send SMS via Telerivet
                         $telerivetApiKey = 'H_RkO_06nvYxPfDda3r949iavvgJtEc0ZnBW';
                         $projectId = 'PJ3d74c709991602b6';
-                        $message = "Your certificate has been approved.";
+                        $message = "Your account has been approved.";
 
-                        $api = new Telerivet_API($telerivetApiKey);
-                        $project = $api->initProjectById($projectId);
-                        $response = $project->sendMessage([
-                            'to_number' => $contactNumber,
-                            'content' => $message
-                        ]);
+                        try {
+                            $api = new Telerivet_API($telerivetApiKey);
+                            $project = $api->initProjectById($projectId);
+                            $apiResponse = $project->sendMessage([
+                                'to_number' => $contactNumber,
+                                'content' => $message
+                            ]);
+
+                            if ($apiResponse->success) {
+                                $response['message'] .= " Notification sent successfully.";
+                            } else {
+                                $response['message'] .= " Notification failed to send.";
+                            }
+                        } catch (Exception $e) {
+                            $response['message'] .= " Telerivet error: " . $e->getMessage();
+                        }
                     } else {
                         $response['message'] = "Error updating record: " . mysqli_error($conn);
                     }
