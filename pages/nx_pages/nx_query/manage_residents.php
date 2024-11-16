@@ -204,19 +204,37 @@ switch ($action) {
         }
         break;
 
-    case 'delete':
-        // Delete a resident by ID
-        $id = (int)$_GET['id'];
-        $query = "DELETE FROM tblresident WHERE resident_id = $id";
-        if (mysqli_query($conn, $query)) {
+case 'delete':
+    // Delete a resident by ID
+    $id = (int)$_GET['id'];
+
+    // Step 1: Retrieve the fname and lname for the resident before deletion
+    $query = "SELECT fname, lname FROM tblresident WHERE resident_id = $id";
+    $result = mysqli_query($conn, $query);
+
+    // Check if the resident exists
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $fname = $row['fname'];
+        $lname = $row['lname'];
+
+        // Step 2: Perform the deletion
+        $deleteQuery = "DELETE FROM tblresident WHERE resident_id = $id";
+        if (mysqli_query($conn, $deleteQuery)) {
             $response['success'] = true;
             $response['message'] = "Resident deleted successfully.";
+            // Log the deletion with the resident's name
             logAction($conn, "Deleted Resident Data for $fname $lname", $user);
         } else {
             $response['message'] = "Error deleting Resident: " . mysqli_error($conn);
-            logAction($conn, "Failed to delete resident ID $id: $response[message]", $user);
+            logAction($conn, "Failed to delete resident ID $id: " . $response['message'], $user);
         }
-        break;
+    } else {
+        $response['message'] = "Resident not found.";
+        logAction($conn, "Failed to find resident ID $id for deletion", $user);
+    }
+    break;
+
 
     case 'deletes':
         // Delete a resident by ID

@@ -59,7 +59,7 @@ case 'create':
     if (mysqli_query($conn, $query)) {
         $response['success'] = true;
         $response['message'] = "Officials created successfully.";
-        logAction($conn, "Created Official: $fname $lname", $user);
+        logAction($conn, "Created Barangay Official Data for $fname $lname with Position of $position", $user);
     } else {
         $response['message'] = "Error creating Officials: " . mysqli_error($conn);
     }
@@ -75,7 +75,7 @@ case 'create':
         if ($official) {
             $response['success'] = true;
             $response['data'] = $official;
-            logAction($conn, "Retrieved Official ID: $id", $user);
+            logAction($conn, "Retrieved Barangay Official Data for $fname $lname with Position of $position", $user);
         } else {
             $response['message'] = "Officials not found.";
         }
@@ -113,29 +113,53 @@ case 'create':
         // Execute query and handle response
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
-            $response['message'] = "Officials updated successfully.";
-            logAction($conn, "Updated Official ID: $id", $user);
+            $response['message'] = "Barangay Officials updated successfully.";
+            logAction($conn, "Updated Barangay Official Data for $lname $fname with Position of $position", $user);
         } else {
             $response['message'] = "Error updating Officials: " . mysqli_error($conn);
             error_log("SQL Error: " . mysqli_error($conn)); // Log SQL error for debugging
         }
         break;
 
-    case 'delete':
-        // Delete
-        $id = (int)$_GET['id'];
-        $query = "DELETE FROM tblofficial WHERE id = $id";
-        if (mysqli_query($conn, $query)) {
+case 'delete':
+    // Delete
+    $id = (int)$_GET['id'];
+
+    // Retrieve the fname, lname, and position for the specified official ID
+    $query = "SELECT fname, lname, position FROM tblofficial WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $fname = $row['fname'];
+        $lname = $row['lname'];
+        $position = $row['position'];
+
+        // Proceed with deletion
+        $deleteQuery = "DELETE FROM tblofficial WHERE id = ?";
+        $deleteStmt = $conn->prepare($deleteQuery);
+        $deleteStmt->bind_param("i", $id);
+
+        if ($deleteStmt->execute()) {
             $response['success'] = true;
             $response['message'] = "Officials deleted successfully.";
-            logAction($conn, "Deleted Official ID: $id", $user);
+            logAction($conn, "Deleted Barangay Official Data for $fname $lname with position of $position", $user);
         } else {
-            $response['message'] = "Error deleting Officials: " . mysqli_error($conn);
+            $response['success'] = false;
+            $response['message'] = "Error deleting officials: " . $deleteStmt->error;
         }
-        break;
+    } else {
+        $response['success'] = false;
+        $response['message'] = "Official not found.";
+    }
 
-    default:
-        $response['message'] = "Invalid action.";
+    break;
+
+default:
+    $response['message'] = "Invalid action.";
 }
 
 // Return JSON response

@@ -32,6 +32,7 @@ $conn->close();
                 <th>Image</th>
                 <th>Full Name</th>
                 <th>Position</th>
+                <th>Schedule</th>
                 <th>Contact</th>
                 <th>Birthday</th>
                 <th>Actions</th>
@@ -43,6 +44,7 @@ $conn->close();
                     <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
                     <td><?= htmlspecialchars($official['full_name']) ?></td>
                     <td><?= htmlspecialchars($official['position']) ?></td>
+                    <td><?= htmlspecialchars($official['sched']) ?></td>
                     <td><?= htmlspecialchars($official['contact']) ?></td>
                     <td><?= htmlspecialchars($official['bday']) ?></td>
                     <td>
