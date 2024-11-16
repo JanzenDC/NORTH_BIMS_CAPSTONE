@@ -5,6 +5,7 @@ header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
 session_start();
+require 'vendor/autoload.php';
 require "../../db_connect.php"; // Ensure this file establishes a MySQLi connection
 
 $response = [
@@ -378,33 +379,16 @@ case 'setapprove':
                 // Send SMS via Telerivet
                 $message = "Your account has been approved.";
 
-                $api_key = 'H_RkO_D9bGrKMj7WZaFpSr74xC240yIbHj80';
-                $project_id = 'PJ3d74c709991602b6';
-                
-                $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
-                $data = [
-                    'to_number' => $contactNumber,  // The recipient's phone number
-                    'content' => $message,  // The message to send
-                ];
+                $telerivetApiKey = 'H_RkO_06nvYxPfDda3r949iavvgJtEc0ZnBW';
+                $projectId = 'PJ3d74c709991602b6';
 
-                // Use cURL to send the request
-                $ch = curl_init($url);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                    "X-Telerivet-API-Key: $api_key",
-                    "Content-Type: application/json"
+
+                $api = new Telerivet_API($telerivetApiKey);
+                $project = $api->initProjectById($projectId);
+                $response = $project->sendMessage([
+                    'to_number' => $contactNumber,
+                    'content' => $message
                 ]);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-                // Execute and check for errors in the Telerivet API request
-                $telerivet_response = curl_exec($ch);
-                if ($telerivet_response === false) {
-                    $error = curl_error($ch);
-                    logAction($conn, "Telerivet API failed to send message to user ID $id: $error", $user);
-                    $response['message'] = "Error sending SMS notification: " . $error;
-                }
-                curl_close($ch);
             } else {
                 $response['message'] = "User's contact number not found.";
                 logAction($conn, "Failed to retrieve contact number for user ID $id", $user);

@@ -204,23 +204,16 @@ switch ($action) {
                         $response['message'] = "Record marked as Approved successfully.";
                         logAction($conn, "Approved clearance certificate ID $id", $_SESSION['user']['username']);
 
-                        $telerivetApiKey = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
+                        $telerivetApiKey = 'H_RkO_06nvYxPfDda3r949iavvgJtEc0ZnBW';
                         $projectId = 'PJ3d74c709991602b6';
                         $message = "Your certificate has been approved.";
 
-                        try {
-                            $api = new Telerivet_API($telerivetApiKey);
-                            $project = $api->initProjectById($projectId);
-                            $response = $project->sendMessage([
-                                'to_number' => $contactNumber,
-                                'content' => $message
-                            ]);
-                            // Log successful message send
-                            $response['message'] = "SMS sent successfully. Response: " . json_encode($response);
-                        } catch (Exception $e) {
-                            // Log error response
-                            $response['message'] = "Error sending SMS: " . $e->getMessage();
-                        }
+                        $api = new Telerivet_API($telerivetApiKey);
+                        $project = $api->initProjectById($projectId);
+                        $response = $project->sendMessage([
+                            'to_number' => $contactNumber,
+                            'content' => $message
+                        ]);
 
 
                     } else {
