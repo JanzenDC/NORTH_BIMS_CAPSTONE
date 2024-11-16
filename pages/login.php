@@ -563,7 +563,8 @@ session_start();
             
             <div class="step active" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 1: Personal Information</h3>
-                <select name="registration_status" required>
+                <select name="registration_status" id="registration_status" required onchange="toggleStreetField()">
+
                     <option value="" disabled selected>Account Type</option>
                     <option value="0">Non-Resident</option>
                     <option value="1">Resident</option>
@@ -597,18 +598,25 @@ session_start();
             <div class="step" style="overflow: auto; max-height: 300px; padding: 10px;">
                 <h3>Step 3: Address</h3>
                 <input type="text" name="house_no" placeholder="House Number"  />
-                <label for="street">Street</label>
-                  <select name="street" id="street">
-                      <option value="" disabled selected>Select your street</option>
-                      <option value="Acadia (Villa Gabriel)">Acadia (Villa Gabriel)</option>
-                      <option value="Mulawin">Mulawin</option>
-                      <option value="Camagong">Camagong</option>
-                      <option value="Banaba">Banaba</option>
-                      <option value="Narra">Narra</option>
-                      <option value="Calumpit">Calumpit</option>
-                      <option value="Mabolo">Mabolo</option>
-                      <!-- Add more options as needed -->
-                  </select>
+                <div id="streetSelectContainer">
+                    <label for="streetSelect">Street</label>
+                    <select name="street" id="streetSelect">
+                        <option value="" disabled selected>Select your street</option>
+                        <option value="Acadia (Villa Gabriel)">Acadia (Villa Gabriel)</option>
+                        <option value="Mulawin">Mulawin</option>
+                        <option value="Camagong">Camagong</option>
+                        <option value="Banaba">Banaba</option>
+                        <option value="Narra">Narra</option>
+                        <option value="Calumpit">Calumpit</option>
+                        <option value="Mabolo">Mabolo</option>
+                        <!-- Add more options as needed -->
+                    </select>
+                </div>
+
+                <div id="streetInputContainer" style="display: none;">
+                    <label for="streetInput">Street</label>
+                    <input type="text" id="streetInput" name="street" placeholder="Enter your street">
+                </div>
 
                 <input type="text" name="street" id="street-input" placeholder="Enter your street" style="display: none;" />
                 <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
@@ -697,6 +705,19 @@ session_start();
     </div>
   
     <script>
+      function toggleStreetField() {
+            const registrationStatus = document.querySelector('select[name="registration_status"]').value;
+            const streetSelect = document.getElementById('streetSelect');
+            const streetInput = document.getElementById('streetInput');
+
+            if (registrationStatus === "0") { // Non-Resident
+                streetSelect.style.display = 'none';
+                streetInput.style.display = 'block';
+            } else if (registrationStatus === "1") { // Resident
+                streetSelect.style.display = 'block';
+                streetInput.style.display = 'none';
+            }
+        } 
     function toggleSignInPassword() {
       const passwordInput = document.getElementById('signin_password');
       const toggleIcon = document.querySelector('.sign-in-container .password-toggle');
