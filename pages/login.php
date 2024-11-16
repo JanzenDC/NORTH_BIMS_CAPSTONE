@@ -598,15 +598,18 @@ session_start();
                 <h3>Step 3: Address</h3>
                 <input type="text" name="house_no" placeholder="House Number"  />
                 <label for="street">Street</label>
-                <select name="street" id="street">
-                    <option value="" disabled selected>Select your street</option>
-                    <option value="Main St">Main St</option>
-                    <option value="Broadway">Broadway</option>
-                    <option value="Elm St">Elm St</option>
-                    <option value="Maple Ave">Maple Ave</option>
-                    <option value="Oak St">Oak St</option>
-                    <!-- Add more options as needed -->
-                </select>
+                  <select name="street" id="street">
+                      <option value="" disabled selected>Select your street</option>
+                      <option value="Acadia (Villa Gabriel)">Acadia (Villa Gabriel)</option>
+                      <option value="Mulawin">Mulawin</option>
+                      <option value="Camagong">Camagong</option>
+                      <option value="Banaba">Banaba</option>
+                      <option value="Narra">Narra</option>
+                      <option value="Calumpit">Calumpit</option>
+                      <option value="Mabolo">Mabolo</option>
+                      <!-- Add more options as needed -->
+                  </select>
+
                 <input type="text" name="street" id="street-input" placeholder="Enter your street" style="display: none;" />
                 <input type="text" name="barangay" placeholder="Barangay" value='North Poblacion' />
                 <input type="text" name="municipality" placeholder="Municipality" value='Gabaldon' />
