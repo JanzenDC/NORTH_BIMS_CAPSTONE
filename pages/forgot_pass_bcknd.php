@@ -59,11 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $data['email'];
 
         // Check if the email exists in the database
-        $sql = "SELECT id FROM tblregistered_account WHERE email = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $sql = "SELECT id FROM tblregistered_account WHERE email = '$email'";
+        $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
             // Email exists, fetch user_id
@@ -73,27 +70,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Generate OTP
             $otp = rand(100000, 999999);
             sendOtpEmail($email, $otp);
+
             // Check if there's already an OTP record for this user_id
-            $checkOtpSql = "SELECT id FROM tbl_otp WHERE user_id = ? AND email = ?";
-            $checkOtpStmt = $conn->prepare($checkOtpSql);
-            $checkOtpStmt->bind_param("is", $user_id, $email);
-            $checkOtpStmt->execute();
-            $checkOtpResult = $checkOtpStmt->get_result();
+            $checkOtpSql = "SELECT id FROM tbl_otp WHERE user_id = $user_id AND email = '$email'";
+            $checkOtpResult = $conn->query($checkOtpSql);
 
             if ($checkOtpResult->num_rows > 0) {
                 // Record exists, update OTP
-                $updateOtpSql = "UPDATE tbl_otp SET otp = ?, is_verified = 0 WHERE user_id = ? AND email = ?";
-                $updateOtpStmt = $conn->prepare($updateOtpSql);
-                $updateOtpStmt->bind_param("iis", $otp, $user_id, $email);
+                $updateOtpSql = "UPDATE tbl_otp SET otp = $otp, is_verified = 0 WHERE user_id = $user_id AND email = '$email'";
 
-                if ($updateOtpStmt->execute()) {
+                if ($conn->query($updateOtpSql) === TRUE) {
                     // OTP successfully updated
                     $_SESSION['otp_email'] = $email;
                     $_SESSION['otp'] = $otp;
                     $_SESSION['otp_verified'] = false; // OTP not verified yet
-
-                    // Send OTP email
-                    sendOtpEmail($email, $otp); // Function to send OTP via email
 
                     echo json_encode(['status' => 'success', 'message' => 'OTP updated and sent successfully']);
                 } else {
@@ -101,18 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } else {
                 // No record exists, insert new OTP
-                $insertOtpSql = "INSERT INTO tbl_otp (user_id, email, otp) VALUES (?, ?, ?)";
-                $insertStmt = $conn->prepare($insertOtpSql);
-                $insertStmt->bind_param("isi", $user_id, $email, $otp);
-                sendOtpEmail($email, $otp);
-                if ($insertStmt->execute()) {
+                $insertOtpSql = "INSERT INTO tbl_otp (user_id, email, otp) VALUES ($user_id, '$email', $otp)";
+                if ($conn->query($insertOtpSql) === TRUE) {
                     // OTP successfully inserted
                     $_SESSION['otp_email'] = $email;
                     $_SESSION['otp'] = $otp;
                     $_SESSION['otp_verified'] = false; // OTP not verified yet
-
-                    // Send OTP email
-                    sendOtpEmail($email, $otp); // Function to send OTP via email
 
                     echo json_encode(['status' => 'success', 'message' => 'OTP sent successfully']);
                 } else {

@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
-        <!-- Toastr CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
 
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <!-- SweetAlert JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 
     <style>
         * {
@@ -194,203 +194,197 @@
         </div>
     </div>
 
-    <script>
-        let currentEmail = '';
-        let timerInterval;
+<script>
+    let currentEmail = '';
+    let timerInterval;
 
-        // Utility functions
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
-        }
-
-        function showError(elementId, message) {
-            toastr.error(message); // Show error with toastr
-        }
-
-        function clearError(elementId) {
-            // You can optionally clear error message from the DOM if needed
-            document.getElementById(elementId).textContent = '';
-        }
-
-        // Email validation and OTP sending
-        document.getElementById('sendOtpBtn').addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
-            clearError('emailError');
-
-            if (!email) {
-                showError('emailError', 'Please enter your email address');
-                return;
-            }
-
-            try {
-                const response = await fetch('forgot_pass_bcknd.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    currentEmail = email;
-                    showSection('otpSection');
-                    startTimer();
-                    toastr.success('OTP sent successfully');
-                } else {
-                    showError('emailError', data.message);
-                }
-            } catch (error) {
-                showError('emailError', 'An error occurred. Please try again.');
-            }
+    // Utility functions
+    function showSection(sectionId) {
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
         });
+        document.getElementById(sectionId).classList.add('active');
+    }
 
-        // OTP input handling
-        const otpInputs = document.querySelectorAll('.otp-input');
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                if (e.target.value.length === 1) {
-                    if (index < otpInputs.length - 1) {
-                        otpInputs[index + 1].focus();
-                    }
-                }
+    function showError(message) {
+        swal("Error", message, "error");
+    }
+
+    function showSuccess(message) {
+        swal("Success", message, "success");
+    }
+
+    // Email validation and OTP sending
+    document.getElementById('sendOtpBtn').addEventListener('click', async () => {
+        const email = document.getElementById('email').value;
+
+        if (!email) {
+            showError('Please enter your email address');
+            return;
+        }
+
+        try {
+            const response = await fetch('forgot_pass_bcknd.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
             });
 
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                    otpInputs[index - 1].focus();
-                }
-            });
-        });
-
-        // OTP verification
-        document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
-            const otp = Array.from(otpInputs).map(input => input.value).join('');
-            clearError('otpError');
-
-            if (otp.length !== 6) {
-                showError('otpError', 'Please enter the complete OTP');
-                return;
+            const data = await response.json();
+            console.log(data)
+            if (data.status === 'success') {
+                currentEmail = email;
+                showSection('otpSection');
+                startTimer();
+                showSuccess('OTP sent successfully');
+            } else {
+                showError(data.message);
             }
+        } catch (error) {
+            console.log(error)
+            showError('An error occurred. Please try again.');
+        }
+    });
 
-            try {
-                const response = await fetch('forgot_pass_bcknd.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ otp })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    clearInterval(timerInterval);
-                    showSection('passwordSection');
-                    toastr.success('OTP verified successfully');
-                } else {
-                    showError('otpError', data.message);
+    // OTP input handling
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length === 1) {
+                if (index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
                 }
-            } catch (error) {
-                showError('otpError', 'An error occurred. Please try again.');
             }
         });
 
-        // Timer functionality
-        function startTimer() {
-            let timeLeft = 30;
-            const resendBtn = document.getElementById('resendOtpBtn');
-            const countdownElement = document.getElementById('countdown');
-            
-            resendBtn.disabled = true;
-            
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                countdownElement.textContent = timeLeft;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    resendBtn.disabled = false;
-                }
-            }, 1000);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+        });
+    });
+
+    // OTP verification
+    document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
+        const otp = Array.from(otpInputs).map(input => input.value).join('');
+
+        if (otp.length !== 6) {
+            showError('Please enter the complete OTP');
+            return;
         }
 
-        // Resend OTP
-        document.getElementById('resendOtpBtn').addEventListener('click', async () => {
-            try {
-                const response = await fetch('forgot_pass_bcknd.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: currentEmail })
-                });
+        try {
+            const response = await fetch('forgot_pass_bcknd.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ otp })
+            });
 
-                const data = await response.json();
+            const data = await response.json();
 
-                if (data.status === 'success') {
-                    startTimer();
-                    Array.from(otpInputs).forEach(input => input.value = '');
-                    otpInputs[0].focus();
-                    toastr.success('OTP resent successfully');
-                } else {
-                    showError('otpError', data.message);
-                }
-            } catch (error) {
-                showError('otpError', 'An error occurred while resending OTP.');
+            if (data.status === 'success') {
+                clearInterval(timerInterval);
+                showSection('passwordSection');
+                showSuccess('OTP verified successfully');
+            } else {
+                showError(data.message);
             }
-        });
+        } catch (error) {
+            showError('An error occurred. Please try again.');
+        }
+    });
 
-        // Password reset
-        document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+    // Timer functionality
+    function startTimer() {
+        let timeLeft = 30;
+        const resendBtn = document.getElementById('resendOtpBtn');
+        const countdownElement = document.getElementById('countdown');
+        
+        resendBtn.disabled = true;
+        
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            countdownElement.textContent = timeLeft;
             
-            clearError('passwordError');
-            clearError('confirmError');
-
-            // Validate password
-            if (newPassword.length < 8) {
-                showError('passwordError', 'Password must be at least 8 characters long');
-                return;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                resendBtn.disabled = false;
             }
+        }, 1000);
+    }
 
-            if (newPassword !== confirmPassword) {
-                showError('confirmError', 'Passwords do not match');
-                return;
+    // Resend OTP
+    document.getElementById('resendOtpBtn').addEventListener('click', async () => {
+        try {
+            const response = await fetch('forgot_pass_bcknd.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: currentEmail })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+ startTimer();
+                Array.from(otpInputs).forEach(input => input.value = '');
+                otpInputs[0].focus();
+                showSuccess('OTP resent successfully');
+            } else {
+                showError(data.message);
             }
+        } catch (error) {
+            showError('An error occurred while resending OTP.');
+        }
+    });
 
-            try {
-                const response = await fetch('forgot_pass_bcknd.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: currentEmail,
-                        newPassword: newPassword
-                    })
-                });
+    // Password reset
+    document.getElementById('resetPasswordBtn').addEventListener('click', async () => {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
 
-                const data = await response.json();
+        // Validate password
+        if (newPassword.length < 8) {
+            showError('Password must be at least 8 characters long');
+            return;
+        }
 
-                if (data.status === 'success') {
-                    toastr.success('Password reset successful! Redirecting to login page...');
-                    setTimeout(() => {
-                        window.location.href = 'login.php';
-                    }, 2000); // Redirect after 2 seconds
-                } else {
-                    showError('passwordError', data.message);
-                }
-            } catch (error) {
-                showError('passwordError', 'An error occurred while resetting password.');
+        if (newPassword !== confirmPassword) {
+            showError('Passwords do not match');
+            return;
+        }
+
+        try {
+            const response = await fetch('forgot_pass_bcknd.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: currentEmail,
+                    newPassword: newPassword
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                showSuccess('Password reset successful! Redirecting to login page...');
+                setTimeout(() => {
+                    window.location.href = 'login.php';
+                }, 2000); // Redirect after 2 seconds
+            } else {
+                showError(data.message);
             }
-        });
+        } catch (error) {
+            showError('An error occurred while resetting password.');
+        }
+    });
 
-        // Navigation buttons
-        document.getElementById('otpBackBtn').addEventListener('click', () => {
-            clearInterval(timerInterval);
-            Array.from(otpInputs).forEach(input => input.value = '');
-            showSection('emailSection');
-        });
-
-    </script>
+    // Navigation buttons
+    document.getElementById('otpBackBtn').addEventListener('click', () => {
+        clearInterval(timerInterval);
+        Array.from(otpInputs).forEach(input => input.value = '');
+        showSection('emailSection');
+    });
+</script>
 </body>
 </html>
