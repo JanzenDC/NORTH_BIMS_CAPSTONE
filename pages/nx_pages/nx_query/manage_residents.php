@@ -377,29 +377,26 @@ case 'setapprove':
                 $contactNumber = $contact['contact'];
 
                 // Send SMS via Telerivet
-                $message = "Your account has been approved.";
+                        $telerivetApiKey = 'H_RkO_06nvYxPfDda3r949iavvgJtEc0ZnBW';
+                        $projectId = 'PJ3d74c709991602b6';
+                        $message = "Your account has been approved.";
 
-                     $telerivetApiKey = 'H_RkO_06nvYxPfDda3r949iavvgJtEc0ZnBW';
-                    $projectId = 'PJ3d74c709991602b6';
-                $api = new Telerivet_API($telerivetApiKey);
-                $project = $api->initProjectById($projectId);
+                        try {
+                            $api = new Telerivet_API($telerivetApiKey);
+                            $project = $api->initProjectById($projectId);
+                            $apiResponse = $project->sendMessage([
+                                'to_number' => $contactNumber,
+                                'content' => $message
+                            ]);
 
-                try {
-                    $telerivetResponse = $project->sendMessage([
-                        'to_number' => $contactNumber,
-                        'content' => $message
-                    ]);
-
-                    // Check if the response indicates success
-                    if (isset($telerivetResponse->id)) {
-                        $response['message'] .= " Message sent successfully.";
-                    } else {
-                        $response['message'] .= " Message was not sent.";
-                    }
-                } catch (Exception $e) {
-                    // Handle any exceptions that may occur
-                    $response['message'] .= " An error occurred while sending the message: " . $e->getMessage();
-                }
+                            if ($apiResponse->success) {
+                                $response['message'] .= " Notification sent successfully.";
+                            } else {
+                                $response['message'] .= " Notification failed to send.";
+                            }
+                        } catch (Exception $e) {
+                            $response['message'] .= " Telerivet error: " . $e->getMessage();
+                        }
             } else {
                 $response['message'] = "User's contact number not found.";
                 logAction($conn, "Failed to retrieve contact number for user ID $id", $user);
