@@ -174,65 +174,65 @@ switch ($action) {
         }
         break;
 
-case 'setAsApprove':
-    $id = $_POST['id'] ?? '';
+    case 'setAsApprove':
+        $id = $_POST['id'] ?? '';
 
-    if (empty($id)) {
-        $response['message'] = "ID is required to set the record as approved.";
-        break;
-    }
-
-    $ownerQuery = "SELECT ownerid FROM clearance_cert WHERE id = $id";
-    $ownerResult = mysqli_query($conn, $ownerQuery);
-
-    if ($ownerResult && mysqli_num_rows($ownerResult) > 0) {
-        $ownerData = mysqli_fetch_assoc($ownerResult);
-        $ownerid = $ownerData['ownerid'];
-
-        if ($ownerid != 0) {
-            $contactQuery = "SELECT * FROM tblregistered_account WHERE id = $ownerid";
-            $contactResult = mysqli_query($conn, $contactQuery);
-
-            if ($contactResult && mysqli_num_rows($contactResult) > 0) {
-                $contactData = mysqli_fetch_assoc($contactResult);
-                $contactNumber = $contactData['contact'];
-
-                $query = "UPDATE clearance_cert SET status = 'Approved' WHERE id = $id";
-
-                if (mysqli_query($conn, $query)) {
-                    $response['success'] = true;
-                    $response['message'] = "Record marked as Approved successfully.";
-                    logAction($conn, "Approved clearance certificate ID $id", $_SESSION['user']['username']);
-
-                    $telerivetApiKey = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
-                    $projectId = 'PJ3d74c709991602b6';
-                    $message = "Your certificate has been approved.";
-
-                    try {
-                        $api = new Telerivet_API($telerivetApiKey);
-                        $project = $api->initProjectById($projectId);
-                        $project->sendMessage([
-                            'to_number' => $contactNumber,
-                            'content' => $message
-                        ]);
-                        $response['message'] = "SMS sent successfully.";
-                    } catch (Exception $e) {
-                        $response['message'] = "Error sending SMS: " . $e->getMessage();
-                    }
-
-                } else {
-                    $response['message'] = "Error updating record: " . mysqli_error($conn);
-                }
-            } else {
-                $response['message'] = "No contact found for owner ID $ownerid.";
-            }
-        } else {
-            $response['message'] = "Owner ID is zero, not sending Telerivet message.";
+        if (empty($id)) {
+            $response['message'] = "ID is required to set the record as approved.";
+            break;
         }
-    } else {
-        $response['message'] = "No owner found for certificate ID $id.";
-    }
-    break;
+
+        $ownerQuery = "SELECT ownerId FROM clearance_cert WHERE id = $id";
+        $ownerResult = mysqli_query($conn, $ownerQuery);
+
+        if ($ownerResult && mysqli_num_rows($ownerResult) > 0) {
+            $ownerData = mysqli_fetch_assoc($ownerResult);
+            $ownerId = $ownerData['ownerId'];
+
+
+                $contactQuery = "SELECT * FROM tblregistered_account WHERE id = $ownerId";
+                $contactResult = mysqli_query($conn, $contactQuery);
+
+                if ($contactResult && mysqli_num_rows($contactResult) > 0) {
+                    $contactData = mysqli_fetch_assoc($contactResult);
+                    $contactNumber = $contactData['contact'];
+
+                    $query = "UPDATE clearance_cert SET status = 'Approved' WHERE id = $id";
+
+                    if (mysqli_query($conn, $query)) {
+                        $response['success'] = true;
+                        $response['message'] = "Record marked as Approved successfully.";
+                        logAction($conn, "Approved clearance certificate ID $id", $_SESSION['user']['username']);
+
+                        $telerivetApiKey = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
+                        $projectId = 'PJ3d74c709991602b6';
+                        $message = "Your certificate has been approved.";
+
+                        try {
+                            $api = new Telerivet_API($telerivetApiKey);
+                            $project = $api->initProjectById($projectId);
+                            $response = $project->sendMessage([
+                                'to_number' => $contactNumber,
+                                'content' => $message
+                            ]);
+                            // Log successful message send
+                            $response['message'] = "SMS sent successfully. Response: " . json_encode($response);
+                        } catch (Exception $e) {
+                            // Log error response
+                            $response['message'] = "Error sending SMS: " . $e->getMessage();
+                        }
+
+
+                    } else {
+                        $response['message'] = "Error updating record: " . mysqli_error($conn);
+                    }
+                } else {
+                    $response['message'] = "No contact found for owner ID $ownerId.";
+                }
+        } else {
+            $response['message'] = "No owner found for certificate ID $id.";
+        }
+        break;
 
     case 'setDisapproved':
         // Get ID from the POST request
