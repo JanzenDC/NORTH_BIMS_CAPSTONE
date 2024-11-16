@@ -55,7 +55,7 @@ $query = "INSERT INTO tblhealthworker (fname, mname, lname, suffix, position, co
 if (mysqli_query($conn, $query)) {
     $response['success'] = true;
     $response['message'] = "Health Worker created successfully.";
-    logAction($conn, "Created Health Worker: $fname $lname", $user);
+    logAction($conn, "Created Barangay Health Worker Data for $fname $lname", $user);
 } else {
     $response['message'] = "Error creating Health Worker: " . mysqli_error($conn);
     logAction($conn, "Failed to create Health Worker: " . mysqli_error($conn), $user);
@@ -71,7 +71,7 @@ break;
         if ($official) {
             $response['success'] = true;
             $response['data'] = $official;
-            logAction($conn, "Retrieved Health Worker ID: $id", $user);
+            logAction($conn, "Retrieved Barangay Health Worker Data for $fname $lname", $user);
         } else {
             $response['message'] = "Health Worker not found.";
         }
@@ -110,29 +110,47 @@ break;
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Health Worker updated successfully.";
-            logAction($conn, "Updated Health Worker ID: $id", $user);
+            logAction($conn, "Updated Barangay Health Worker Data for $fname $lname", $user);
         } else {
             $response['message'] = "Error updating Health Worker: " . mysqli_error($conn);
             error_log("SQL Error: " . mysqli_error($conn)); // Log SQL error for debugging
         }
         break;
 
-    case 'delete':
-        // Delete
-        $id = (int)$_GET['id'];
-        $query = "DELETE FROM tblhealthworker WHERE id = $id";
-        if (mysqli_query($conn, $query)) {
-            $response['success'] = true;
-            $response['message'] = "Health Worker deleted successfully.";
-            logAction($conn, "Deleted Health Worker ID: $id", $user);
-        } else {
-            $response['message'] = "Error deleting Health Worker: " . mysqli_error($conn);
-        }
-        break;
+        case 'delete':
+            // Delete
+            $id = (int)$_GET['id'];
 
-    default:
-        $response['message'] = "Invalid action.";
-}
+            // Query to retrieve fname and lname for the specified ID
+            $query = "SELECT fname, lname FROM tblhealthworker WHERE id = $id";
+            $result = mysqli_query($conn, $query);
+            
+            if ($result && mysqli_num_rows($result) > 0) {
+                // Fetch the health worker's details
+                $worker = mysqli_fetch_assoc($result);
+                $fname = $worker['fname'];
+                $lname = $worker['lname'];
+
+                // Proceed with deletion
+                $query = "DELETE FROM tblhealthworker WHERE id = $id";
+                if (mysqli_query($conn, $query)) {
+                    $response['success'] = true;
+                    $response['message'] = "Barangay Health Worker deleted successfully.";
+                    logAction($conn, "Deleted Barangay Health Worker Data for $fname $lname", $user);
+                } else {
+                    $response['message'] = "Error deleting Barangay Health Worker: " . mysqli_error($conn);
+                    logAction($conn, "Failed to delete Barangay Health Worker ID $id: " . mysqli_error($conn), $user);
+                }
+            } else {
+                $response['message'] = "Barangay Health Worker not found.";
+                logAction($conn, "Failed to retrieve Barangay Health Worker ID $id: Not found", $user);
+            }
+            break;
+
+        default:
+            $response['message'] = "Invalid action.";
+            logAction($conn, "Invalid action attempted: $action", $user);
+        }
 
 // Return JSON response
 echo json_encode($response);

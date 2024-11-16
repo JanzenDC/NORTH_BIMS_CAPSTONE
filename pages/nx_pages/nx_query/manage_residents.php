@@ -44,6 +44,7 @@ switch ($action) {
             logAction($conn, "Failed to retrieve resident ID $id: Resident not found", $user);
         }
         break;
+
     case 'gets':
         // Read a resident by ID
         $id = (int)$_GET['id'];
@@ -60,6 +61,7 @@ switch ($action) {
             logAction($conn, "Failed to retrieve resident ID $id: Resident not found", $user);
         }
         break;
+        
     case 'create':
         $data = $_POST;
 
@@ -115,7 +117,7 @@ switch ($action) {
             $response['success'] = true;
             $response['message'] = "Resident created successfully.";
             $response['data'] = ['id' => mysqli_insert_id($conn)];
-            logAction($conn, "Created resident ID " . $response['data']['id'], $user);
+            logAction($conn, "Created Resident Data for $fname $lname " . $response['data'], $user);
         } else {
             $response['message'] = "Error creating Resident: " . mysqli_error($conn);
         }
@@ -129,7 +131,7 @@ switch ($action) {
         $requiredFields = [
             'resident_id', 'fname', 'lname', 'bday', 
             'age', 'houseNo', 'purok', 'brgy', 'municipality', 
-            'province', 'civil_status', 'year_stayed', 'education', 
+            'province', 'year_stayed', 'education', 
             'gender', 'birthplace', 'head_fam', 'occupation', 'voter',
             'relation', 'employment_status'
         ];
@@ -196,25 +198,44 @@ switch ($action) {
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Resident updated successfully.";
-            logAction($conn, "Updated resident ID $resident_id", $user);
+            logAction($conn, "Updated Resident Data for $fname $lname", $user);
         } else {
             $response['message'] = "Error updating Resident: " . mysqli_error($conn);
         }
         break;
 
-    case 'delete':
-        // Delete a resident by ID
-        $id = (int)$_GET['id'];
-        $query = "DELETE FROM tblresident WHERE resident_id = $id";
-        if (mysqli_query($conn, $query)) {
+case 'delete':
+    // Delete a resident by ID
+    $id = (int)$_GET['id'];
+
+    // Step 1: Retrieve the fname and lname for the resident before deletion
+    $query = "SELECT fname, lname FROM tblresident WHERE resident_id = $id";
+    $result = mysqli_query($conn, $query);
+
+    // Check if the resident exists
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $fname = $row['fname'];
+        $lname = $row['lname'];
+
+        // Step 2: Perform the deletion
+        $deleteQuery = "DELETE FROM tblresident WHERE resident_id = $id";
+        if (mysqli_query($conn, $deleteQuery)) {
             $response['success'] = true;
             $response['message'] = "Resident deleted successfully.";
-            logAction($conn, "Deleted resident ID $id", $user);
+            // Log the deletion with the resident's name
+            logAction($conn, "Deleted Resident Data for $fname $lname", $user);
         } else {
             $response['message'] = "Error deleting Resident: " . mysqli_error($conn);
-            logAction($conn, "Failed to delete resident ID $id: $response[message]", $user);
+            logAction($conn, "Failed to delete resident ID $id: " . $response['message'], $user);
         }
-        break;
+    } else {
+        $response['message'] = "Resident not found.";
+        logAction($conn, "Failed to find resident ID $id for deletion", $user);
+    }
+    break;
+
+
     case 'deletes':
         // Delete a resident by ID
         $id = (int)$_GET['id'];
@@ -225,37 +246,74 @@ switch ($action) {
             logAction($conn, "Deleted resident ID $id", $user);
         } else {
             $response['message'] = "Error deleting Resident: " . mysqli_error($conn);
-            logAction($conn, "Failed to delete resident ID $id: $response[message]", $user);
+            logAction($conn, "Failed to Delete Resident Data for $fname $lname: $response[message]", $user);
         }
         break;
     case 'setAdmin':
         // Set a resident as an admin
         $id = (int)$_GET['id'];
         
-        // Update the resident's role (assuming you have a column named 'role' in your tblresident)
-        $query = "UPDATE tblregistered_account SET isAdmin = '1' WHERE id = $id";
-        
-        if (mysqli_query($conn, $query)) {
+    // Retrieve the fname for the specified resident ID
+    $id = mysqli_real_escape_string($conn, $id); // Sanitize the input
+    $query = "SELECT fname, lname FROM tblregistered_account WHERE id = '$id'";
+    $result = mysqli_query($conn, $query);
+
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $fname = $row['fname'];
+        $lname = $row['lname']; // Store the fname value
+
+        // Update the isAdmin field
+        $updateQuery = "UPDATE tblregistered_account SET isAdmin = '1' WHERE id = '$id'";
+        if (mysqli_query($conn, $updateQuery)) {
             $response['success'] = true;
-            $response['message'] = "Resident ID $id has been set as admin.";
-            logAction($conn, "Set resident ID $id as admin", $user);
+            $response['message'] = "Resident $fname has been set as admin.";
+            
+            // Log the action
+            logAction($conn, "Set Resident $fname $lname as Admin", $user);
+        }
+
         } else {
             $response['message'] = "Error setting resident as admin: " . mysqli_error($conn);
             logAction($conn, "Failed to set resident ID $id as admin: $response[message]", $user);
         }
         break;
-    case 'removeAdmin':
-        // Remove admin status
-        $id = (int)$_GET['id'];
-        $query = "UPDATE tblregistered_account SET isAdmin = '0' WHERE id = $id"; // Assuming '0' is not admin
-        if (mysqli_query($conn, $query)) {
+
+case 'removeAdmin':
+    // Remove admin status
+    $id = (int)$_GET['id'];
+
+    // Sanitize the input to prevent SQL injection
+    $id = mysqli_real_escape_string($conn, $id);
+
+    // Retrieve the fname for the specified resident ID
+    $query = "SELECT fname, lname FROM tblregistered_account WHERE id = '$id'";
+    $result = mysqli_query($conn, $query);
+    
+    // Check if the resident exists
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $fname = $row['fname']; // Store the fname value
+        $lname = $row['lname']; // Store the fname value
+        
+        // Update the isAdmin field to '0' (removing admin status)
+        $updateQuery = "UPDATE tblregistered_account SET isAdmin = '0' WHERE id = '$id'";
+        
+        if (mysqli_query($conn, $updateQuery)) {
             $response['success'] = true;
-            $response['message'] = "User removed from admin.";
-            logAction($conn, "User ID $id removed from admin", $user);
+            $response['message'] = "User $fname removed from Admin.";
+            logAction($conn, "User $fname $lname Removed from Admin", $user); // Log the action
         } else {
+            $response['success'] = false;
             $response['message'] = "Error removing admin: " . mysqli_error($conn);
         }
-        break;
+    } else {
+        $response['success'] = false;
+        $response['message'] = "Resident not found.";
+    }
+    break;
+
+
 case 'setapprove':
     // Get the raw POST data
     $inputData = json_decode(file_get_contents('php://input'), true);
@@ -277,85 +335,100 @@ case 'setapprove':
         // Convert boolean to integer (1 or 0)
         $newApprovalState = $isApproved ? 1 : 0;
 
-        // Update the 'IsApproved' field in the tblregistered_account
-        $query = "UPDATE tblregistered_account SET isApproved = ? WHERE id = ?";
+        // Retrieve the fname for the specified resident ID
+        $query = "SELECT fname, lname FROM tblregistered_account WHERE id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ii", $newApprovalState, $id);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if ($stmt->execute()) {
-            $response = [
-                'success' => true,
-                'message' => "User approval status updated successfully.",
-                'data' => ['newApprovalState' => $newApprovalState]
-            ];
-            logAction($conn, "Toggled approval status for user ID $id to $newApprovalState", $user);
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $fname = $row['fname'];
+            $lname = $row['lname'];
 
+            // Update the 'IsApproved' field in the tblregistered_account
+            $updateQuery = "UPDATE tblregistered_account SET isApproved = ? WHERE id = ?";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bind_param("ii", $newApprovalState, $id);
+
+            if ($updateStmt->execute()) {
+                $response = [
+                    'success' => true,
+                    'message' => "User approval status updated successfully.",
+                    'data' => ['newApprovalState' => $newApprovalState]
+                ];
+
+                // Log the action
+                logAction($conn, "Approval of User Account for $fname $lname", $user);
+
+            }
             // Fetch the user's contact number
-// Ensure $id is an integer to prevent SQL injection
-$id = (int) $id;
+            // Ensure $id is an integer to prevent SQL injection
+            $id = (int) $id;
 
-// Query to get the contact number
-$contactQuery = "SELECT contact FROM tblregistered_account WHERE id = $id";
-$contactResult = $conn->query($contactQuery);
+            // Query to get the contact number
+            $contactQuery = "SELECT contact FROM tblregistered_account WHERE id = $id";
+            $contactResult = $conn->query($contactQuery);
 
-if ($contactResult && $contactResult->num_rows > 0) {
-    $contact = $contactResult->fetch_assoc();
-    $contactNumber = $contact['contact'];
+            if ($contactResult && $contactResult->num_rows > 0) {
+                $contact = $contactResult->fetch_assoc();
+                $contactNumber = $contact['contact'];
 
-    // Send SMS via Telerivet
-    $message = "Your certificate has been approved.";
+                // Send SMS via Telerivet
+                $message = "Your account has been approved.";
 
-    $api_key = 'H_RkO_uw1HficmdKffr9OWNG1s2Isd8sP5S2';
-    $project_id = 'PJ3d74c709991602b6';
-    
-    $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
-    $data = [
-        'to_number' => $contactNumber,  // The recipient's phone number
-        'content' => $message,  // The message to send
-    ];
+                $api_key = 'H_RkO_D9bGrKMj7WZaFpSr74xC240yIbHj80';
+                $project_id = 'PJ3d74c709991602b6';
+                
+                $url = "https://api.telerivet.com/v1/projects/$project_id/messages/send";
+                $data = [
+                    'to_number' => $contactNumber,  // The recipient's phone number
+                    'content' => $message,  // The message to send
+                ];
 
-    // Use cURL to send the request
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "X-Telerivet-API-Key: $api_key",
-        "Content-Type: application/json"
-    ]);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                // Use cURL to send the request
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "X-Telerivet-API-Key: $api_key",
+                    "Content-Type: application/json"
+                ]);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-    // Execute and check for errors in the Telerivet API request
-    $telerivet_response = curl_exec($ch);
-    if ($telerivet_response === false) {
-        $error = curl_error($ch);
-        logAction($conn, "Telerivet API failed to send message to user ID $id: $error", $user);
-        $response['message'] = "Error sending SMS notification: " . $error;
-    }
-    curl_close($ch);
-} else {
-    $response['message'] = "User's contact number not found.";
-    logAction($conn, "Failed to retrieve contact number for user ID $id", $user);
-}
+                // Execute and check for errors in the Telerivet API request
+                $telerivet_response = curl_exec($ch);
+                if ($telerivet_response === false) {
+                    $error = curl_error($ch);
+                    logAction($conn, "Telerivet API failed to send message to user ID $id: $error", $user);
+                    $response['message'] = "Error sending SMS notification: " . $error;
+                }
+                curl_close($ch);
+            } else {
+                $response['message'] = "User's contact number not found.";
+                logAction($conn, "Failed to retrieve contact number for user ID $id", $user);
+            }
 
-        } else {
-            $response = [
-                'success' => false,
-                'message' => "Error updating approval status: " . mysqli_error($conn)
-            ];
-        }
-    } else {
-        $response = [
-            'success' => false,
-            'message' => "Missing 'isApproved' in request data"
-        ];
-    }
+                    } else {
+                        $response = [
+                            'success' => false,
+                            'message' => "Error updating approval status: " . mysqli_error($conn)
+                        ];
+                    }
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => "Missing 'isApproved' in request data"
+                    ];
+                }
 
-    break;
+                break;
 
-    default:
-        $response['message'] = "Invalid action.";
-        logAction($conn, "Invalid action attempted: $action", $user);
-}
+                default:
+                    $response['message'] = "Invalid action.";
+                    logAction($conn, "Invalid action attempted: $action", $user);
+            }
 
 // Return JSON response
 echo json_encode($response);

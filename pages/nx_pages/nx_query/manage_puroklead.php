@@ -59,27 +59,41 @@ case 'create':
     if (mysqli_query($conn, $query)) {
         $response['success'] = true;
         $response['message'] = "Purok Leader created successfully.";
-        logAction($conn, "Created Purok Leader: $fname $lname", $user);
+        logAction($conn, "Created Purok Leader Data for $fname $lname", $user);
     } else {
         $response['message'] = "Error creating Purok Leader: " . mysqli_error($conn);
     }
     break;
 
 
-    case 'get':
-        // Read
-        $id = (int)$_GET['id'];
-        $query = "SELECT * FROM tblpuroklead WHERE id = $id";
-        $result = mysqli_query($conn, $query);
-        $official = mysqli_fetch_assoc($result);
-        if ($official) {
-            $response['success'] = true;
-            $response['data'] = $official;
-            logAction($conn, "Retrieved Purok Leader ID: $id", $user);
-        } else {
-            $response['message'] = "Purok Leader not found.";
-        }
-        break;
+case 'get':
+    // Read
+    $id = (int)$_GET['id'];
+
+    // Query to retrieve fname, lname, and position (adjust based on your actual table structure)
+    $query = "SELECT fname, lname FROM tblpuroklead WHERE id = $id";
+    $result = mysqli_query($conn, $query);
+    
+    // Fetch the official's data
+    $official = mysqli_fetch_assoc($result);
+    
+    if ($official) {
+        // Extract the fname, lname, and position from the result
+        $fname = $official['fname'];
+        $lname = $official['lname'];
+
+        // Set the response for success
+        $response['success'] = true;
+        $response['data'] = $official;
+        
+        // Log the action with the official's name and position
+        logAction($conn, "Retrieved Purok Leader Data for $fname $lname", $user);
+    } else {
+        // Handle the case when the data is not found
+        $response['message'] = "Purok Leader not found.";
+        logAction($conn, "Failed to retrieve Purok Leader ID $id: Not found", $user);
+    }
+    break;
 
     case 'update':
         // Update
@@ -114,28 +128,46 @@ case 'create':
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Purok Leader updated successfully.";
-            logAction($conn, "Updated Purok Leader ID: $id", $user);
+            logAction($conn, "Updated Purok Leader Data for $fname $lname", $user);
         } else {
             $response['message'] = "Error updating Purok Leader: " . mysqli_error($conn);
             error_log("SQL Error: " . mysqli_error($conn)); // Log SQL error for debugging
         }
         break;
 
-    case 'delete':
-        // Delete
-        $id = (int)$_GET['id'];
+case 'delete':
+    // Delete
+    $id = (int)$_GET['id'];
+
+    // Query to retrieve fname and lname for the specified ID
+    $query = "SELECT fname, lname FROM tblpuroklead WHERE id = $id";
+    $result = mysqli_query($conn, $query);
+    
+    // Fetch the official's data
+    $official = mysqli_fetch_assoc($result);
+    
+    if ($official) {
+        // Extract fname and lname
+        $fname = $official['fname'];
+        $lname = $official['lname'];
+        
+        // Perform the delete action
         $query = "DELETE FROM tblpuroklead WHERE id = $id";
+        
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Purok Leader deleted successfully.";
-            logAction($conn, "Deleted Purok Leader ID: $id", $user);
+            logAction($conn, "Deleted Purok Leader Data for $fname $lname", $user);
         } else {
             $response['message'] = "Error deleting Purok Leader: " . mysqli_error($conn);
         }
-        break;
+    } else {
+        $response['message'] = "Purok Leader not found.";
+    }
+    break;
 
-    default:
-        $response['message'] = "Invalid action.";
+default:
+    $response['message'] = "Invalid action.";
 }
 
 // Return JSON response

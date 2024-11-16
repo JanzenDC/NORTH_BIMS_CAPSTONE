@@ -61,25 +61,38 @@ $query = "INSERT INTO tblkabataan (fname, mname, lname, suffix, position, contac
 if (mysqli_query($conn, $query)) {
     $response['success'] = true;
     $response['message'] = "Sangguniang Kabataan created successfully.";
-    logAction($conn, "Created Sangguniang Kabataan: $fname $lname", $user);
+    logAction($conn, "Created Sangguniang Kabataan Data for $fname $lname with position $position", $user);
 } else {
     $response['message'] = "Error creating Sangguniang Kabataan: " . mysqli_error($conn);
     logAction($conn, "Failed to create Sangguniang Kabataan: " . mysqli_error($conn), $user);
 }
-
 break;
 
 case 'get':
     // Read
     $id = (int)$_GET['id'];
-    $query = "SELECT * FROM tblkabataan WHERE id = $id";
+    
+    // Query to retrieve data from tblkabataan, including fname, lname, and position
+    $query = "SELECT fname, lname, position FROM tblkabataan WHERE id = $id";
     $result = mysqli_query($conn, $query);
+    
+    // Fetch the official's data
     $official = mysqli_fetch_assoc($result);
+    
     if ($official) {
+        // Get the fname, lname, and position values from the fetched result
+        $fname = $official['fname'];
+        $lname = $official['lname'];
+        $position = $official['position'];
+        
+        // Set the response for success
         $response['success'] = true;
         $response['data'] = $official;
-        logAction($conn, "Retrieved Sangguniang Kabataan ID $id", $user);
+        
+        // Log the action with the official's name and position
+        logAction($conn, "Retrieved Sangguniang Kabataan Data for $fname $lname with position $position", $user);
     } else {
+        // Handle the case when the data is not found
         $response['message'] = "Sangguniang Kabataan not found.";
         logAction($conn, "Failed to retrieve Sangguniang Kabataan ID $id: Not found", $user);
     }
@@ -124,26 +137,45 @@ case 'get':
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Sangguniang Kabataan updated successfully.";
-            logAction($conn, "Updated Sangguniang Kabataan ID $id", $user);
+            logAction($conn, "Updated Sangguniang Kabataan Data for $fname $lname with posiiton of $position", $user);
         } else {
             $response['message'] = "Error updating Sangguniang Kabataan: " . mysqli_error($conn);
             logAction($conn, "Failed to update Sangguniang Kabataan ID $id: " . mysqli_error($conn), $user);
         }
         break;
 
-    case 'delete':
-        // Delete
-        $id = (int)$_GET['id'];
-        $query = "DELETE FROM tblkabataan WHERE id = $id";
-        if (mysqli_query($conn, $query)) {
+case 'delete':
+    // Delete
+    $id = (int)$_GET['id'];
+
+    // Step 1: Retrieve fname, lname, and position for the Sangguniang Kabataan before deletion
+    $query = "SELECT fname, lname, position FROM tblkabataan WHERE id = $id";
+    $result = mysqli_query($conn, $query);
+    
+    // Check if the official exists
+    if ($result && mysqli_num_rows($result) > 0) {
+        $official = mysqli_fetch_assoc($result);
+        $fname = $official['fname'];
+        $lname = $official['lname'];
+        $position = $official['position'];
+
+        // Step 2: Perform the deletion
+        $deleteQuery = "DELETE FROM tblkabataan WHERE id = $id";
+        if (mysqli_query($conn, $deleteQuery)) {
             $response['success'] = true;
             $response['message'] = "Sangguniang Kabataan deleted successfully.";
-            logAction($conn, "Deleted Sangguniang Kabataan ID $id", $user);
+            // Log the deletion with the official's name and position
+            logAction($conn, "Deleted Sangguniang Kabataan Data for $fname $lname with position of $position", $user);
         } else {
             $response['message'] = "Error deleting Sangguniang Kabataan: " . mysqli_error($conn);
             logAction($conn, "Failed to delete Sangguniang Kabataan ID $id: " . mysqli_error($conn), $user);
         }
-        break;
+    } else {
+        $response['message'] = "Sangguniang Kabataan not found.";
+        logAction($conn, "Failed to find Sangguniang Kabataan ID $id for deletion", $user);
+    }
+    break;
+
 
     default:
         $response['message'] = "Invalid action.";

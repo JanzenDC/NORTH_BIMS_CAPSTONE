@@ -81,28 +81,47 @@ switch ($action) {
     if (mysqli_query($conn, $query)) {
         $response['success'] = true;
         $response['message'] = "Official created successfully.";
-        logAction($conn, "Created official: $fname $lname", $user);
+        logAction($conn, "Created Barangay Police Data for $fname $lname", $user);
     } else {
         $response['message'] = "Error creating official: " . mysqli_error($conn);
         logAction($conn, "Failed to create official: " . mysqli_error($conn), $user);
     }
     break;
 
-    case 'get':
-        // Read
-        $id = (int)$_GET['id'];
+case 'get':
+    // Read
+    $id = (int)$_GET['id'];
+
+    // Query to retrieve fname and lname for the specified ID
+    $query = "SELECT fname, lname FROM tbltanod WHERE id = $id";
+    $result = mysqli_query($conn, $query);
+    
+    // Fetch the official's data
+    $official = mysqli_fetch_assoc($result);
+    
+    if ($official) {
+        // Extract fname and lname
+        $fname = $official['fname'];
+        $lname = $official['lname'];
+
+        // Retrieve all data for the specified official
         $query = "SELECT * FROM tbltanod WHERE id = $id";
         $result = mysqli_query($conn, $query);
-        $official = mysqli_fetch_assoc($result);
-        if ($official) {
+        $officialData = mysqli_fetch_assoc($result);
+        
+        if ($officialData) {
             $response['success'] = true;
-            $response['data'] = $official;
-            logAction($conn, "Retrieved official ID $id", $user);
+            $response['data'] = $officialData;
+            logAction($conn, "Retrieved Barangay Police Data for $fname $lname", $user);
         } else {
-            $response['message'] = "Barangay Tanod not found.";
-            logAction($conn, "Failed to retrieve official ID $id: Not found", $user);
+            $response['message'] = "Barangay Tanod data not found.";
+            logAction($conn, "Failed to Retrieve Barangay Police Data for $fname $lname : Not found", $user);
         }
-        break;
+    } else {
+        $response['message'] = "Barangay Tanod not found.";
+        logAction($conn, "Failed to retrieve Barangay Tanod ID $id: Not found", $user);
+    }
+    break;
 
     case 'update':
         // Update
@@ -142,31 +161,48 @@ switch ($action) {
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
             $response['message'] = "Official updated successfully.";
-            logAction($conn, "Updated official ID $id", $user);
+            logAction($conn, "Updated Barangay Police Data for $fname $lname", $user);
         } else {
             $response['message'] = "Error updating official: " . mysqli_error($conn);
             logAction($conn, "Failed to update official ID $id: " . mysqli_error($conn), $user);
         }
         break;
 
-    case 'delete':
-        // Delete
-        $id = (int)$_GET['id'];
+case 'delete':
+    // Delete
+    $id = (int)$_GET['id'];
+
+    // Query to retrieve fname and lname for the specified ID
+    $query = "SELECT fname, lname FROM tbltanod WHERE id = $id";
+    $result = mysqli_query($conn, $query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        // Fetch the official's details
+        $official = mysqli_fetch_assoc($result);
+        $fname = $official['fname'];
+        $lname = $official['lname'];
+
+        // Proceed with deletion
         $query = "DELETE FROM tbltanod WHERE id = $id";
         if (mysqli_query($conn, $query)) {
             $response['success'] = true;
-            $response['message'] = "Official deleted successfully.";
-            logAction($conn, "Deleted official ID $id", $user);
+            $response['message'] = "Barangay Tanod deleted successfully.";
+            logAction($conn, "Deleted Barangay Police Data for $fname $lname", $user);
         } else {
-            $response['message'] = "Error deleting official: " . mysqli_error($conn);
-            logAction($conn, "Failed to delete official ID $id: " . mysqli_error($conn), $user);
+            $response['message'] = "Error deleting Barangay Tanod: " . mysqli_error($conn);
+            logAction($conn, "Failed to delete Barangay Tanod ID $id: " . mysqli_error($conn), $user);
         }
-        break;
+    } else {
+        $response['message'] = "Barangay Tanod not found.";
+        logAction($conn, "Failed to retrieve Barangay Tanod ID $id: Not found", $user);
+    }
+    break;
 
-    default:
-        $response['message'] = "Invalid action.";
-        logAction($conn, "Invalid action attempted: $action", $user);
+default:
+    $response['message'] = "Invalid action.";
+    logAction($conn, "Invalid action attempted: $action", $user);
 }
+
 
 // Return JSON response
 echo json_encode($response);
