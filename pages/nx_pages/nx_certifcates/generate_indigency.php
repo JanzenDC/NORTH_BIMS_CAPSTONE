@@ -92,9 +92,9 @@ $monthTagalog = isset($months[$month]) ? $months[$month] : $month;
 
                 <div style="margin: 85px 100px 0 100px;">
                     <h1>TO WHOM IT MAY CONCERN:</h1>
-                    <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>This is to certify that <b>MARICAR SOMERA, 43 years old</b> resident of Purok Banaba,</div>
-                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Barangay North Poblacion, Gabaldon, Nueva Ecija. This further certify that <b>MARICAR SOMERA,</b> the above name person belongs to indigent families as per record kept in this Barangay.</div>
-                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This certification is issued upon request of <b>MARICAR SOMERA,</b> for medical assistance purposes and for whatever legal purposes it may serve.</div>
+                    <div style="word-spacing: 5.5px;"><span style="margin-left: 50px;"></span>This is to certify that <b><?= $fullname ?>, <?= $row['age']?> years old</b> resident of Purok Banaba,</div>
+                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Barangay North Poblacion, Gabaldon, Nueva Ecija. This further certify that <b><?= $fullname ?>,</b> the above name person belongs to indigent families as per record kept in this Barangay.</div>
+                    <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>This certification is issued upon request of <b><?= $fullname ?>,</b> for medical assistance purposes and for whatever legal purposes it may serve.</div>
 
                     <div style="word-spacing: 5.5px; margin-top: 20px;"><span style="margin-left: 50px;"></span>Given this <?= $day ?><sup><?= $suffix ?></sup> day of <?= $month ?>, <?= $year ?>, here at Barangay North Poblacion, Gabaldon, Nueva Ecija.</div>
                 </div>
