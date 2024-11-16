@@ -85,7 +85,7 @@ switch ($action) {
                             $project = $api->initProjectById($projectId);
                             $project->sendMessage([
                                 'to_number' => $userPhone,
-                                'content' => $message
+                                'content' => $contactNumber
                             ]);
                             $response['message'] = "SMS sent successfully.";
                         } catch (Exception $e) {

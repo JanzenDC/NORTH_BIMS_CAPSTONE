@@ -212,7 +212,7 @@ case 'setAsApprove':
                         $api = new Telerivet_API($telerivetApiKey);
                         $project = $api->initProjectById($projectId);
                         $project->sendMessage([
-                            'to_number' => $userPhone,
+                            'to_number' => $contactNumber,
                             'content' => $message
                         ]);
                         $response['message'] = "SMS sent successfully.";
