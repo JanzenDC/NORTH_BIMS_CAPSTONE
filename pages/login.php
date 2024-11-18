@@ -805,7 +805,7 @@ session_start();
               0: ['registration_status', 'fname', 'lname', 'date_of_birth', 'age'], // Step 1
               1: ['contact', 'email', 'password_holder'], // Step 2
               2: ['house_no', 'barangay', 'municipality', 'province'], // Step 3
-              3: ['occupation', 'civil_status'], // Step 4
+              3: ['civil_status'], // Step 4
               4: ['id_type', 'id_file', 'emergency_contact', 'privacy_agreement'] // Step 5
           };
 
