@@ -283,10 +283,10 @@ function closeModal(modalId) {
     showTab('personalInfo');
 // CRUD
 function editRecord(id) {
-
     $.get('nx_query/manage_officials.php?action=get&id=' + id, function(response) {
         if (response.success) {
             const official = response.data;
+            console.log(official)
             document.getElementById('editId').value = official.id;
             document.getElementById('editFname').value = official.fname;
             document.getElementById('editMname').value = official.mname;
@@ -307,12 +307,25 @@ function editRecord(id) {
                 icon: "error",
             });
         }
-    }).fail(function() {
-        swal("Error retrieving record.", {
-            icon: "error",
+    }).fail(function(xhr, status, error) {
+        // Log detailed error information to the console
+        console.log("Error Details:", {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseText: xhr.responseText,
+            error: error
+        });
+
+        // Display a user-friendly error message
+        Swal.fire({
+            icon: 'error',
+            title: 'An error occurred',
+            text: `Error ${xhr.status}: ${xhr.statusText}`,
+            footer: '<a href="#">Click here for more information</a>' // Optional: link for more info
         });
     });
 }
+
 
 function deleteRecord(id) {
     swal({

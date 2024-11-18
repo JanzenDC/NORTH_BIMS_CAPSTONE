@@ -75,7 +75,7 @@ case 'create':
         if ($official) {
             $response['success'] = true;
             $response['data'] = $official;
-            logAction($conn, "Retrieved Barangay Official Data for $fname $lname with Position of $position", $user);
+            // logAction($conn, "Retrieved Barangay Official Data for $fname $lname with Position of $position", $user);
         } else {
             $response['message'] = "Officials not found.";
         }
