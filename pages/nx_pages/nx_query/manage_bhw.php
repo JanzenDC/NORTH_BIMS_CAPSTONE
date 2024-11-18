@@ -71,7 +71,7 @@ break;
         if ($official) {
             $response['success'] = true;
             $response['data'] = $official;
-            logAction($conn, "Retrieved Barangay Health Worker Data for $fname $lname", $user);
+            logAction($conn, "Retrieved Barangay Health Worker Data", $user);
         } else {
             $response['message'] = "Health Worker not found.";
         }
