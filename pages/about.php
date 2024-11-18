@@ -1,4 +1,11 @@
-<html><head><base href="." />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NORTH BIMS</title>
+    <link rel="icon" type="image/png" href="../assets/images/north.png">
+    
   <style>
   :root {
     --primary-green: #2E7D32;
@@ -17,8 +24,11 @@
   body {
     background-color: var(--accent);
     padding-top: 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
-    .navbar {
+      .navbar {
       background-color: var(--primary-green);
       padding: 1rem 2rem;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -26,6 +36,9 @@
       width: 100%;
       top: 0;
       z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .navbar ul {
@@ -68,20 +81,27 @@
       align-items: center;
     }
 
-    @media (max-width: 768px) {
-            .menu-toggle.active span:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 5px);
+    @media screen and (max-width: 768px) {
+      .step {
+        margin-left: -15px;
+      }
+      .container {
+        width: 380px;
       }
 
-      .menu-toggle.active span:nth-child(2) {
-        opacity: 0;
+      .form-container {
+        padding: 1px;
       }
 
-      .menu-toggle.active span:nth-child(3) {
-        transform: rotate(-45deg) translate(5px, -5px);
+      input {
+        padding: 2px;
       }
-      .menu-icon {
-        display: block;
+      select {
+        padding: 2px;
+      }
+
+      .menu-toggle {
+        display: flex;
       }
 
       .nav-links {
@@ -89,142 +109,219 @@
         position: absolute;
         top: 100%;
         left: 0;
-        width: 100%;
+        right: 0;
         background-color: var(--primary-green);
         flex-direction: column;
+        align-items: center;
         padding: 1rem 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       }
 
       .nav-links.active {
         display: flex;
       }
 
-      .navbar li {
+      .nav-links li {
         margin: 0.5rem 0;
         width: 100%;
         text-align: center;
       }
 
-      .navbar a {
+      .nav-links a {
         display: block;
         padding: 0.75rem 1rem;
+        width: 100%;
       }
 
-      .navbar a:hover {
-        background-color: var(--dark-green);
-      }
-
-      .logo {
-        display: block !important;
-        margin-right: 300px !important;
-      }
+    }
+    .logo {
+      display: flex;
+      align-items: center;
     }
 
-.logo {
-  margin-right: auto;
-  display: flex;
-  align-items: center;
-}
-
-.logo img {
-  height: 50px;
-  width: auto;
-}
+    .logo img {
+      height: 50px;
+      width: auto;
+    }
 
   
+/* Default styling for desktop and larger screens */
+.about-container {
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 1200px;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.about-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.about-header p {
+  font-size: 1.2rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+}
+
+.feature-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px); /* Hover effect to lift up */
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+h3 {
+  font-size: 1.6rem;
+  color: #007BFF;
+}
+
+p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
   .about-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 2rem;
+    padding: 20px;
+    margin: 10px;
   }
-  
-  .about-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  
+
   .about-header h1 {
-    color: var(--primary-green);
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    font-size: 2rem; /* Smaller heading for mobile */
   }
-  
+
   .about-header p {
-    color: #666;
-    font-size: 1.2rem;
+    font-size: 1rem; /* Smaller text for mobile */
   }
-  
+
   .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
+    grid-template-columns: 1fr; /* Stack the items in one column */
+    gap: 20px;
   }
-  
+
   .feature-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
+    padding: 15px;
   }
-  
-  .feature-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .feature-card h3 {
-    color: var(--primary-green);
-    margin-bottom: 1rem;
-  }
-  
-  .feature-card p {
-    color: #666;
-    line-height: 1.6;
-  }
-  
+
   .feature-icon {
-    font-size: 2.5rem;
-    color: var(--primary-green);
-    margin-bottom: 1rem;
+    font-size: 3rem; /* Increase icon size for mobile */
   }
+
+  h3 {
+    font-size: 1.4rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+}
+
   
+/* Default styling for desktop and larger screens */
+.mission-vision {
+  padding: 40px;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 1100px;
+}
+
+.mission-vision h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.mission-vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.mission, .vision {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.mission:hover, .vision:hover {
+  transform: translateY(-5px); /* Hover effect to lift up */
+}
+
+h3 {
+  margin-top: 0;
+  font-size: 1.8rem;
+  color: #007BFF; /* Blue color for headings */
+}
+
+p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
   .mission-vision {
-    margin-top: 4rem;
-    background: white;
-    padding: 3rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 10px;
   }
-  
-  .mission-vision h2 {
-    color: var(--primary-green);
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-  
+
   .mission-vision-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: 1fr; /* Stack the items in one column */
+    gap: 10px;
   }
-  
+
   .mission, .vision {
-    padding: 2rem;
-    background: var(--accent);
+    padding: 15px;
     border-radius: 8px;
   }
-  
-  .mission h3, .vision h3 {
-    color: var(--dark-green);
-    margin-bottom: 1rem;
+
+  h2 {
+    text-align: center;
+    font-size: 1.8rem; /* Smaller heading for mobile */
+    color: #333;
   }
-  
-  .mission p, .vision p {
-    color: #444;
-    line-height: 1.6;
+
+  h3 {
+    font-size: 1.5rem;
   }
-  
+
+  p {
+    font-size: 0.9rem;
+  }
+}
+
   </style>
   
   <body>
@@ -257,43 +354,44 @@
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">📊</div>
-          <h3>Data Management</h3>
+          <h3 style="color: green;">Data Management</h3>
           <p>Efficiently manage barangay records, resident information, and administrative data in a secure digital environment.</p>
         </div>
   
         <div class="feature-card">
           <div class="feature-icon">📱</div>
-          <h3>Digital Services</h3>
+          <h3 style="color: green;">Digital Services</h3>
           <p>Provide convenient online services for document requests, permits, and other barangay-related transactions.</p>
         </div>
   
         <div class="feature-card">
           <div class="feature-icon">🤝</div>
-          <h3>Community Engagement</h3>
+          <h3 style="color: green;">Community Engagement</h3>
           <p>Foster better communication between barangay officials and residents through our integrated platform.</p>
         </div>
       </div>
   
-      <div class="mission-vision">
-        <h2>Our Mission & Vision</h2>
-        <div class="mission-vision-grid">
-          <div class="mission">
-            <h3>Mission</h3>
-            <p>Maiangat ang kalidad ng pamumuhay ng mga mamamayan ipagpatuloy sa kapwa upang masugpo ang kahirapan at mapanatili ang tahimik at mapayapang mamamayan.</p>
-          </div>
-          <div class="vision">
-            <h3>Vision</h3>
-            <p>Isang modelong Barangay na may maunlad, mapayapa o tahimik na pamayanan na may pananalig sa Diyos, mapagmahal sa kalikasan at tumalima sa batas na umiiral sa bansa at buong pagkakaisang nagtitiwala sa mamamayang hinirang.</p>
-          </div>
-          <div class="vision">
-            <h3>Goal</h3>
-            <p>"Magkaroon ng pantay-pantay na pagkakataong makamtam ang mga pangunahing pangangailangan sa pamamagitan ng isang mahusay na pamamahala."</p>
-            <br>
-            <p>"Magkaroon ng mga programing pangkabuhayan."</p>        
-          </div>
-        </div>
-      </div>
+<div class="mission-vision">
+  <h2>Our Mission & Vision</h2>
+  <div class="mission-vision-grid">
+    <div class="mission">
+      <h3 style="color: green;">Mission</h3>
+      <p>Maiangat ang kalidad ng pamumuhay ng mga mamamayan ipagpatuloy sa kapwa upang masugpo ang kahirapan at mapanatili ang tahimik at mapayapang mamamayan.</p>
     </div>
+    <div class="vision">
+      <h3 style="color: green;">Vision</h3>
+      <p>Isang modelong Barangay na may maunlad, mapayapa o tahimik na pamayanan na may pananalig sa Diyos, mapagmahal sa kalikasan at tumalima sa batas na umiiral sa bansa at buong pagkakaisang nagtitiwala sa mamamayang hinirang.</p>
+    </div>
+    <div class="vision">
+      <h3 style="color: green;">Goal</h3>
+      <p>"Magkaroon ng pantay-pantay na pagkakataong makamtam ang mga pangunahing pangangailangan sa pamamagitan ng isang mahusay na pamamahala."</p>
+      <br>
+      <p>"Magkaroon ng mga programing pangkabuhayan."</p>        
+    </div>
+  </div>
+</div>
+
+    
     <script>
                   function toggleMenu() {
         const navLinks = document.querySelector('.nav-links');
