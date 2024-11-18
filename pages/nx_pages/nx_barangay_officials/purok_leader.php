@@ -40,7 +40,7 @@ $conn->close();
         <tbody>
             <?php foreach ($data as $official): ?>
                 <tr data-id="<?= $official['id'] ?>">
-                    <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:50px;height:auto;' /></td>
+                    <td><img src='../../assets/images/pfp/<?= $official["image"] ?>' style='width:80px;height:auto;' /></td>
                     <td><?= htmlspecialchars($official['full_name']) ?></td>
                     <td><?= htmlspecialchars($official['purok']) ?></td>
                     <td><?= htmlspecialchars($official['contact']) ?></td>
@@ -62,22 +62,66 @@ $conn->close();
 <!-- MODALS SECTION -->
 <!-- Create Purok Leader Modal -->
 <div id="createModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg p-6">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-3/4">
         <span class="cursor-pointer float-right" onclick="closeModal('createModal')">&times;</span>
         <h2 class="text-lg font-semibold mb-4">Create Purok Leader</h2>
-        <form id="createForm" enctype="multipart/form-data" onsubmit="event.preventDefault(); addRecord();">
-            <input type="text" name="fname" id="addFname" placeholder="First Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="mname" id="addMname" placeholder="Middle Name" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="lname" id="addLname" placeholder="Last Name" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="purok" id="addPurok" placeholder="Purok" class="block w-full mb-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" required oninput="formatPhoneNumber(this)">
-            <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded" required>
-            <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded" required>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Create</button>
+        <form id="createForm" enctype="multipart/form-data" 
+              onsubmit="event.preventDefault(); addRecord();" 
+              class="grid grid-cols-2 gap-4">
+            <input type="text" name="fname" id="addFname" 
+                   placeholder="First Name" 
+                   class="p-2 border rounded" 
+                   required 
+                   oninput="capitalizeFirstLetter(this)">
+                   
+            <input type="text" name="mname" id="addMname" 
+                   placeholder="Middle Initial" 
+                   class="p-2 border rounded" 
+                   maxlength="2"
+                   oninput="this.value = this.value.toUpperCase()">
+                   
+            <input type="text" name="lname" id="addLname" 
+                   placeholder="Last Name" 
+                   class="p-2 border rounded" 
+                   required 
+                   oninput="capitalizeFirstLetter(this)">
+                   
+            <input type="text" name="suffix" id="addSuffix" 
+                   placeholder="Suffix" 
+                   class="p-2 border rounded" 
+                   oninput="capitalizeFirstLetter(this)">
+                   
+            <select name="purok" id="addPurok" 
+                    class="p-2 border rounded" 
+                    required>
+                <option value="" disabled selected>Select Purok</option>
+                <option value="Acasia (Villa Gabriel)">Acasia (Villa Gabriel)</option>
+                <option value="Mulawin">Mulawin</option>
+                <option value="Kamagong">Kamagong</option>
+                <option value="Banaba">Banaba</option>
+                <option value="Narra">Narra</option>
+                <option value="Calumpit">Calumpit</option>
+                <option value="Mabolo">Mabolo</option>
+            </select>
+
+                   
+            <input type="text" name="contact" id="addContact" 
+                   placeholder="Contact" 
+                   class="p-2 border rounded" maxlength = "13"
+                   oninput="formatPhoneNumber(this)">
+                   
+            <input type="date" name="bday" id="addBday" 
+                   class="p-2 border rounded">
+            <input type="file" name="image" id="addImage" 
+                   class="p-2 border rounded col-span-2">
+            <button type="submit" 
+                    class="bg-blue-500 text-white p-2 rounded col-span-2">
+                Create
+            </button>
         </form>
     </div>
 </div>
+
 
 <!-- Edit Official Modal -->
 <div id="editModal" class="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
@@ -91,15 +135,15 @@ $conn->close();
             <div class="flex mb-4">
                 <input type="text" id="editFname" name="fname" placeholder="First Name" class="block w-full mr-2 p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
                 <input type="text" id="editMname" name="mname" placeholder="Middle Name" class="block w-full mr-2 p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                <input type="text" id="editLname" name="lname" placeholder="Last Name" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
             </div>
 
             <!-- Other Fields in Two Columns -->
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
                 <input type="text" id="editPurok" name="purok" placeholder="Purok" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" required oninput="formatPhoneNumber(this)">
-                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" required>
+                <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" oninput="formatPhoneNumber(this)">
+                <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" >
             </div>
 
             <input type="file" id="editImage" name="image" class="block w-full mb-2 p-2 border rounded">
@@ -345,5 +389,3 @@ function addRecord() {
 }
 
 </script>
-
-
