@@ -141,7 +141,18 @@ $conn->close();
             <!-- Other Fields in Two Columns -->
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <input type="text" id="editSuffix" name="suffix" placeholder="Suffix" class="block w-full p-2 border rounded" oninput="capitalizeFirstLetter(this)">
-                <input type="text" id="editPurok" name="purok" placeholder="Purok" class="block w-full p-2 border rounded" required oninput="capitalizeFirstLetter(this)">
+                <select name="purok" id="editPurok" 
+                        class="p-2 border rounded" 
+                        required>
+                    <option value="" disabled selected>Select Purok</option>
+                    <option value="Acasia (Villa Gabriel)">Acasia (Villa Gabriel)</option>
+                    <option value="Mulawin">Mulawin</option>
+                    <option value="Kamagong">Kamagong</option>
+                    <option value="Banaba">Banaba</option>
+                    <option value="Narra">Narra</option>
+                    <option value="Calumpit">Calumpit</option>
+                    <option value="Mabolo">Mabolo</option>
+                </select>
                 <input type="text" id="editContact" name="contact" placeholder="Contact" class="block w-full p-2 border rounded" oninput="formatPhoneNumber(this)">
                 <input type="date" id="editBday" name="bday" class="block w-full p-2 border rounded" >
             </div>
@@ -214,27 +225,37 @@ function closeModal(modalId) {
     showTab('personalInfo');
 // CRUD
 function editRecord(id) {
-    
     $.get('nx_query/manage_puroklead.php?action=get&id=' + id, function(response) {
         if (response.success) {
             const official = response.data;
-            document.getElementById('editId').value = official.id;
-            document.getElementById('editFname').value = official.fname;
-            document.getElementById('editMname').value = official.mname;
-            document.getElementById('editLname').value = official.lname;
-            document.getElementById('editSuffix').value = official.suffix;
-            document.getElementById('editPurok').value = official.purok;
-            document.getElementById('editContact').value = official.contact;
-            document.getElementById('editBday').value = official.bday;
+            
+            // Array of field mappings
+            const fields = [
+                ['editId', 'id'],
+                ['editFname', 'fname'],
+                ['editMname', 'mname'],
+                ['editLname', 'lname'],
+                ['editSuffix', 'suffix'],
+                ['editPurok', 'purok'],
+                ['editContact', 'contact'],
+                ['editBday', 'bday']
+            ];
 
-            // Set up the image preview
+            // Set all values
+            fields.forEach(([elementId, key]) => {
+                document.getElementById(elementId).value = official[key] || '';
+            });
+
+            // Image preview
             const imagePreview = document.getElementById('editImagePreview');
-            imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
-            imagePreview.style.display = 'block'; // Show the image preview
+            imagePreview.src = official.image 
+                ? '../../assets/images/pfp/' + official.image 
+                : '../../assets/images/default-profile.png';
+            imagePreview.style.display = 'block';
 
             openModal('editModal');
         } else {
-            swal("Error: " + response.message, {
+            swal("Error: " + (response.message || 'Unknown error'), {
                 icon: "error",
             });
         }
@@ -332,7 +353,9 @@ function updateRecord(event) {
                     icon: "error",
                 });
             }
-            location.reload(true);
+            setTimeout(() => {
+                location.reload(true);
+            }, 1000);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error('AJAX Error:', textStatus, errorThrown, jqXHR.responseText);
