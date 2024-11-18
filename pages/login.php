@@ -9,7 +9,7 @@ session_start();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+<script src="https://kit.fontawesome.com/e929833113.js" crossorigin="anonymous"></script>
 
 <base href="." />
   <style>
@@ -469,8 +469,20 @@ session_start();
       transition: all 0.3s ease;
       border-radius: 2px;
     }
+        .btn-group button {
+            min-width: 80px; /* Default minimum width */
+            padding: 5px 10px; /* Add some padding for better appearance */
+        }
 
     @media screen and (max-width: 768px) {
+      .btn-group button span {
+          display: none; /* Hide the text */
+      }
+      
+            .btn-group button {
+                min-width: 60px; /* Smaller minimum width for mobile */
+                padding: 5px; /* Adjust padding for smaller buttons */
+            }
       .step {
         margin-left: -15px;
       }
@@ -653,8 +665,14 @@ session_start();
             </div>
 
             <div class="btn-group">
-                <button type="button" id="prevBtn" style="display: none;">Previous</button>
-                <button type="button" id="nextBtn">Next</button>
+                <button type="button" id="prevBtn" style="display: none;">
+                    <i class="fa-solid fa-backward"></i>
+                    <span>Previous</span>
+                </button>
+                <button type="button" id="nextBtn">
+                    <i class="fa-solid fa-forward"></i>
+                    <span>Next</span>
+                </button>
             </div>
         </form>
 
