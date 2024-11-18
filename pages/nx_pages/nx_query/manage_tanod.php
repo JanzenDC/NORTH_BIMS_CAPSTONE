@@ -112,7 +112,7 @@ case 'get':
         if ($officialData) {
             $response['success'] = true;
             $response['data'] = $officialData;
-            logAction($conn, "Retrieved Barangay Police Data for $fname $lname", $user);
+            // logAction($conn, "Retrieved Barangay Police Data for $fname $lname", $user);
         } else {
             $response['message'] = "Barangay Tanod data not found.";
             logAction($conn, "Failed to Retrieve Barangay Police Data for $fname $lname : Not found", $user);

@@ -39,7 +39,6 @@ switch ($action) {
         if ($resident) {
             $response['success'] = true;
             $response['data'] = $resident;
-            logAction($conn, "Retrieved resident ID $id", $user);
         } else {
             $response['message'] = "Resident not found.";
             logAction($conn, "Failed to retrieve resident ID $id: Resident not found", $user);

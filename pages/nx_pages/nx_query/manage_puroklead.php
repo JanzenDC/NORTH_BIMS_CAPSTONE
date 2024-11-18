@@ -87,7 +87,6 @@ case 'get':
         $response['data'] = $official;
         
         // Log the action with the official's name and position
-        logAction($conn, "Retrieved Purok Leader Data for $fname $lname", $user);
     } else {
         // Handle the case when the data is not found
         $response['message'] = "Purok Leader not found.";

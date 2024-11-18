@@ -88,9 +88,7 @@ case 'get':
         // Set the response for success
         $response['success'] = true;
         $response['data'] = $official;
-        
-        // Log the action with the official's name and position
-        logAction($conn, "Retrieved Sangguniang Kabataan Data for $fname $lname with position $position", $user);
+
     } else {
         // Handle the case when the data is not found
         $response['message'] = "Sangguniang Kabataan not found.";

@@ -175,23 +175,29 @@ function closeModal(modalId) {
     showTab('personalInfo');
 // CRUD
 function editRecord(id) {
-    
     $.get('nx_query/manage_sk.php?action=get&id=' + id, function(response) {
         if (response.success) {
             const official = response.data;
-            document.getElementById('editId').value = official.id;
-            document.getElementById('editFname').value = official.fname;
-            document.getElementById('editMname').value = official.mname;
-            document.getElementById('editLname').value = official.lname;
-            document.getElementById('editSuffix').value = official.suffix;
-            document.getElementById('editPosition').value = official.position;
-            document.getElementById('editContact').value = official.contact;
-            document.getElementById('editBday').value = official.bday;
+
+            // Set values or empty if not available
+            document.getElementById('editId').value = official.id || '';
+            document.getElementById('editFname').value = official.fname || '';
+            document.getElementById('editMname').value = official.mname || '';
+            document.getElementById('editLname').value = official.lname || '';
+            document.getElementById('editSuffix').value = official.suffix || '';
+            document.getElementById('editPosition').value = official.position || '';
+            document.getElementById('editContact').value = official.contact || '';
+            document.getElementById('editBday').value = official.bday || '';
 
             // Set up the image preview
             const imagePreview = document.getElementById('editImagePreview');
-            imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
-            imagePreview.style.display = 'block'; // Show the image preview
+            if (official.image) {
+                imagePreview.src = '../../assets/images/pfp/' + official.image; // Update image preview
+                imagePreview.style.display = 'block'; // Show the image preview
+            } else {
+                imagePreview.src = ''; // Clear the image source if no image
+                imagePreview.style.display = 'none'; // Hide the image preview
+            }
 
             openModal('editModal');
         } else {
