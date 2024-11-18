@@ -73,7 +73,7 @@ case 'get':
     $id = (int)$_GET['id'];
     
     // Query to retrieve data from tblkabataan, including fname, lname, and position
-    $query = "SELECT fname, lname, position FROM tblkabataan WHERE id = $id";
+    $query = "SELECT * FROM tblkabataan WHERE id = $id";
     $result = mysqli_query($conn, $query);
     
     // Fetch the official's data

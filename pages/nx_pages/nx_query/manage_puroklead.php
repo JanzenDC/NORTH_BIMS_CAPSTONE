@@ -71,7 +71,7 @@ case 'get':
     $id = (int)$_GET['id'];
 
     // Query to retrieve fname, lname, and position (adjust based on your actual table structure)
-    $query = "SELECT fname, lname FROM tblpuroklead WHERE id = $id";
+    $query = "SELECT * FROM tblpuroklead WHERE id = $id";
     $result = mysqli_query($conn, $query);
     
     // Fetch the official's data
