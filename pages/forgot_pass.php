@@ -215,36 +215,44 @@
     }
 
     // Email validation and OTP sending
-    document.getElementById('sendOtpBtn').addEventListener('click', async () => {
-        const email = document.getElementById('email').value;
+document.getElementById('sendOtpBtn').addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
 
-        if (!email) {
-            showError('Please enter your email address');
-            return;
+    if (!email) {
+        showError('Please enter your email address');
+        return;
+    }
+
+    try {
+        const response = await fetch('forgot_pass_bcknd.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+        console.log(data);
+        if (data.status === 'success') {
+            currentEmail = email;
+            showSection('otpSection');
+            startTimer();
+            showSuccess('OTP sent successfully');
+        } else {
+            showError(data.message);
         }
+    } catch (error) {
+        // Log detailed error information to the console
+        console.log("Error Details:", error);
 
-        try {
-            const response = await fetch('forgot_pass_bcknd.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
-            });
-
-            const data = await response.json();
-            console.log(data)
-            if (data.status === 'success') {
-                currentEmail = email;
-                showSection('otpSection');
-                startTimer();
-                showSuccess('OTP sent successfully');
-            } else {
-                showError(data.message);
-            }
-        } catch (error) {
-            console.log(error)
-            showError('An error occurred. Please try again.');
-        }
-    });
+        // Display a user-friendly error message
+        Swal.fire({
+            icon: 'error',
+            title: 'An error occurred',
+            text: 'There was a problem sending the OTP. Please try again later.',
+            footer: '<a href="#">Click here for more information</a>' // Optional: link for more info
+        });
+    }
+});
 
     // OTP input handling
     const otpInputs = document.querySelectorAll('.otp-input');
