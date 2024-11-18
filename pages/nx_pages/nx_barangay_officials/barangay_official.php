@@ -78,7 +78,7 @@ $conn->close();
             <input type="text" name="suffix" id="addSuffix" placeholder="Suffix" class="block w-full mb-2 p-2 border rounded" maxlength="4" oninput="capitalizeFirstLetter(this)">
 
             <!-- Second Column -->
-            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" oninput="formatPhoneNumber(this)">
+            <input type="text" name="contact" id="addContact" placeholder="Contact" class="block w-full mb-2 p-2 border rounded" maxlength="13" oninput="formatPhoneNumber(this)">
             <input type="text" name="position" id="addPosition" placeholder="Position" class="block w-full mb-2 p-2 border rounded" value="Kagawad" oninput="capitalizeFirstLetter(this)">
             <input type="date" name="bday" id="addBday" class="block w-full mb-2 p-2 border rounded">
             <input type="file" name="image" id="addImage" class="block w-full mb-2 p-2 border rounded">
