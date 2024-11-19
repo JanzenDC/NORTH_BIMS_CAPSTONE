@@ -244,7 +244,7 @@ $conn->close();
     function closeModal() {
         document.getElementById('editProfileModal').classList.add('hidden');
     }
-
+const BASE_URL = 'https://northbims.com/pages/nx_pages/profile_page/';
 // Handle the form submission
 document.getElementById('editProfileForm').onsubmit = function(event) {
     event.preventDefault();
@@ -259,7 +259,7 @@ document.getElementById('editProfileForm').onsubmit = function(event) {
     submitButton.textContent = 'Updating...';
 
     // Send the updated data to the server
-    fetch('nx_query/profile_page/update_profilesettings.php', {
+    fetch(`${BASE_URL}update_profilesettings.php`, {
         method: 'POST',
         body: formData
     })
@@ -317,6 +317,9 @@ document.getElementById('editProfileForm').onsubmit = function(event) {
     // Initial call to show the personal information tab by default
     showTab('personal');
 
+// Define the base URL
+
+
 function handleImageUpload(event) {
     const file = event.target.files[0];
     if (file) {
@@ -332,8 +335,8 @@ function handleImageUpload(event) {
                 const formData = new FormData();
                 formData.append('image', file);
 
-                // Send the image data to the server
-                fetch('nx_query/profile_page/update_profilepic.php', {
+                // Send the image data to the server using the base URL
+                fetch(`${BASE_URL}update_profilepic.php`, {
                     method: 'POST',
                     body: formData,
                 })
@@ -382,7 +385,7 @@ function handleIDinput(event) {
                 formData.append('id_image', file); // Adjusted to 'id_image'
 
                 // Send the image data to the server
-                fetch('nx_query/profile_page/update_id_image.php', { // Adjusted endpoint
+                fetch(`${BASE_URL}update_id_image.php`, { // Adjusted endpoint
                     method: 'POST',
                     body: formData,
                 })
