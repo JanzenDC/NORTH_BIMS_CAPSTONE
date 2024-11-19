@@ -236,8 +236,8 @@
     display: none;
   }
 
-  .hero h1 {
-    font-siz@media (min-width: 481px) and (max-width: 768px) {
+
+
   .navbar ul {
     justify-content: center;
   }

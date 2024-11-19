@@ -82,6 +82,44 @@
     }
 
     @media screen and (max-width: 768px) {
+      .menu-icon {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--primary-green);
+        flex-direction: column;
+        padding: 1rem 0;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .navbar li {
+        margin: 0.5rem 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      .navbar a {
+        display: block;
+        padding: 0.75rem 1rem;
+      }
+
+      .navbar a:hover {
+        background-color: var(--dark-green);
+      }
+
+      .logo {
+        display: flex !important;
+        margin-right: 300px !important;
+      }
       .step {
         margin-left: -15px;
       }
