@@ -34,7 +34,7 @@ if ($_SESSION['user']['isApproved'] == 0) {
                 <img class="w-16 h-16 rounded-full border-2 border-gray-300 -mt-10 mx-auto" src="../../assets/images/pfp/<?= $user['image'] ?>" alt="Profile Photo">
                 <h3 class="text-center font-semibold"><?= htmlspecialchars($user['username']) ?></h3>
                 <div class="mt-2 text-center">
-                    <a href="user_profile.php" class="block px-4 py-2 hover:bg-gray-200">Profile</a>
+                    <a href="../nx_pages/user_profile.php" class="block px-4 py-2 hover:bg-gray-200">Profile</a>
                     <a href="../../pages/logout.php" class="block px-4 py-2 hover:bg-gray-200">Logout</a>
                 </div>
             </div>
