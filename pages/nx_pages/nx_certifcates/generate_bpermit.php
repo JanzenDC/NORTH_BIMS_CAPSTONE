@@ -38,7 +38,7 @@ if ($day % 10 == 1 && $day % 100 != 11) {
   <body style="background-color: rgb(229, 231, 235); overflow: hidden; font-family: 'Times New Roman', Times, serif;">
     <div style="display: flex; height: 100vh;">
       <main style="flex: 1; padding: 1.5rem; overflow-y: auto; margin-bottom: 1.5rem;">
-        <div style="display: flex; justify-content: center;">
+        <div style="display: flex; justify-content: center;" id='contents'>
           <div style="position: relative; width: 816px; height: 1056px; background: white; overflow: hidden;">
             <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 0; opacity: 0.3;">
               <div style="width: 790px; height: 790px; background: url('../../assets/images/north.png') no-repeat center; background-size: contain; opacity: 0.3; z-index: 0;"></div>
